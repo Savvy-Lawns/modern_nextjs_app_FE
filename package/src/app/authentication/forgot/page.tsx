@@ -3,10 +3,10 @@ import { Grid, Box, Card, Typography, Stack } from "@mui/material";
 import Link from "next/link";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
-import AuthRegister from "../auth/AuthRegister";
+import AuthForgot from "../auth/AuthForgot";
 
-const Register2 = () => (
-  <PageContainer title="Register" description="this is Register page">
+const ForgotPassword = () => (
+  <PageContainer title="Forgot" description="this is Forgot password page">
     <Box
       sx={{
         position: "relative",
@@ -45,14 +45,14 @@ const Register2 = () => (
             sx={{ px: 4, py: 2,  width: "100%", maxWidth: "500px" }}
           >
             
-            <AuthRegister
+            <AuthForgot
               subtext={
                 <Typography
                   variant="h4"
                   textAlign="center"
                   color="textSecondary"
                   mb={1}
-                >Register</Typography>
+                >Forgot Password</Typography>
               }
               subtitle={
                 <Stack
@@ -66,7 +66,7 @@ const Register2 = () => (
                     variant="h6"
                     fontWeight="400"
                   >
-                    Already have an Account?
+                    Rememebered?
                   </Typography>
                   <Typography
                     component={Link}
@@ -89,4 +89,4 @@ const Register2 = () => (
   </PageContainer>
 );
 
-export default Register2;
+export default ForgotPassword;

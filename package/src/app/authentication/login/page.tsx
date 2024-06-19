@@ -14,21 +14,21 @@ const Login2 = () => {
           position: "relative",
           "&:before": {
             content: '""',
-            background: "radial-gradient(#d2f1df, #d3d7fa, #bad8f4)",
-            backgroundSize: "400% 400%",
+            background: "radial-gradient(#d2f1df, #D5ECDC, #9FC499)",
+            backgroundSize: "100% 100%",
             animation: "gradient 15s ease infinite",
-            position: "absolute",
+            position: "relative",
             height: "100%",
             width: "100%",
-            opacity: "0.3",
+            opacity: "0.2",
           },
         }}
-      >
+      ><Logo />
         <Grid
           container
           spacing={0}
           justifyContent="center"
-          sx={{ height: "100vh" }}
+          
         >
           <Grid
             item
@@ -42,20 +42,20 @@ const Login2 = () => {
           >
             <Card
               elevation={9}
-              sx={{ p: 4, zIndex: 1, width: "100%", maxWidth: "500px" }}
+              sx={{ px: 4, py:2, width: "100%", maxWidth: "500px" }}
             >
               <Box display="flex" alignItems="center" justifyContent="center">
-                <Logo />
+                
               </Box>
               <AuthLogin
                 subtext={
                   <Typography
-                    variant="subtitle1"
+                    variant="h4"
                     textAlign="center"
                     color="textSecondary"
                     mb={1}
                   >
-                    Your Social Campaigns
+                    Login
                   </Typography>
                 }
                 subtitle={

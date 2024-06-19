@@ -154,6 +154,10 @@ const pageLinks = [
     title: 'Register Now'
   },
   {
+    href: '/auth/forgot',
+    title: 'Forgot Password'
+  },
+  {
     href: '/404',
     title: '404 Error Page'
   },

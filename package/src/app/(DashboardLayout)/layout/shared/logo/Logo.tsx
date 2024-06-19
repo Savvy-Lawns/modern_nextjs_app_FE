@@ -1,18 +1,28 @@
 import Link from "next/link";
 import { styled } from "@mui/material";
 import Image from "next/image";
+import {baselightTheme} from "@/utils/theme/DefaultColors";
 
 const LinkStyled = styled(Link)(() => ({
-  height: "70px",
-  width: "180px",
-  overflow: "hidden",
-  display: "block",
+  height: "120px",
+  width: "100%",
+  overflow: "visible",
+  display: "flex",
+  justifyContent: "center",
+  padding: "10px",
+  marginBottom: "20px",
+  borderRadius: "0px 0px  45px 45px",
+  backgroundColor: baselightTheme.palette.primary.main, 
+  boxShadow: "inset 0px -8px 10px 1px rgba(0,0,0,0.75), 0px 7px 10px 1px rgba(0,0,0,0.75)",
+  webkitBoxShadow: 'inset 0px -4px 5px 1px rgba(0,0,0,0.75)',
+  mozBoxShadow: 'inset 0px -4px 5px 1px rgba(0,0,0,0.75)',
+  
 }));
 
 const Logo = () => {
   return (
     <LinkStyled href="/">
-      <Image src="/images/logos/dark-logo.svg" alt="logo" height={70} width={174} priority />
+      <Image src="/images/logos/SavvyLawnsLogo.png" alt="logo" height={90} width={174}  priority />
     </LinkStyled>
   );
 };
