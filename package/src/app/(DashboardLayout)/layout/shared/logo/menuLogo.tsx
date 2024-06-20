@@ -19,12 +19,17 @@ const LinkStyled = styled(Link)(() => ({
   
 }));
 
-const Logo = () => {
+// MenuLogo.tsx
+interface MenuLogoProps {
+    onClick: () => void;
+  }
+
+const MenuLogo:React.FC<MenuLogoProps> = ({ onClick }) => {
   return (
-    <LinkStyled href="">
+    <LinkStyled href="" onClick={onClick }>
       <Image src="/images/logos/SavvyLawnsLogo.png" alt="logo" height={90} width={174}  priority />
     </LinkStyled>
   );
 };
 
-export default Logo;
+export default MenuLogo;

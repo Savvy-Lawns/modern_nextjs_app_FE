@@ -3,21 +3,25 @@ import { styled, Container, Box } from "@mui/material";
 import React, { useState } from "react";
 import Header from "@/app/(DashboardLayout)/layout/header/Header";
 import Sidebar from "@/app/(DashboardLayout)/layout/sidebar/Sidebar";
+import { baselightTheme } from "@/utils/theme/DefaultColors";
 
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
   minHeight: "100vh",
   width: "100%",
+  backgroundColor: baselightTheme.palette.primary.light,
 }));
 
 const PageWrapper = styled("div")(() => ({
   display: "flex",
   flexGrow: 1,
-  paddingBottom: "60px",
+  paddingBottom: "0px",
   flexDirection: "column",
+  height: "100%",
+  marginBottom: "5px",
   zIndex: 1,
-  backgroundColor: "transparent",
+  backgroundColor: baselightTheme.palette.primary.light,
 }));
 
 interface Props {
@@ -56,14 +60,15 @@ export default function RootLayout({
         {/* ------------------------------------------- */}
         <Container
           sx={{
-            paddingTop: "20px",
+            paddingTop: "10px",
             maxWidth: "1200px",
+            backgroundColor: baselightTheme.palette.primary.light,
           }}
         >
           {/* ------------------------------------------- */}
           {/* Page Route */}
           {/* ------------------------------------------- */}
-          <Box sx={{ minHeight: "calc(100vh - 170px)" }}>{children}</Box>
+          <Box sx={{ minHeight: "calc(100vh - 150px)" }}>{children}</Box>
           {/* ------------------------------------------- */}
           {/* End Page */}
           {/* ------------------------------------------- */}

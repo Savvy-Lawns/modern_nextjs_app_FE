@@ -1,5 +1,6 @@
 import React from "react";
-import { Card, CardContent, Typography, Stack, Box } from "@mui/material";
+import { Card, CardContent, Typography, Stack, Box,  } from "@mui/material";
+import { baselightTheme } from "@/utils/theme/DefaultColors";
 
 type Props = {
   title?: string;
@@ -25,7 +26,7 @@ const DashboardCard = ({
   middlecontent,
 }: Props) => {
   return (
-    <Card sx={{ padding: 0 }} elevation={9} variant={undefined}>
+    <Card sx={[styles.Card]} elevation={1} variant={undefined}>
       {cardheading ? (
         <CardContent>
           <Typography variant="h5">{headtitle}</Typography>
@@ -34,16 +35,16 @@ const DashboardCard = ({
           </Typography>
         </CardContent>
       ) : (
-        <CardContent sx={{ p: "30px" }}>
+        <CardContent sx={{ px: "8px", py:"15px" }}>
           {title ? (
             <Stack
               direction="row"
-              spacing={2}
-              justifyContent="space-between"
-              alignItems={"center"}
-              mb={3}
+              spacing={0}
+              justifyContent="center"
+              alignItems={["center"]}
+              mb={1}
             >
-              <Box>
+              <Box style={styles.titleBox}>
                 {title ? <Typography variant="h5">{title}</Typography> : ""}
 
                 {subtitle ? (
@@ -69,3 +70,19 @@ const DashboardCard = ({
 };
 
 export default DashboardCard;
+
+const styles = {
+ 
+  Card: {
+   marginBottom:"20px",
+  paddingBottom:"35px",
+  borderRadius: "25px",
+  backgroundColor: '#fff', 
+  boxShadow: "inset 0px -6px 5px 1px rgba(0,0,0,0.75), 0px 7px 10px 1px rgba(0,0,0,0.75)",
+  
+  border: "1px solid #000",
+  },
+  titleBox: {
+    marginBottom: "10px",
+  },
+};

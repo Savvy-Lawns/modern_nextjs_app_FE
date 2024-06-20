@@ -4,6 +4,7 @@ import Link from "next/link";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
 import AuthRegister from "../auth/AuthRegister";
+import { baselightTheme } from "@/utils/theme/DefaultColors";
 
 const Register2 = () => (
   <PageContainer title="Register" description="this is Register page">
@@ -12,8 +13,8 @@ const Register2 = () => (
         position: "relative",
         "&:before": {
           content: '""',
-          background: "radial-gradient(#d2f1df, #D5ECDC, #9FC499)",
-          backgroundSize: "100% 100%",
+          backgroundColor: baselightTheme.palette.primary.light,
+          
           animation: "gradient 15s ease infinite",
           position: "relative",
           height: "100%",

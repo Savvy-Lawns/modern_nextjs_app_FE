@@ -2,42 +2,29 @@
 import { Grid, Box } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 // components
-import SalesOverview from '@/app/(DashboardLayout)/components/dashboard/SalesOverview';
+import NextRoute from '@/app/(DashboardLayout)/components/dashboard/Shift';
 import YearlyBreakup from '@/app/(DashboardLayout)/components/dashboard/YearlyBreakup';
 import RecentTransactions from '@/app/(DashboardLayout)/components/dashboard/RecentTransactions';
 import ProductPerformance from '@/app/(DashboardLayout)/components/dashboard/ProductPerformance';
 import Blog from '@/app/(DashboardLayout)/components/dashboard/Blog';
 import MonthlyEarnings from '@/app/(DashboardLayout)/components/dashboard/MonthlyEarnings';
+import { baselightTheme } from '@/utils/theme/DefaultColors';
 
 const Dashboard = () => {
   return (
     <PageContainer title="Dashboard" description="this is Dashboard">
-      <Box>
-        <Grid container spacing={3}>
+      <div style={{backgroundColor: baselightTheme.palette.primary.light}}>
+        <Grid container spacing={1}>
           <Grid item xs={12} lg={8}>
-            <SalesOverview />
+            <NextRoute  />
           </Grid>
-          <Grid item xs={12} lg={4}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <YearlyBreakup />
-              </Grid>
-              <Grid item xs={12}>
-                <MonthlyEarnings />
-              </Grid>
-            </Grid>
+          
+          
+          
+           
           </Grid>
-          <Grid item xs={12} lg={4}>
-            <RecentTransactions />
-          </Grid>
-          <Grid item xs={12} lg={8}>
-            <ProductPerformance />
-          </Grid>
-          <Grid item xs={12}>
-            <Blog />
-          </Grid>
-        </Grid>
-      </Box>
+          </div>
+      
     </PageContainer>
   )
 }

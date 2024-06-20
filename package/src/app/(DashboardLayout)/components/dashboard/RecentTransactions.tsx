@@ -11,11 +11,13 @@ import {
   timelineOppositeContentClasses,
 } from '@mui/lab';
 import { Link, Typography } from '@mui/material';
+import SimpleAccordion from './SimpleAccordion';
+import { baselightTheme } from '@/utils/theme/DefaultColors';
 
 const RecentTransactions = () => {
   return (
-    <DashboardCard title="Recent Transactions">
-      <>
+    
+      
         <Timeline
           className="theme-timeline"
           nonce={undefined}
@@ -26,7 +28,7 @@ const RecentTransactions = () => {
             mb: '-40px',
             '& .MuiTimelineConnector-root': {
               width: '1px',
-              backgroundColor: '#efefef'
+              backgroundColor: baselightTheme.palette.divider
             },
             [`& .${timelineOppositeContentClasses.root}`]: {
               flex: 0.5,
@@ -34,68 +36,208 @@ const RecentTransactions = () => {
             },
           }}
         >
-          <TimelineItem>
-            <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
+          
+            <SimpleAccordion 
+            title={
+            <TimelineItem>
+              <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
             <TimelineSeparator>
               <TimelineDot color="primary" variant="outlined" />
               <TimelineConnector />
             </TimelineSeparator>
-            <TimelineContent>Payment received from John Doe of $385.90</TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>10:00 am</TimelineOppositeContent>
+            <TimelineContent fontWeight="600">Johnson Residence <br/><Typography variant='body2' >Estimated Duration:</Typography><Typography variant='body2' >3.5 hours</Typography></TimelineContent>
+            
+            
+          </TimelineItem>} 
+           address={
+            <div>
+             <Typography variant='body1'>Address:</Typography>
+             <Typography variant='body2'>12th Street</Typography>
+             <Typography variant='body2'>New York, USA</Typography>
+
+             </div>
+         }
+            
+          contact={
+            <div>
+            <Typography variant='body1'>Contact:</Typography>
+            <Typography variant='body2'>Joe Johnson</Typography>
+            <Typography variant='body2'>+1 234 567 890</Typography>
+            </div>
+          }
+           
+           services={<div>
+            <Typography variant='body1'>Services:</Typography>
+            <ul>
+              <li><Typography variant='body2' >Mowing and Trimming</Typography></li>
+              <li><Typography variant='body2' >Pet Pickup</Typography></li>
+              <li><Typography variant='body2' >Hedge Trimming</Typography></li>
+            </ul>
+            
+           </div>}
+          />
+            
+          
+            <SimpleAccordion 
+            title={
+            <TimelineItem>
+              <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
             <TimelineSeparator>
-              <TimelineDot color="secondary" variant="outlined" />
+              <TimelineDot color="primary" variant="outlined" />
               <TimelineConnector />
             </TimelineSeparator>
-            <TimelineContent>
-              <Typography fontWeight="600">New sale recorded</Typography>{' '}
-              <Link href="/" underline="none">
-                #ML-3467
-              </Link>
-            </TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>12:00 am</TimelineOppositeContent>
+            <TimelineContent fontWeight="600">Johnson Residence <br/><Typography variant='body2' >Estimated Duration:</Typography><Typography variant='body2' >3.5 hours</Typography></TimelineContent>
+            
+            
+          </TimelineItem>} 
+           address={
+            <div>
+             <Typography variant='body1'>Address:</Typography>
+             <Typography variant='body2'>12th Street</Typography>
+             <Typography variant='body2'>New York, USA</Typography>
+
+             </div>
+         }
+            
+          contact={
+            <div>
+            <Typography variant='body1'>Contact:</Typography>
+            <Typography variant='body2'>Joe Johnson</Typography>
+            <Typography variant='body2'>+1 234 567 890</Typography>
+            </div>
+          }
+           
+           services={<div>
+            <Typography variant='body1'>Services:</Typography>
+            <ul>
+              <li><Typography variant='body2' >Mowing and Trimming</Typography></li>
+              <li><Typography variant='body2' >Pet Pickup</Typography></li>
+              <li><Typography variant='body2' >Hedge Trimming</Typography></li>
+            </ul>
+            
+           </div>}
+          />
+          <SimpleAccordion 
+            title={
+            <TimelineItem>
+              <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
             <TimelineSeparator>
-              <TimelineDot color="success" variant="outlined" />
+              <TimelineDot color="primary" variant="outlined" />
               <TimelineConnector />
             </TimelineSeparator>
-            <TimelineContent>Payment was made of $64.95 to Michael</TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
+            <TimelineContent fontWeight="600">Johnson Residence <br/><Typography variant='body2' >Estimated Duration:</Typography><Typography variant='body2' >3.5 hours</Typography></TimelineContent>
+            
+            
+          </TimelineItem>} 
+           address={
+            <div>
+             <Typography variant='body1'>Address:</Typography>
+             <Typography variant='body2'>12th Street</Typography>
+             <Typography variant='body2'>New York, USA</Typography>
+
+             </div>
+         }
+            
+          contact={
+            <div>
+            <Typography variant='body1'>Contact:</Typography>
+            <Typography variant='body2'>Joe Johnson</Typography>
+            <Typography variant='body2'>+1 234 567 890</Typography>
+            </div>
+          }
+           
+           services={<div>
+            <Typography variant='body1'>Services:</Typography>
+            <ul>
+              <li><Typography variant='body2' >Mowing and Trimming</Typography></li>
+              <li><Typography variant='body2' >Pet Pickup</Typography></li>
+              <li><Typography variant='body2' >Hedge Trimming</Typography></li>
+            </ul>
+            
+           </div>}
+          />
+          <SimpleAccordion 
+            title={
+            <TimelineItem>
+              <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
             <TimelineSeparator>
-              <TimelineDot color="warning" variant="outlined" />
+              <TimelineDot color="primary" variant="outlined" />
               <TimelineConnector />
             </TimelineSeparator>
-            <TimelineContent>
-              <Typography fontWeight="600">New sale recorded</Typography>{' '}
-              <Link href="/" underline="none">
-                #ML-3467
-              </Link>
-            </TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
+            <TimelineContent fontWeight="600">Johnson Residence <br/><Typography variant='body2' >Estimated Duration:</Typography><Typography variant='body2' >3.5 hours</Typography></TimelineContent>
+            
+            
+          </TimelineItem>} 
+           address={
+            <div>
+             <Typography variant='body1'>Address:</Typography>
+             <Typography variant='body2'>12th Street</Typography>
+             <Typography variant='body2'>New York, USA</Typography>
+
+             </div>
+         }
+            
+          contact={
+            <div>
+            <Typography variant='body1'>Contact:</Typography>
+            <Typography variant='body2'>Joe Johnson</Typography>
+            <Typography variant='body2'>+1 234 567 890</Typography>
+            </div>
+          }
+           
+           services={<div>
+            <Typography variant='body1'>Services:</Typography>
+            <ul>
+              <li><Typography variant='body2' >Mowing and Trimming</Typography></li>
+              <li><Typography variant='body2' >Pet Pickup</Typography></li>
+              <li><Typography variant='body2' >Hedge Trimming</Typography></li>
+            </ul>
+            
+           </div>}
+          />
+         <SimpleAccordion 
+            title={
+            <TimelineItem>
+              <TimelineOppositeContent>09:30 am</TimelineOppositeContent>
             <TimelineSeparator>
-              <TimelineDot color="error" variant="outlined" />
+              <TimelineDot color="primary" variant="outlined" />
               <TimelineConnector />
             </TimelineSeparator>
-            <TimelineContent>
-              <Typography fontWeight="600">New arrival recorded</Typography>
-            </TimelineContent>
-          </TimelineItem>
-          <TimelineItem>
-            <TimelineOppositeContent>12:00 am</TimelineOppositeContent>
-            <TimelineSeparator>
-              <TimelineDot color="success" variant="outlined" />
-            </TimelineSeparator>
-            <TimelineContent>Payment Received</TimelineContent>
-          </TimelineItem>
+            <TimelineContent fontWeight="600">Johnson Residence <br/><Typography variant='body2' >Estimated Duration:</Typography><Typography variant='body2' >3.5 hours</Typography></TimelineContent>
+            
+            
+          </TimelineItem>} 
+           address={
+            <div>
+             <Typography variant='body1'>Address:</Typography>
+             <Typography variant='body2'>12th Street</Typography>
+             <Typography variant='body2'>New York, USA</Typography>
+
+             </div>
+         }
+            
+          contact={
+            <div>
+            <Typography variant='body1'>Contact:</Typography>
+            <Typography variant='body2'>Joe Johnson</Typography>
+            <Typography variant='body2'>+1 234 567 890</Typography>
+            </div>
+          }
+           
+           services={<div>
+            <Typography variant='body1'>Services:</Typography>
+            <ul>
+              <li><Typography variant='body2' >Mowing and Trimming</Typography></li>
+              <li><Typography variant='body2' >Pet Pickup</Typography></li>
+              <li><Typography variant='body2' >Hedge Trimming</Typography></li>
+            </ul>
+            
+           </div>}
+          />
+         
         </Timeline>
-      </>
-    </DashboardCard>
+      
+    
   );
 };
 

@@ -1,7 +1,12 @@
 import { useMediaQuery, Box, Drawer } from "@mui/material";
-import Logo from "../shared/logo/Logo";
+import MenuLogo from "../shared/logo/menuLogo";
 import SidebarItems from "./SidebarItems";
 import { Upgrade } from "./Updrade";
+import {baselightTheme} from "@/utils/theme/DefaultColors";
+import {
+  IconChevronUp,
+ 
+} from "@tabler/icons-react";
 
 interface ItemType {
   isMobileSidebarOpen: boolean;
@@ -16,27 +21,29 @@ const Sidebar = ({
 }: ItemType) => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
 
-  const sidebarWidth = "270px";
+  const sidebarWidth = "97%";
 
   if (lgUp) {
     return (
       <Box
         sx={{
           width: sidebarWidth,
-          flexShrink: 0,
+          flexGrow: 2,
+          backgroundColor: baselightTheme.palette.primary.light,
         }}
       >
         {/* ------------------------------------------- */}
         {/* Sidebar for desktop */}
         {/* ------------------------------------------- */}
         <Drawer
-          anchor="left"
+          anchor="top"
           open={isSidebarOpen}
           variant="permanent"
           PaperProps={{
             sx: {
               width: sidebarWidth,
               boxSizing: "border-box",
+              backgroundColor: baselightTheme.palette.primary.light,
             },
           }}
         >
@@ -51,8 +58,8 @@ const Sidebar = ({
             {/* ------------------------------------------- */}
             {/* Logo */}
             {/* ------------------------------------------- */}
-            <Box px={3}>
-              <Logo />
+            <Box px={3} >
+            <MenuLogo onClick={onSidebarClose} />
             </Box>
             <Box>
               {/* ------------------------------------------- */}
@@ -69,7 +76,7 @@ const Sidebar = ({
 
   return (
     <Drawer
-      anchor="left"
+      anchor="top"
       open={isMobileSidebarOpen}
       onClose={onSidebarClose}
       variant="temporary"
@@ -77,6 +84,8 @@ const Sidebar = ({
         sx: {
           width: sidebarWidth,
           boxShadow: (theme) => theme.shadows[8],
+          borderRadius: "0px 0px 45px 45px",
+          paddingBottom: 1,
         },
       }}
     >
@@ -84,13 +93,16 @@ const Sidebar = ({
       {/* Logo */}
       {/* ------------------------------------------- */}
       <Box px={2}>
-        <Logo />
+        <MenuLogo onClick={onSidebarClose} />
       </Box>
       {/* ------------------------------------------- */}
       {/* Sidebar For Mobile */}
       {/* ------------------------------------------- */}
       <SidebarItems />
-      <Upgrade />
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+
+      <IconChevronUp onClick={onSidebarClose}  />
+      </div>
     </Drawer>
   );
 };

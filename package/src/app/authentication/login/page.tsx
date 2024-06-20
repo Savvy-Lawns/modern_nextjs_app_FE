@@ -5,6 +5,7 @@ import { Grid, Box, Card, Stack, Typography } from "@mui/material";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
 import AuthLogin from "../auth/AuthLogin";
+import { baselightTheme } from "@/utils/theme/DefaultColors";
 
 const Login2 = () => {
   return (
@@ -14,13 +15,13 @@ const Login2 = () => {
           position: "relative",
           "&:before": {
             content: '""',
-            background: "radial-gradient(#d2f1df, #D5ECDC, #9FC499)",
-            backgroundSize: "100% 100%",
+            backgroundColor: baselightTheme.palette.primary.light,
+            
             animation: "gradient 15s ease infinite",
-            position: "relative",
+            
             height: "100%",
             width: "100%",
-            opacity: "0.2",
+            
           },
         }}
       ><Logo />

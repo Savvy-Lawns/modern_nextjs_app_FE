@@ -4,6 +4,7 @@ import Link from "next/link";
 import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
 import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
 import AuthForgot from "../auth/AuthForgot";
+import { baselightTheme } from "@/utils/theme/DefaultColors";
 
 const ForgotPassword = () => (
   <PageContainer title="Forgot" description="this is Forgot password page">
@@ -12,13 +13,13 @@ const ForgotPassword = () => (
         position: "relative",
         "&:before": {
           content: '""',
-          background: "radial-gradient(#d2f1df, #D5ECDC, #9FC499)",
-          backgroundSize: "100% 100%",
+          backgroundColor: baselightTheme.palette.primary.light,
+          
           animation: "gradient 15s ease infinite",
-          position: "relative",
+          
           height: "100%",
           width: "100%",
-          opacity: "0.2",
+          
         },
       }}
     ><Box style={{}} display="flex" alignItems="center" justifyContent="center">
