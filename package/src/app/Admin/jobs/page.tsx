@@ -11,14 +11,20 @@ import { baselightTheme } from '@/utils/theme/DefaultColors';
 
 
 
-const Navigation = ( ) => {
+const JobsPage = ( ) => {
 
     
 
     return (
 
-        <div></div>
+        <DashboardCard title="Jobs" >
+            
+            
+               
+                
+           
+        </DashboardCard>
     );
 };
 
-export default Navigation;
+export default JobsPage;

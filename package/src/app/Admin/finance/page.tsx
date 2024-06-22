@@ -11,14 +11,20 @@ import { baselightTheme } from '@/utils/theme/DefaultColors';
 
 
 
-const Navigation = ( ) => {
+const Finance = ( ) => {
 
     
 
     return (
 
-        <div></div>
+        <DashboardCard title="Finance" >
+            
+            
+               
+                
+           
+        </DashboardCard>
     );
 };
 
-export default Navigation;
+export default Finance;

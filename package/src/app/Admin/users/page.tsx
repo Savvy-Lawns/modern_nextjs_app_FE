@@ -6,19 +6,26 @@ import { useTheme } from '@mui/material/styles';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dynamic from "next/dynamic";
 import { baselightTheme } from '@/utils/theme/DefaultColors';
+import UsersPage from '../components/userspage';
 
 
 
 
 
-const Navigation = ( ) => {
+const Users = ( ) => {
 
     
 
     return (
 
-        <div></div>
+        <DashboardCard title="Users" >
+            
+            
+               <UsersPage />
+                
+           
+        </DashboardCard>
     );
 };
 
-export default Navigation;
+export default Users;
