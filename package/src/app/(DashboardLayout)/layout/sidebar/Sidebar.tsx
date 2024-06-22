@@ -1,7 +1,6 @@
 import { useMediaQuery, Box, Drawer } from "@mui/material";
 import MenuLogo from "../shared/logo/menuLogo";
 import SidebarItems from "./SidebarItems";
-import { Upgrade } from "./Updrade";
 import {baselightTheme} from "@/utils/theme/DefaultColors";
 import {
   IconChevronUp,
@@ -18,6 +17,7 @@ const Sidebar = ({
   isMobileSidebarOpen,
   onSidebarClose,
   isSidebarOpen,
+  
 }: ItemType) => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
 
@@ -66,7 +66,7 @@ const Sidebar = ({
               {/* Sidebar Items */}
               {/* ------------------------------------------- */}
               <SidebarItems />
-              <Upgrade />
+              
             </Box>
           </Box>
         </Drawer>

@@ -126,12 +126,7 @@ const appsLink = [
     subtext: 'Account settings',
     avatar: ddIcon6
   },
-  {
-    href: '/apps/email',
-    title: 'Email App',
-    subtext: 'To-do and Daily tasks',
-    avatar: ddIcon7
-  },
+  
   {
     href: '/',
     title: 'Kanban Application',
@@ -141,10 +136,7 @@ const appsLink = [
 ]
 
 const pageLinks = [
-  {
-    href: '/pricing',
-    title: 'Pricing Page'
-  },
+  
   {
     href: '/auth/login',
     title: 'Authentication Design'
@@ -161,21 +153,88 @@ const pageLinks = [
     href: '/404',
     title: '404 Error Page'
   },
-  {
-    href: '/apps/notes',
-    title: 'Notes App'
-  },
+  
   {
     href: '/user-profile',
     title: 'User Application'
   },
+
+  
   {
-    href: '/apps/blog/posts',
-    title: 'Blog Design'
+    href: '/Admin',
+    title: 'Admin Navigation'
   },
   {
-    href: '/apps/ecommerce/eco-checkout',
-    title: 'Shopping Cart'
+    href: '/Admin/jobs',
+    title: 'Admin Jobs'
+  },
+  {
+    href: '/Admin/services',
+    title: 'Admin Services'
+  },
+  {
+    href: '/Admin/materials',
+    title: 'Admin Materials'
+  },
+  {
+    href: '/Admin/customers',
+    title: 'Admin Customers'
+  },
+  {
+    href: '/Admin/users',
+    title: 'Admin Users'
+  },
+  {
+    href: '/Admin/finance',
+    title: 'Admin Finance'
+  },
+  {
+    href: '/Admin/editUser',
+    title: 'Edit User'
+  },
+  {
+    href: '/Admin/addUser',
+    title: 'Add User'
+  },
+  {
+    href: '/Admin/addJob',
+    title: 'Add Job'
+  },
+  {
+    href: '/Admin/addService',
+    title: 'Add Service'
+  },
+  {
+    href: '/Admin/addMaterial',
+    title: 'Add Material'
+  },
+  {
+    href: '/Admin/addCustomer',
+    title: 'Add Customer'
+  },
+  {
+    href: '/Admin/addFinance',
+    title: 'Add Finance'
+  },
+  {
+    href: '/Admin/editJob',
+    title: 'Edit Job'
+  },
+  {
+    href: '/Admin/editService',
+    title: 'Edit Service'
+  },
+  {
+    href: '/Admin/editMaterial',
+    title: 'Edit Material'
+  },
+  {
+    href: '/Admin/editCustomer',
+    title: 'Edit Customer'
+  },
+  {
+    href: '/Admin/editFinance',
+    title: 'Edit Finance',
   },
 ]
 
