@@ -9,7 +9,7 @@ import {
 
 interface ItemType {
   isMobileSidebarOpen: boolean;
-  onSidebarClose: (event: React.MouseEvent<HTMLElement>) => void;
+  onSidebarClose: React.MouseEventHandler; // Updated to be more generic
   isSidebarOpen: boolean;
 }
 

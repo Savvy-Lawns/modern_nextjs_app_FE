@@ -5,6 +5,14 @@ import { Box, List } from "@mui/material";
 import NavItem from "./NavItem";
 import NavGroup from "./NavGroup/NavGroup";
 
+interface MenuItem {
+  id: string;
+  title: string;
+  icon: (props: any) => JSX.Element; // Assuming TablerIconsProps type is defined elsewhere
+  href: string;
+  subheader?: string; // Optional property
+}
+
 const SidebarItems = ({ toggleMobileSidebar }: any) => {
   const pathname = usePathname();
   const pathDirect = pathname;
