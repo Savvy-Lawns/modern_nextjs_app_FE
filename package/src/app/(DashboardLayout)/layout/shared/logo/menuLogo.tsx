@@ -21,7 +21,7 @@ const LinkStyled = styled(Link)(() => ({
 
 // MenuLogo.tsx
 interface MenuLogoProps {
-    onClick: () => void;
+  onClick: (event: React.MouseEvent<HTMLElement>) => void;
   }
 
 const MenuLogo:React.FC<MenuLogoProps> = ({ onClick }) => {
