@@ -26,7 +26,7 @@ interface MenuLogoProps {
 
 const MenuLogo:React.FC<MenuLogoProps> = ({ onClick }) => {
   return (
-    <LinkStyled href="" onClick={onClick }>
+    <LinkStyled href="" onClick={onClick}>
       <Image src="/images/logos/SavvyLawnsLogo.png" alt="logo" height={90} width={174}  priority />
     </LinkStyled>
   );
