@@ -1,12 +1,11 @@
 "use client";
-import React, {  createContext, useContext, useState,Children, useHistory } from 'react';
+import React, {  createContext, useContext, useState,Children } from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
-
 import { nth } from 'lodash';
 import { BorderBottom, Padding } from '@mui/icons-material';
 import { Button, colors } from '@mui/material';
@@ -25,7 +24,7 @@ type Props = {
     hours?: JSX.Element;
   };
 
-  var SelectedUser= "";
+  const SelectedUser = () => {};
   const UserAccordion = ({
     userId,
     name,
@@ -89,7 +88,7 @@ type Props = {
               sx={styles.jobbuttons}
               color="secondary"
               variant="outlined"
-              onClick={() => updateActiveSelection(user.userId)}
+              onClick={() => null}
               href='/Admin/editUser' // Pass the current user to handleOpen
             >
               Edit

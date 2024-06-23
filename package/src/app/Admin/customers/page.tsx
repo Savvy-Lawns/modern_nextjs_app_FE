@@ -7,22 +7,11 @@ import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCa
 import dynamic from "next/dynamic";
 import { baselightTheme } from '@/utils/theme/DefaultColors';
 
-
-
-
-
-const Customers = ( ) => {
-
-    
-
+const Customers = () => {
     return (
-
-        <DashboardCard title="Customers" >
-            
-            
-               
-                
-           
+        <DashboardCard title="Customers">
+            {/* Added a child element to satisfy the expected 'children' prop */}
+            <div>Customer content goes here</div>
         </DashboardCard>
     );
 };

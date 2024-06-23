@@ -9,7 +9,7 @@ import {
 
 interface ItemType {
   isMobileSidebarOpen: boolean;
-  onSidebarClose: React.MouseEventHandler; // Updated to be more generic
+  onSidebarClose: (event: React.MouseEvent<HTMLElement | SVGSVGElement>) => void;
   isSidebarOpen: boolean;
 }
 
@@ -101,8 +101,7 @@ const Sidebar = ({
       <SidebarItems />
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
 
-      <IconChevronUp onClick={onSidebarClose}  />
-      </div>
+      <IconChevronUp onClick={(event: React.MouseEvent<SVGSVGElement, MouseEvent>) => onSidebarClose(event)} />      </div>
     </Drawer>
   );
 };
