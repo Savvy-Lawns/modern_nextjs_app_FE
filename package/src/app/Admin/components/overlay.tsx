@@ -162,9 +162,9 @@ const Styles = {
 },
 sidebyside: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'row' as const, // Fix applied here
     justifyContent: 'space-evenly',
-    textAlign: 'center',
+    
 },
 jobbuttons: {
     marginTop: '10px',

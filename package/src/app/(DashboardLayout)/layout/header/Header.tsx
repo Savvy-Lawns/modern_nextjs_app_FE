@@ -37,8 +37,7 @@ const Header = ({toggleMobileSidebar}: {toggleMobileSidebar: (event: React.Mouse
   return (
     <AppBarStyled position="sticky" color="default">
       <ToolbarStyled>
-        <MenuLogo onClick={toggleMobileSidebar} />
-        
+      <MenuLogo onClick={(event) => toggleMobileSidebar(event)} />        
 
 
         

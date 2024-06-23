@@ -7,6 +7,15 @@ import { Box, List } from "@mui/material";
 
 import AdminItems from "./items";
 import ItemGroup from "./itemgroup";
+import { TablerIconsProps } from "@tabler/icons-react";
+
+interface MenuItem {
+    id: string;
+    title: string;
+    icon: (props: TablerIconsProps) => JSX.Element;
+    href: string;
+    subheader?: string; // Correctly added optional subheader property
+  }
 
 const AdminNavBarItems = ({ toggleMobileSidebar }: any) => {
   const pathname = usePathname();
@@ -15,7 +24,7 @@ const AdminNavBarItems = ({ toggleMobileSidebar }: any) => {
   return (
     <Box sx={{ px: 3 }}>
       <List sx={{ pt: 0 }} className="sidebarNav" component="div">
-        {Menuitems.map((item) => {
+        {Menuitems.map((item: MenuItem) => {
           // {/********SubHeader**********/}
           if (item.subheader) {
             return <ItemGroup item={item} key={item.subheader} />;
@@ -37,4 +46,5 @@ const AdminNavBarItems = ({ toggleMobileSidebar }: any) => {
     </Box>
   );
 };
+
 export default AdminNavBarItems;
