@@ -13,15 +13,17 @@ import { text } from 'stream/consumers';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
 import EditOverlay from '@/app/Admin/components/overlay';
 import {  Users, active } from '@/app/Admin/users/users';
+import EditForm from './edit';
+import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
 
 type Props = {
   userId?: number;
-    name?: JSX.Element;
-    phone?: JSX.Element;
-    email?: JSX.Element;
-    acctType?: JSX.Element;
-    mileage?: JSX.Element;
-    hours?: JSX.Element;
+    name?: string;
+    phone?: string;
+    email?: string;
+    acctType?: number;
+    mileage?: number;
+    hours?: number;
   };
 
   const SelectedUser = () => {};
@@ -36,9 +38,9 @@ type Props = {
   }: Props) => {
     
    
-
     const [open, setOpen] = useState(false);
-    
+    const [searchQuery, setSearchQuery] = useState('');
+
     
 
   const handleOpen = (user:typeof  Users) => {
@@ -47,9 +49,26 @@ type Props = {
   };
   const handleClose = () => setOpen(false);
 
+   const filteredUsers = Users.filter((user) =>
+    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.phone.includes(searchQuery)
+  );
+
   return (
     <div>
-      {Users.map((user) => (
+      <CustomTextField
+        type="search"
+        variant="outlined"
+        fullWidth
+        label="Search"
+        mb='10'
+        style={{ marginBottom: '20px' }}
+        onChange={(e) => setSearchQuery(e.target.value)} // Update search query on input change
+      />
+
+  
+      {filteredUsers.map((user) => (
         <Accordion key={user.userId}>
           <AccordionSummary
             style={styles.AccordionSummaryStyle}
@@ -84,15 +103,7 @@ type Props = {
             
             </Typography>
             <div style={styles.sidebyside}>
-            <Button
-              sx={styles.jobbuttons}
-              color="secondary"
-              variant="outlined"
-              onClick={() => null}
-              href='/Admin/editUser' // Pass the current user to handleOpen
-            >
-              Edit
-            </Button>
+            <EditForm title={`Edit User ${user.name}`} name={user.name} phone={user.phone} email={user.email} acctType={user.acctType} mileage={user.mileage} hours={user.hours}/>
             </div>
           </AccordionDetails>
         </Accordion>
@@ -106,7 +117,7 @@ type Props = {
 }
 
 export default UserAccordion;
-
+console.log(Object.keys(UserAccordion))
 export const activeSelection = SelectedUser
 
 const styles: {

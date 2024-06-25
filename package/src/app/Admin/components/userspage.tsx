@@ -23,7 +23,7 @@ const UsersPage = () => {
       
         <div>
             <div style={Styles.searchField}>
-                    <CustomTextField type="search" variant="outlined" fullWidth label="Search" mb='10' />
+                   
 
             </div>
             <div >
