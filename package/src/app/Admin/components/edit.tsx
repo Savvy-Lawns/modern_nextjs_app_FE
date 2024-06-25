@@ -11,6 +11,12 @@ import { baselightTheme } from '@/utils/theme/DefaultColors';
 type Props = {
     title?: string;
     userId?: number;
+    name?: string;
+    phone?: string;
+    email?: string;
+    acctType?: number;
+    mileage?: number;
+    hours?: number;
 };
 
 export default function EditForm({ title, userId, ...rest }: Props) {

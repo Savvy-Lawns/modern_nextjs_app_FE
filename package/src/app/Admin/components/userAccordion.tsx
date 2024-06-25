@@ -11,7 +11,6 @@ import { BorderBottom, Padding } from '@mui/icons-material';
 import { Button, colors } from '@mui/material';
 import { text } from 'stream/consumers';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
-import EditOverlay from '@/app/Admin/components/overlay';
 import {  Users, active } from '@/app/Admin/users/users';
 import EditForm from './edit';
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
@@ -64,7 +63,7 @@ type Props = {
         label="Search"
         mb='10'
         style={{ marginBottom: '20px' }}
-        onChange={(e) => setSearchQuery(e.target.value)} // Update search query on input change
+        onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setSearchQuery(e.target.value)} // Update search query on input change
       />
 
   
