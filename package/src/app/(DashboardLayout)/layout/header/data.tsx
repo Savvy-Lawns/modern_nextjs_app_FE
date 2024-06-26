@@ -188,10 +188,7 @@ const pageLinks = [
     href: '/Admin/finance',
     title: 'Admin Finance'
   },
-  {
-    href: '/Admin/editUser',
-    title: 'Edit User'
-  },
+ 
   {
     href: '/Admin/addUser',
     title: 'Add User'

@@ -3,7 +3,7 @@ import { Card, CardContent, Typography, Stack, Box,  } from "@mui/material";
 import { baselightTheme } from "@/utils/theme/DefaultColors";
 
 type Props = {
-  title?: string;
+  title?: string | JSX.Element;
   subtitle?: string;
   action?: JSX.Element | any;
   footer?: JSX.Element;
