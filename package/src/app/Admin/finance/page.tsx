@@ -6,8 +6,8 @@ import { useTheme } from '@mui/material/styles';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dynamic from "next/dynamic";
 import { baselightTheme } from '@/utils/theme/DefaultColors';
-import EditOverlay from '../components/overlay';
 import { active, Users } from '@/app/Admin/users/users';
+import { ArrowBack, Refresh } from '@mui/icons-material';
 
 
 
@@ -22,10 +22,9 @@ const Finance = ( ) => {
    
     return (
 
-        <DashboardCard title="Edit User" >
+        <DashboardCard title={<div style={{display:'flex', justifyContent:'center'}}><a href="/Admin"><ArrowBack style={{paddingTop: '5px', position: "absolute", left: 35,}} /></a> Finance<a href='/Admin/finance'><Refresh style={{paddingTop:'5px', position: "absolute", right: 35}} /> </a></div>} >
             
             
-              <EditOverlay  /> 
                 
            
         </DashboardCard>

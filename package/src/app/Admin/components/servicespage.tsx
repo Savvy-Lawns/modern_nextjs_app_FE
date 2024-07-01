@@ -12,19 +12,19 @@ import {
   timelineOppositeContentClasses,
 } from '@mui/lab';
 import { Link, Typography } from '@mui/material';
-import UserAccordion from './userAccordion';
+import ServicesAccordion from './servicesAccordion';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
 import { Margin, Padding } from '@mui/icons-material';
 
-const UsersPage = () => {
+const ServicessPage = () => {
   return (
     
       
         <div>
             
             <div >
-            <UserAccordion />
+            <ServicesAccordion  />
             
             
             
@@ -38,5 +38,5 @@ const UsersPage = () => {
   );
 };
 
-export default UsersPage;
+export default ServicessPage;
 

@@ -15,9 +15,9 @@ import {
   
     {
       id: uniqueId(),
-      title: "Jobs",
+      title: "Events",
       icon: IconTrees,
-      href: "/Admin/jobs",
+      href: "/Admin/events",
     },
    
     {
@@ -26,12 +26,7 @@ import {
       icon: IconChecklist,
       href: "/Admin/services",
     },
-    {
-      id: uniqueId(),
-      title: "Materials",
-      icon: IconShovel,
-      href: "/Admin/materials",
-    }, 
+    
     {
       id: uniqueId(),
       title: "Customers",

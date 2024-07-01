@@ -1,9 +1,7 @@
 "use-client"
 import { min } from "lodash";
 
-export const active = {
-    selection: ''
-};
+
 
 const Users = [
     {

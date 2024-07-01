@@ -90,18 +90,8 @@ const profile = [
 // apps dropdown
 
 const appsLink = [
-  {
-    href: '/apps/chats',
-    title: 'Chat Application',
-    subtext: 'Messages & Emails',
-    avatar: ddIcon1
-  },
-  {
-    href: '/apps/ecommerce/shop',
-    title: 'eCommerce App',
-    subtext: 'Messages & Emails',
-    avatar: ddIcon2
-  },
+ 
+  
   {
     href: '/',
     title: 'Invoice App',
@@ -165,17 +155,14 @@ const pageLinks = [
     title: 'Admin Navigation'
   },
   {
-    href: '/Admin/jobs',
-    title: 'Admin Jobs'
+    href: '/Admin/events',
+    title: 'Admin Events'
   },
   {
     href: '/Admin/services',
     title: 'Admin Services'
   },
-  {
-    href: '/Admin/materials',
-    title: 'Admin Materials'
-  },
+
   {
     href: '/Admin/customers',
     title: 'Admin Customers'

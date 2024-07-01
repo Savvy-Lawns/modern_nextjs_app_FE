@@ -17,6 +17,63 @@ type Props = {
     acctType?: number;
     mileage?: number;
     hours?: number;
+    measurement?: string;
+    cost?: number;
+    note?: string | Array<{
+      date: string;
+      note: string;
+    }>;
+    type?: number;
+    customerId: string;
+    customerName: string;
+    address: {
+      addressName: string;
+      street1: string;
+      street2: string;
+      city: string;
+      state: string;
+      zip: string;
+    }[];
+    onSiteContact: {
+      name: string;
+      phone: string;
+      email: string;
+    }[];
+    notes: {
+      date: string;
+      note: string;
+    }[];
+    upcomingEvents: {
+      eventId: number;
+      dateService: string;
+      service: string;
+      estimatedPrice: number;
+      status: string;
+      isPaid: boolean;
+      estimatedTime: number;
+      address: {
+        addressName: string;
+        street1: string;
+        street2: string;
+        city: string;
+        state: string;
+        zip: string;
+      };
+      onSiteContact: {
+        name: string;
+        phone: string;
+        email: string;
+      };
+      notes: {
+        date: string;
+        note: string;
+      }[];
+      services: {
+        service: string;
+        estimatedPrice: number;
+      }[];
+    }[];
+
 };
 
 export default function EditForm({ title, userId, ...rest }: Props) {
