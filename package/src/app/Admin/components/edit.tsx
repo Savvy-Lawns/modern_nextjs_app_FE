@@ -7,6 +7,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
+import { IconCirclePlus, IconPencil } from '@tabler/icons-react';
+import { Typography } from '@mui/material';
 
 type Props = {
     title?: string;
@@ -17,66 +19,39 @@ type Props = {
     acctType?: number;
     mileage?: number;
     hours?: number;
-    measurement?: string;
-    cost?: number;
-    note?: string | Array<{
-      date: string;
-      note: string;
-    }>;
-    type?: number;
-    customerId: string;
-    customerName: string;
-    address: {
-      addressName: string;
-      street1: string;
-      street2: string;
-      city: string;
-      state: string;
-      zip: string;
-    }[];
-    onSiteContact: {
-      name: string;
-      phone: string;
-      email: string;
-    }[];
-    notes: {
-      date: string;
-      note: string;
-    }[];
-    upcomingEvents: {
-      eventId: number;
-      dateService: string;
-      service: string;
-      estimatedPrice: number;
-      status: string;
-      isPaid: boolean;
-      estimatedTime: number;
-      address: {
-        addressName: string;
-        street1: string;
-        street2: string;
-        city: string;
-        state: string;
-        zip: string;
-      };
-      onSiteContact: {
-        name: string;
-        phone: string;
-        email: string;
-      };
-      notes: {
-        date: string;
-        note: string;
-      }[];
-      services: {
+    serviceMeasurement?: string;
+    serviceCost?: number;
+    serviceType?: number;
+    
+    customerName?: string;
+    
+    customerNoteDate?: string;
+    customerNote?: string;
+   
+    
+    upcomingEventsId?: number;
+    upcomingEventsDateService?: string;
+    upcomingEventsStatus?: string;
+    upcomingEventsIsPaid?: boolean;
+    upcomingEventsEstimatedTime?: number;
+    upcomingEventsNoteDate?: string;
+    upcomingEventsNote?: string;
+    upcomingEventsServices?: {
         service: string;
         estimatedPrice: number;
-      }[];
     }[];
+    
+   
+      
+    address?: string;
+   
+     
+    
 
+    buttonType: number;
 };
 
-export default function EditForm({ title, userId, ...rest }: Props) {
+export default function EditForm({ title, buttonType,  ...rest }: Props) {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
@@ -92,7 +67,10 @@ export default function EditForm({ title, userId, ...rest }: Props) {
 
     return (
         <React.Fragment>
-            <Button sx={Styles.jobbuttons} color='secondary' variant='outlined' onClick={handleClickOpen}>Edit</Button>
+            {buttonType === 1 && <Button sx={Styles.jobbuttons} color='secondary' variant='outlined' onClick={handleClickOpen}>Edit</Button>}
+{buttonType === 2 && <IconPencil size={20} onClick={handleClickOpen}/>}
+{buttonType === 3 && <div style={{display:'flex'}} onClick={handleClickOpen}><Typography variant='body2'>+ Add New</Typography>
+</div>}
 
             
             <Dialog style={Styles.overlayWindow} open={open} onClose={handleClose}>

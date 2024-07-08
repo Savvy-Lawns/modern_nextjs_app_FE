@@ -11,9 +11,11 @@ import { BorderBottom, Padding } from '@mui/icons-material';
 import { Button, colors } from '@mui/material';
 import { text } from 'stream/consumers';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
-import {  Users, active } from '@/app/Admin/users/users';
+import {  Users } from '@/app/Admin/users/users';
 import EditForm from './edit';
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
+import ViewMileage from './userMileage';
+import ViewHours from './userHours';
 
 type Props = {
   userId?: number;
@@ -21,8 +23,14 @@ type Props = {
     phone?: string;
     email?: string;
     acctType?: number;
-    mileage?: number;
-    hours?: number;
+    mileage?: {
+    miles?: number;
+    created_at?: string;
+    }[];
+    hours?:{
+      total_hours?: number;
+      created_at?: string;
+      }[];
   };
 
   const SelectedUser = () => {};
@@ -91,18 +99,12 @@ type Props = {
             <Typography variant='body1'>Account Type:</Typography>
             <Typography variant='body2'>{user.acctType}</Typography>
             </div>
-            <div>
-            <Typography variant='body1'>Mileage:</Typography>
-            <Typography variant='body2'>{user.mileage?.toString()}</Typography>
-            </div>
-            <div>
-            <Typography variant='body1'>Hours:</Typography>
-            <Typography variant='body2'>{user.hours?.toString()}</Typography>
-            </div>
+            <ViewMileage mileage={user.mileage} />
+            <ViewHours hours={user.hours} />
             
             </Typography>
             <div style={styles.sidebyside}>
-            <EditForm title={`Edit User ${user.name}`} name={user.name} phone={user.phone} email={user.email} acctType={user.acctType} mileage={user.mileage} hours={user.hours}/>
+            <EditForm title={`Edit User ${user.name}`} name={user.name} phone={user.phone} email={user.email} acctType={user.acctType}  buttonType={1}/>
             </div>
           </AccordionDetails>
         </Accordion>

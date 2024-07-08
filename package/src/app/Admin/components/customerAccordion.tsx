@@ -1,5 +1,5 @@
 "use client";
-import React, {  createContext, useContext, useState,Children } from 'react';
+import React, {  createContext, useContext, useState,Children, Key, ReactNode } from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -15,25 +15,18 @@ import EditForm from './edit';
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
 import {Customers as data} from '@/app/Admin/customers/customers';
 import EditIcon from '@mui/icons-material/Edit';
+import ViewNotes from './customerNotes';
+import ViewUpcomingEvents from './customerUpcomingEvents';
 
 type Props = {
     customerId: string;
     customerName: string;
-    address: {
-      addressName: string;
-      street1: string;
-      street2: string;
-      city: string;
-      state: string;
-      zip: string;
-    }[];
-    onSiteContact: {
-      name: string;
+    address: string;
       phone: string;
       email: string;
-    }[];
+    
     notes: {
-      date: string;
+      created_at: string;
       note: string;
     }[];
     upcomingEvents: {
@@ -44,21 +37,10 @@ type Props = {
       status: string;
       isPaid: boolean;
       estimatedTime: number;
-      address: {
-        addressName: string;
-        street1: string;
-        street2: string;
-        city: string;
-        state: string;
-        zip: string;
-      };
-      onSiteContact: {
-        name: string;
-        phone: string;
-        email: string;
-      };
+      address: string;
+    
       notes: {
-        date: string;
+        created_at: string;
         note: string;
       }[];
       services: {
@@ -79,7 +61,8 @@ type Props = {
     customerId,
     customerName,
     address,
-    onSiteContact,
+    phone,
+    email,
     notes,
     upcomingEvents, 
       
@@ -88,8 +71,12 @@ type Props = {
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [visibleNotes, setVisibleNotes] = useState(3); // State to manage visible notes
-
+    const [isEditFormVisible, setIsEditFormVisible] = useState(false);
     
+
+    const toggleEditFormVisibility = () => {
+      setIsEditFormVisible(prevState => !prevState);
+    };
 
     const Customers = data
   const handleOpen = (customer:typeof  Customers) => {
@@ -101,14 +88,17 @@ type Props = {
     setVisibleNotes((prevVisibleNotes) => prevVisibleNotes + 5); // Show 5 more notes on each click
   };
 
-  const filteredCustomers = Customers.filter((customer) => (customerName || "")?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      Object.values(customer.onSiteContact || {}).some(onSiteContact =>
-        (onSiteContact.phone || "").includes(searchQuery) || (onSiteContact.email || "").toLowerCase().includes(searchQuery.toLowerCase())
-      ) ||
-      Object.values(customer.address || {}).some(address =>
-        (address.street1 || "").includes(searchQuery) || address.city.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    );
+  
+
+  const filteredCustomers = (Customers as unknown as {
+    customerId: Key | null | undefined;
+    customerName: ReactNode; eventId: number; dateService: string; services: { service: string; estimatedPrice: number; }[]; status: string; isPaid: boolean; estimatedTime: number; address: string;  phone: string; email: string; notes: { created_at: string; note: string; }[]; 
+}[]).filter((customer) => (customerName || "")?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        
+        Object.values(customer.address || {}).some(address =>
+          (address|| "").includes(searchQuery) )
+        )
+      
 
   function ensureArray<T>(input: T | T[]): T[] {
     if (Array.isArray(input)) {
@@ -117,9 +107,17 @@ type Props = {
     return input ? [input] : [];
   }
 
-    function handleEdit(event: { eventId: number; dateService: string; services: { service: string; estimatedPrice: number; }[]; status: string; isPaid: boolean; estimatedTime: number; address: { addressName: string; street1: string; street2: string; city: string; state: string; zip: string; }; onSiteContact: { name: string; phone: string; email: string; }; notes: { date: string; note: string; }[]; } | { eventId: number; dateService: string; services: { service: string; estimatedPrice: number; }[]; status: string; isPaid: boolean; estimatedTime: number; address: { addressName: string; street1: string; street2: string; city: string; state: string; zip: string; }; onSiteContact: { name: string; phone: string; email: string; }; notes: { date: string; note: string; }[]; }) {
+    function handleEdit(event: { eventId: number; dateService: string; services: { service: string; estimatedPrice: number; }[]; status: string; isPaid: boolean; estimatedTime: number; address: { addressName: string; street1: string; street2: string; city: string; state: string; zip: string; }; onSiteContact: { name: string; phone: string; email: string; }; notes: { created_at: string; note: string; }[]; } | { eventId: number; dateService: string; services: { service: string; estimatedPrice: number; }[]; status: string; isPaid: boolean; estimatedTime: number; address: { addressName: string; street1: string; street2: string; city: string; state: string; zip: string; }; onSiteContact: { name: string; phone: string; email: string; }; notes: { created_at: string; note: string; }[]; }) {
       throw new Error('Function not implemented.');
     }
+
+    const flattenedCustomers = filteredCustomers.map(customer => ({
+      ...customer,
+      address: customer.address,
+      
+      // Assume there's a way to derive or include the 'note' property here
+      note: "Example note" // Placeholder, adjust based on actual data
+    }));
 
   return (
     <div>
@@ -140,7 +138,7 @@ type Props = {
             style={styles.AccordionSummaryStyle}
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
-            id={customer.customerId.toString()}
+            id={customer.customerId?.toString() ?? ''}
           >
             <Typography>{customer.customerName}</Typography>
           </AccordionSummary>
@@ -148,103 +146,27 @@ type Props = {
             <Typography sx={styles.serviceStyle}>
             <div>
             <Typography variant='body1'>Address:</Typography>
-            {customer.address.map((addr, index) => (
-              <div style={{marginLeft:'5px'}} key={index}>
-                <Typography variant='body2'>{addr.addressName}</Typography>
-                <Typography variant='body2'>{addr.street1}, {addr.street2}</Typography>
-                <Typography variant='body2'>{addr.city}, {addr.state} {addr.zip}</Typography>
-              </div>
-            ))}
+            <Typography variant='body2'>{customer.address}</Typography>
             </div>
             <div>
-            <Typography variant='body1' >Contact:</Typography>
-            {(ensureArray(customer.onSiteContact)).map((osc, index) => (
-              <div style={{marginLeft:'5px'}} key={osc.name}>
-                <Typography variant='body2'>{osc.name}</Typography>
-                <Typography variant='body2'>{osc.phone}</Typography>
-                <Typography variant='body2'>{osc.email}</Typography>
-              </div>
-            ))}
+            <div style={{ justifyContent:'space-between', width:"100%"}}><Typography variant='body1' >Phone:
+              </Typography></div>
+            <Typography variant='body2'>{customer.phone}</Typography>
+            <div style={{ justifyContent:'space-between', width:"100%"}}><Typography variant='body1'>Email:</Typography></div>
+            <Typography variant='body2'>{customer.email}</Typography>
             </div>
-            <div>
-                <Typography variant='body1' style={{marginTop:'10px'}}>
-               
-                </Typography>
-            </div>
-            <div>
-                <Typography variant='body1' style={{marginTop:'10px'}}>Notes:</Typography>
-                <div style={styles.notesSection}>
-                {[...customer.notes].reverse().slice(0, visibleNotes).map((note, index) => (
-                  <div style={styles.noteItems} key={index}>
-                    <Typography variant='body2'>{note.date}: </Typography>
-                    <Typography variant='body2'>{note.note}</Typography>
-                  </div>
-                ))}
-                {visibleNotes < customer.notes.length && (
-                  <Button onClick={handleViewMore} style={{color:'#fff', textDecoration:'underline'}} >View more</Button>
-                )}                
-                </div>
-              </div>
+           
+            <ViewNotes notes={customer.notes} />
+                
+              
               <div>
-                <Typography variant='body1' style={{marginTop:'10px'}}>Upcoming Jobs:</Typography>
-                <div style={styles.eventsSection}>
-                  {[...customer.upcomingEvents].reverse().slice(0, visibleNotes).map((event, index) => (
-                    <div style={styles.eventItems} key={index}>
-                      <Accordion style={{backgroundColor:"rgba(0,0,0,0)",  width:'100%'}}>
-                      <AccordionSummary
-                        style={styles.AccordionSummaryStyle}
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id={customer.customerId.toString()}
-                      >
-                          {event.dateService}: <br />{event.status} - {event.isPaid ? "Paid" : "Unpaid"}
-                        </AccordionSummary>
-                        <AccordionDetails style={styles.AccordionDetailsStyle}>
-                          <Typography variant='body1' style={{marginTop:'5px'}}>
-                            Address:
-                            </Typography>
-                        <Typography variant='caption'>
-                        {event.address.street1}, {event.address.street2},
-                        <br/> {event.address.city}, {event.address.state} {event.address.zip}
-                      </Typography>
-                      <br/>
-                      <Typography variant='body1' style={{marginTop:'5px'}}>
-                            Contact:
-                            </Typography>
-                      <Typography variant='caption'>
-                        {event.onSiteContact.name} - {event.onSiteContact.phone}
-                        
-                      </Typography>
-                      <Typography variant='body1' style={{marginTop:'5px'}}>
-                            Services:
-                            </Typography>
-                            {customer.upcomingEvents.map((event) => (
-                              <ul key={event.eventId} style={{marginTop:"1px"}}>
-                               <Typography variant='body2' style={{marginLeft:"-20px"}}> {(event.services || []).map((service, index) => (
-                                  <li key={index}>{service.service}: ${service.estimatedPrice}</li>
-                                ))} </Typography>
-                              </ul>
-                            ))}
-
-                      <div style={{display:'flex', justifyContent:'center'}}>
-                      
-                      </div>
-                      </AccordionDetails>
-                      </Accordion>
-                      <Typography variant='body2'>
-                        
-                        
-                        <br/>
-                        
-                      </Typography>
-                      
-                      
-                    </div>
-                  ))}
-                  {visibleNotes < customer.upcomingEvents.length && (
-                    <Button onClick={handleViewMore} style={{color:'#fff', textDecoration:'underline'}} >View more</Button>
-                  )}                
-                </div>
+                <ViewUpcomingEvents 
+                title={`Upcoming Events of ${customer.customerName}`} 
+                upcomingEventsAddress={customer.address} 
+                upcomingEventsDateService={customer.dateService} 
+                upcomingEventsEstimatedTime={customer.estimatedTime} 
+                upcomingEventsServices={customer.services} />
+                
               </div>
             
             
@@ -252,12 +174,11 @@ type Props = {
             <div style={styles.sidebyside}>
             <EditForm
               title={`Edit Customer ${customer.customerName}`}
-              customerId={customer.customerId}
               customerName={customer.customerName}
-              address={customer.address}
-              onSiteContact={customer.onSiteContact}
-              notes={customer.notes}
-              upcomingEvents={customer.upcomingEvents}
+              phone={customer.phone}
+              email={customer.email}
+              
+              buttonType={1}
             />
             </div>
           </AccordionDetails>
@@ -285,6 +206,9 @@ const styles: {
   noteItems: React.CSSProperties;
   eventsSection: React.CSSProperties;
   eventItems: React.CSSProperties;
+  editFormContainer: React.CSSProperties;
+  editFormHidden: React.CSSProperties;
+  editFormVisible: React.CSSProperties;
 } = {
  AccordionDetailsStyle: {
     backgroundColor: baselightTheme.palette.primary.main,
@@ -356,5 +280,15 @@ eventItems: {
   borderBottom: '1px solid rgba(255,255,255,0.45)',
   width: '95%',
   },
-
+editFormContainer: {
+    transition: 'transform 0.3s ease-in-out',
+  },
+  
+editFormHidden: {
+    transform: 'translateX(100%)',
+  },
+  
+  editFormVisible: {
+    transform: 'translateX(0)',
+  },
 };

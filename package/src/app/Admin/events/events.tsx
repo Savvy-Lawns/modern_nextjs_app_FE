@@ -1,16 +1,16 @@
 "use-client"
 import { min } from "lodash";
-import { Customers } from "./customers";
+
 
 export const active = {
     selection: ''
 };
-const _Customers = Customers
+
 
 
 
     
-    const _Events = [
+    const Events = [
         
             {
                 'eventId': 154123, 
@@ -21,24 +21,14 @@ const _Customers = Customers
                 'isPaid': false, 
                 'estimatedTime': 5, 
                 'customer':"Raj Patel", 
-                'address': {
-                    'addressName': 'Willow House',
-                        'street1': '202 Willow St', 
-                        'street2': 'Apt 303', 
-                        'city': 'Pueblo', 
-                        'state': 'CO', 
-                        'zip': '81003'}, 
-                        
-                   
-                'onSiteContact': {
-                    'name':'Linda Smith',
-                    'phone': '970-555-6789', 
-                    'email': ''}, 
+                'address': '202 Willow St, Apt 303, Pueblo, CO 81003',
+                'phone': '970-555-6789', 
+                'email': '',
                 'notes': [{
                     'date': '2022-02-01', 
                     'note': 'Customer inquired about eco-friendly options.'}, 
                     {'date': '2022-02-02', 
-                        'note': 'Customer provided referral.'}]
+                    'note': 'Customer provided referral.'}]
                    
         }]
        
@@ -46,4 +36,4 @@ const _Customers = Customers
     
 
 
-export { Customers };
+export { Events };

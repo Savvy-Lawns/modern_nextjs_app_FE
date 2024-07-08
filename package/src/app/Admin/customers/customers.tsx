@@ -5,250 +5,327 @@ export const active = {
     selection: ''
 };
 
+const customers = [
+  {
+    customerId: "C1",
+    customerName: "John Doe",
+    address: "123 Main St",
+    phone: "555-1234",
+    email: "john@example.com",
+    notes: { created_at: "2023-04-01", note: "VIP" },
+    upcomingEvents: ["E1", "E2"]
+  }
+  // More customers...
+];
+
+const events = [
+  {
+    eventId: "E1",
+    customerId: "C1",
+    services: ["S1", "S2"], // Service IDs
+    status: 'Scheduled',
+    isPaid: true,
+    estimatedTime: 2,
+  },
+  {
+    eventID: "E2",
+    services: ["3", "4"]
+  }
+  // More events...
+];
 
     
     const Customers = [
+      
         {
-          'customerId': '1',
-          "customerName": "Raj Patel",
-          "address": [{
-            'addressName': 'Main House',
-              'street1': '123 Main St',
-              'street2': 'Apt 101',
-              'city': 'Denver',
-              'state': 'CO',
-              'zip': '80202',
-            },],
-          
-          'onSiteContact':[
-             {
-                'name': 'Raj Patel',
-              'phone': '970-555-5678',
-              'email': 'RPatel@gmail.com',
+          customerId: '1',
+          customerName: "Alex Johnson",
+          address: '100 First St, Apt 1, Cityville, NY 10001',
+          phone: '555-101-2020',
+          email: 'alex.johnson@example.com',
+          notes: [
+            { created_at: '2023-01-01', note: 'Customer prefers email communication.' },
+          ],
+          upcomingEvents: [
+            {
+              eventId: 201,
+              dateService: '2023-05-10',
+              services: [{ service: 'Garden Maintenance', estimatedPrice: 150.00 }],
+              status: 'Scheduled',
+              isPaid: true,
+              estimatedTime: 2,
+              address: '100 First St, Apt 1, Cityville, NY 10001',
+              customerName: 'Alex Johnson',
+              phone: '555-101-2020',
+              email: 'alex.johnson@example.com',
+              notes: [
+                { date: '2023-04-30', note: 'Confirmed appointment via email.' },
+              ]
             },
+            {
+              eventId: 202,
+              dateService: '2023-06-15',
+              services: [{ service: 'Tree Planting', estimatedPrice: 300.00 }],
+              status: 'Scheduled',
+              isPaid: false,
+              estimatedTime: 4,
+              address: '100 First St, Apt 1, Cityville, NY 10001',
+              customerName: 'Alex Johnson',
+              phone: '555-101-2020',
+              email: 'alex.johnson@example.com',
+              notes: [
+                { date: '2023-05-20', note: 'Customer requested to reschedule.' },
+              ]
+            }
+          ]
+        },
+        // Repeat the structure for other customers with unique details
+        {
+          customerId: '2',
+          customerName: "Bethany Kim",
+          address: '200 Second St, Suite 2, Townland, CA 20002',
+          phone: '555-202-3030',
+          email: 'bethany.kim@example.com',
+          notes: [
+            { created_at: '2023-02-02', note: 'Customer asked for organic pesticides only.' },
           ],
-          'notes': [
-            { date: '2021-10-01', note: 'Customer called to update address.' },
-            { date: '2021-10-01', note: 'Customer called to update address.' },
-
-            { date: '2021-10-01', note: 'Customer called to update address.' },
-
-
-            { date: '2021-10-02', note: 'Customer called to update phone number.' },
-            { date: '2021-10-03', note: 'Customer called to update email address.' },
-          ],
-          'upcomingEvents': [
-            {'eventId': 154123, 'dateService': '2022-02-10', 
-                'services': [{'service':'Landscape Design', 
-                'estimatedPrice': 500.00} ],
-                'status': 'Scheduled', 
-                'isPaid': false, 
-                'estimatedTime': 5, 
-                'address': {
-                  'addressName': 'Willow House',
-                    'street1': '202 Willow St', 
-                    'street2': 'Apt 303', 
-                    'city': 'Pueblo', 
-                    'state': 'CO', 
-                    'zip': '81003'}, 
-                        
-                    
-                'onSiteContact': {
-                  'name':'Linda Smith',
-                  'phone': '970-555-6789', 
-                  'email': ''}, 
-                    'notes': [
-                    {'date': '2022-02-01', 'note': 'Customer inquired about eco-friendly options.'}, {'date': '2022-02-02', 'note': 'Customer provided referral.'}
-                    ]
-                   
-        }]
+          upcomingEvents: [
+            {
+              eventId: 301,
+              dateService: '2023-07-20',
+              services: [{ service: 'Soil Treatment', estimatedPrice: 200.00 }],
+              status: 'Scheduled',
+              isPaid: false,
+              estimatedTime: 3,
+              address: '200 Second St, Suite 2, Townland, CA 20002',
+              customerName: 'Bethany Kim',
+              phone: '555-202-3030',
+              email: 'bethany.kim@example.com',
+              notes: [
+                { date: '2023-07-10', note: 'Customer inquired about service details.' },
+              ]
+            }
+          ]
         },
         {
-          'customerId': '2',
-          "customerName": "Alex Johnson",
-          "address": [{
-            'addressName': 'Elm House',
-              'street1': '456 Elm St',
-              'street2': 'Suite 200',
-              'city': 'Boulder',
-              'state': 'CO',
-              'zip': '80301',
-            }],
-          
-          'onSiteContact': 
-             {'name':'Alex Johnson',
-              'phone': '970-555-1234',
-              'email': 'AlexJ@gmail.com',
-            },
-          'notes': [
-            { date: '2021-11-01', note: 'Customer inquired about additional services.' },
-            { date: '2021-11-02', note: 'Customer requested a reschedule.' },
+          customerId: '3',
+          customerName: "Charlie Lee",
+          address: '300 Third St, Loft 3, Villagetown, TX 30003',
+          phone: '555-303-4040',
+          email: 'charlie.lee@example.com',
+          notes: [
+            { created_at: '2023-03-03', note: 'Prefers late afternoon appointments.' },
           ],
-          'upcomingEvents': [
-            {'eventId': 154123, 'dateService': '2022-02-10', 
-                'services': [{'service':'Landscape Design', 
-                'estimatedPrice': 500.00} ], 
-                'status': 'Scheduled', 
-                'isPaid': false, 
-                'estimatedTime': 5, 
-                'address': {
-                    'addressName': 'Willow House',
-                        'street1': '202 Willow St', 
-                        'street2': 'Apt 303', 
-                        'city': 'Pueblo', 
-                        'state': 'CO', 
-                        'zip': '81003'}, 
-                        
-                    
-                    'onSiteContact': {
-                        'name':'Linda Smith',
-                        'phone': '970-555-6789', 
-                        'email': ''}, 
-                    'notes': [
-                        {'date': '2022-02-01', 'note': 'Customer inquired about eco-friendly options.'}, {'date': '2022-02-02', 'note': 'Customer provided referral.'}
-                    ]
-                   
-        }]
+          upcomingEvents: [
+            {
+              eventId: 401,
+              dateService: '2023-08-15',
+              services: [{ service: 'Lawn Mowing', estimatedPrice: 100.00 }],
+              status: 'Scheduled',
+              isPaid: true,
+              estimatedTime: 1,
+              address: '300 Third St, Loft 3, Villagetown, TX 30003',
+              customerName: 'Charlie Lee',
+              phone: '555-303-4040',
+              email: 'charlie.lee@example.com',
+              notes: [
+                { date: '2023-08-05', note: 'Confirmed service via phone call.' },
+              ]
+            }
+          ]
         },
         {
-          'customerId': '3',
-          "customerName": "Samantha Green",
-          "address": [{
-            'addressName': 'Pine House',
-              'street1': '789 Pine St',
-              'street2': '',
-              'city': 'Fort Collins',
-              'state': 'CO',
-              'zip': '80521',
-            }],
-         
-          'onSiteContact': {
-            'name': 'Samantha Green',
-              'phone': '970-555-7890',
-              'email': 'SGreen@gmail.com',
-            },
-          'notes': [
-            { date: '2021-12-01', note: 'Customer praised the service quality.' },
+          customerId: '4',
+          customerName: "Diana Smith",
+          address: '400 Fourth St, House 4, Smallville, FL 40004',
+          phone: '555-404-5050',
+          email: 'diana.smith@example.com',
+          notes: [
+            { created_at: '2023-04-04', note: 'Asked for pet-friendly services.' },
           ],
-          'upcomingEvents': [
-            {'eventId': 154123, 'dateService': '2022-02-10', 
-                'services': [{'service':'Landscape Design', 
-                'estimatedPrice': 500.00} ],
-                'status': 'Scheduled', 
-                'isPaid': false, 
-                'estimatedTime': 5, 
-                'address': {
-                    'addressName': 'Willow House',
-                        'street1': '202 Willow St', 
-                        'street2': 'Apt 303', 
-                        'city': 'Pueblo', 
-                        'state': 'CO', 
-                        'zip': '81003'}, 
-                        
-                   
-                'onSiteContact': {
-                     'name':'Linda Smith',
-                        'phone': '970-555-6789', 
-                        'email': ''}, 
-                'notes': [{'date': '2022-02-01', 'note': 'Customer inquired about eco-friendly options.'}, {'date': '2022-02-02', 'note': 'Customer provided referral.'}]
-                   
-        }]
+          upcomingEvents: [
+            {
+              eventId: 501,
+              dateService: '2023-09-10',
+              services: [{ service: 'Pest Control', estimatedPrice: 250.00 }],
+              status: 'Scheduled',
+              isPaid: false,
+              estimatedTime: 2,
+              address: '400 Fourth St, House 4, Smallville, FL 40004',
+              customerName: 'Diana Smith',
+              phone: '555-404-5050',
+              email: 'diana.smith@example.com',
+              notes: [
+                { date: '2023-09-01', note: 'Requested early morning appointment.' },
+              ]
+            }
+          ]
         },
         {
-          'customerId': '4',
-          "customerName": "Michael Brown",
-          "address": [{
-            
-            'addressName': 'Oak House',
-              'street1': '101 Oak St',
-              'street2': 'Apt 202',
-              'city': 'Colorado Springs',
-              'state': 'CO',
-              'zip': '80903',
-            }],
-          
-          'onSiteContact': {
-            'name': 'Michael Brown',
-              'phone': '970-555-4567',
-              'email': 'MBrown@gmail.com',
-          },
-          'notes': [
-            { date: '2022-01-01', note: 'Customer requested early morning service.' },
-            { date: '2022-01-02', note: 'Customer updated payment method.' },
+          customerId: '5',
+          customerName: "Evan Wright",
+          address: '500 Fifth St, Bungalow 5, Lakeside, WA 50005',
+          phone: '555-505-6060',
+          email: 'evan.wright@example.com',
+          notes: [
+            { created_at: '2023-05-05', note: 'Interested in sustainable gardening practices.' },
           ],
-          'upcomingEvents': [
-            {'eventId': 154123, 
-                'dateService': '2022-02-10', 
-                'services': [{'service':'Landscape Design', 
-                'estimatedPrice': 500.00} ],
-                'status': 'Scheduled', 
-                'isPaid': false, 
-                'estimatedTime': 5, 
-                'address': {
-                    'addressName': 'Willow House',
-                        'street1': '202 Willow St', 
-                        'street2': 'Apt 303', 
-                        'city': 'Pueblo', 
-                        'state': 'CO', 
-                        'zip': '81003'}, 
-                        
-                    
-                    'onSiteContact': {
-                        'name':'Linda Smith',
-                            'phone': '970-555-6789', 
-                            'email': ''}, 
-                    'notes': [
-                        {'date': '2022-02-01', 'note': 'Customer inquired about eco-friendly options.'}, 
-                        {'date': '2022-02-02', 'note': 'Customer provided referral.'}]
-                   
-        }]
+          upcomingEvents: [
+            {
+              eventId: 601,
+              dateService: '2023-10-20',
+              services: [{ service: 'Garden Design', estimatedPrice: 500.00 }],
+              status: 'Scheduled',
+              isPaid: true,
+              estimatedTime: 5,
+              address: '500 Fifth St, Bungalow 5, Lakeside, WA 50005',
+              customerName: 'Evan Wright',
+              phone: '555-505-6060',
+              email: 'evan.wright@example.com',
+              notes: [
+                { date: '2023-10-10', note: 'Confirmed design preferences via email.' },
+              ]
+            }
+          ]
         },
         {
-          'customerId': '5',
-          "customerName": "Linda Smith",
-          "address": [{
-            'addressName': 'Willow House',
-              'street1': '202 Willow St',
-              'street2': 'Apt 303',
-              'city': 'Pueblo',
-              'state': 'CO',
-              'zip': '81003',
-            }],
-          
-          'onSiteContact': [{
-            'name': 'Linda Smith',
-              'phone': '970-555-6789',
-              'email': 'LSmith@gmail.com',
-          }],
-          'notes': [
-            { date: '2022-02-01', note: 'Customer inquired about eco-friendly options.' },
-            { date: '2022-02-02', note: 'Customer provided referral.' },
+          customerId: '6',
+          customerName: "Fiona Chen",
+          address: '600 Sixth St, Condo 6, Mountainview, CO 60006',
+          phone: '555-606-7070',
+          email: 'fiona.chen@example.com',
+          notes: [
+            { created_at: '2023-06-06', note: 'Requests non-toxic weed removal.' },
           ],
-          'upcomingEvents': [
-            {'eventId': 154123, 'dateService': '2022-02-10', 
-                'services': [{'service':'Landscape Design', 
-                'estimatedPrice': 500.00} ],
-                'status': 'Scheduled', 
-                'isPaid': false, 
-                'estimatedTime': 5, 
-                'address': {
-                    'addressName': 'Willow House',
-                        'street1': '202 Willow St', 
-                        'street2': 'Apt 303', 
-                        'city': 'Pueblo', 
-                        'state': 'CO', 
-                        'zip': '81003'}, 
-                        
-                   
-                    'onSiteContact': {
-                        'name':'Linda Smith',
-                            'phone': '970-555-6789', 
-                            'email': ''}, 
-                    'notes': [{'date': '2022-02-01', 'note': 'Customer inquired about eco-friendly options.'}, {'date': '2022-02-02', 'note': 'Customer provided referral.'}]
-                   
-        }]
-        }
+          upcomingEvents: [
+            {
+              eventId: 701,
+              dateService: '2023-11-15',
+              services: [{ service: 'Weed Removal', estimatedPrice: 150.00 }],
+              status: 'Scheduled',
+              isPaid: false,
+              estimatedTime: 2,
+              address: '600 Sixth St, Condo 6, Mountainview, CO 60006',
+              customerName: 'Fiona Chen',
+              phone: '555-606-7070',
+              email: 'fiona.chen@example.com',
+              notes: [
+                { date: '2023-11-05', note: 'Asked for service details via text.' },
+              ]
+            }
+          ]
+        },
+        {
+          customerId: '7',
+          customerName: "George Davis",
+          address: '700 Seventh St, Villa 7, Rivertown, MI 70007',
+          phone: '555-707-8080',
+          email: 'george.davis@example.com',
+          notes: [
+            { created_at: '2023-07-07', note: 'Interested in water-efficient landscaping.' },
+          ],
+          upcomingEvents: [
+            {
+              eventId: 801,
+              dateService: '2023-12-10',
+              services: [{ service: 'Irrigation System Installation', estimatedPrice: 800.00 }],
+              status: 'Scheduled',
+              isPaid: true,
+              estimatedTime: 6,
+              address: '700 Seventh St, Villa 7, Rivertown, MI 70007',
+              customerName: 'George Davis',
+              phone: '555-707-8080',
+              email: 'george.davis@example.com',
+              notes: [
+                { date: '2023-12-01', note: 'Confirmed installation details over the phone.' },
+              ]
+            }
+          ]
+        },
+        {
+          customerId: '8',
+          customerName: "Hannah Lee",
+          address: '800 Eighth St, Apartment 8, Beachtown, VA 80008',
+          phone: '555-808-9090',
+          email: 'hannah.lee@example.com',
+          notes: [
+            { created_at: '2023-08-08', note: 'Prefers eco-friendly products.' },
+          ],
+          upcomingEvents: [
+            {
+              eventId: 901,
+              dateService: '2024-01-20',
+              services: [{ service: 'Mulching', estimatedPrice: 200.00 }],
+              status: 'Scheduled',
+              isPaid: false,
+              estimatedTime: 3,
+              address: '800 Eighth St, Apartment 8, Beachtown, VA 80008',
+              customerName: 'Hannah Lee',
+              phone: '555-808-9090',
+              email: 'hannah.lee@example.com',
+              notes: [
+                { date: '2024-01-10', note: 'Inquired about mulch types via email.' },
+              ]
+            }
+          ]
+        },
+        {
+          customerId: '9',
+          customerName: "Ian Moore",
+          address: '900 Ninth St, Cottage 9, Hillside, MA 90009',
+          phone: '555-909-0101',
+          email: 'ian.moore@example.com',
+          notes: [
+            { created_at: '2023-09-09', note: 'Asked for early morning services only.' },
+          ],
+          upcomingEvents: [
+            {
+              eventId: 1001,
+              dateService: '2024-02-15',
+              services: [{ service: 'Snow Removal', estimatedPrice: 300.00 }],
+              status: 'Scheduled',
+              isPaid: true,
+              estimatedTime: 4,
+              address: '900 Ninth St, Cottage 9, Hillside, MA 90009',
+              customerName: 'Ian Moore',
+              phone: '555-909-0101',
+              email: 'ian.moore@example.com',
+              notes: [
+                { date: '2024-02-05', note: 'Confirmed via text message.' },
+              ]
+            }
+          ]
+        },
+        {
+          customerId: '10',
+          customerName: "Julia Carter",
+          address: '1000 Tenth St, Mansion 10, Cliffside, OR 100010',
+          phone: '555-010-1112',
+          email: 'julia.carter@example.com',
+          notes: [
+            { created_at: '2023-10-10', note: 'Interested in full landscape redesign.' },
+          ],
+          upcomingEvents: [
+            {
+              eventId: 1101,
+              dateService: '2024-03-20',
+              services: [{ service: 'Landscape Design Consultation', estimatedPrice: 600.00 }],
+              status: 'Scheduled',
+              isPaid: false,
+              estimatedTime: 5,
+              address: '1000 Tenth St, Mansion 10, Cliffside, OR 100010',
+              customerName: 'Julia Carter',
+              phone: '555-010-1112',
+              email: 'julia.carter@example.com',
+              notes: [
+                { date: '2024-03-10', note: 'Requested portfolio via email.' },
+              ]
+            }
+          ]
+        },
+        // Add more customers as needed to reach a total of 10
       ];
+      
     
 
 
