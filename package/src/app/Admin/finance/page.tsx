@@ -6,8 +6,9 @@ import { useTheme } from '@mui/material/styles';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dynamic from "next/dynamic";
 import { baselightTheme } from '@/utils/theme/DefaultColors';
-import { active, Users } from '@/app/Admin/users/users';
+import {  Users } from '@/app/Admin/users/users';
 import { ArrowBack, Refresh } from '@mui/icons-material';
+import withAuth from '@/utils/withAuth';
 
 
 
@@ -31,4 +32,4 @@ const Finance = ( ) => {
     );
 };
 
-export default Finance;
+export default withAuth(Finance);

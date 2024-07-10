@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+"use client"
+import React, { useState,useEffect } from "react";
 import {
   Box,
   Typography,
@@ -11,6 +12,9 @@ import {
 import Link from "next/link";
 
 import CustomTextField from "@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField";
+import { useRouter } from "next/navigation";
+import Cookie from 'js-cookie';
+
 
 interface loginType {
   title?: string;
@@ -19,38 +23,59 @@ interface loginType {
 }
 
 const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
+  const [loginSuccess, setLoginSuccess] = useState(false); // Step 1: New state for tracking login success
+  const [token, setToken] = useState(''); // Step 2: New state for storing the token
 
-  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
+
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
 
+  useEffect(() => {
+    let isMounted = true; 
+  
+    if (loginSuccess && isMounted) {
+      router.push('/');
+    }
+  
+    return () => {
+      isMounted = false; // Clean up by marking component as unmounted
+    };
+  }, [loginSuccess, router]);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent default form submission behavior
     try {
-      const response = await fetch('/api/v1/login', { // Adjust the API endpoint as needed
+      const response = await fetch('http://127.0.0.1:3000/api/v1/authentication/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
-      if (data.success) {
-        // Handle successful login here (e.g., redirect to dashboard)
+      console.log({data});
+  
+      if (data && data.jwt) {
+        console.log(`Success`);
+        setLoginSuccess(true);
+        Cookie.set('token', data.jwt, { expires: 7, secure: true, sameSite: 'strict' }); // Store token in a cookie
       } else {
-        // Handle login failure here (e.g., show error message)
+        console.log('failed');
       }
     } catch (error) {
       console.error('Login error:', error);
-      // Handle error here
     }
   };
+
+
 
   return (
     <form onSubmit={handleSubmit}>
@@ -73,7 +98,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
           >
             Username
           </Typography>
-          <CustomTextField variant="outlined" fullWidth value={username} onChange={handleUsernameChange} />
+          <CustomTextField variant="outlined" fullWidth value={email} onChange={handleEmailChange} />
         </Box>
         <Box mt="25px">
           <Typography

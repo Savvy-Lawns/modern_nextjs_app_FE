@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
@@ -29,7 +30,7 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
         };
     
         console.log(JSON.stringify(userData));
-        const apiUrl = '/api/v1/users';
+        const apiUrl = 'http://127.0.0.1:3000/api/v1/users';
     
         if (!userData.user.username || !userData.user.email || !userData.user.password || !userData.user.password_confirmation || !userData.user.phone_number) {
             console.error('Please fill in all fields.');
@@ -60,15 +61,17 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
             alert(`User ${userData.user.username} was created successfully`);
             
             // Navigate to login page after successful registration
-            router.push('/authentication/login'); // Use Next.js router to redirect
+       
     
         } catch (error) {
             console.error('Error creating user:', error);
             // Handle errors, show error messages
         }
+        router.push('/authentication/login'); // Redirect to login page
     };
  
-
+    
+    
     return (
         <>
             {title && (
@@ -76,33 +79,33 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
                     {title}
                 </Typography>
             )}
-
+    
             {subtext}
-
+    
             <form onSubmit={handleSubmit}>
                 <Box>
                     <Stack mb={4}>
                         <Typography variant="subtitle1"
                             fontWeight={600} component="label" htmlFor='username' mb="3px">Name</Typography>
                         <CustomTextField id="username" variant="outlined" fullWidth />
-
+    
                         <Typography variant="subtitle1"
                             fontWeight={600} component="label" htmlFor='email' mb="3px" mt="15px">Email Address</Typography>
                         <CustomTextField id="email" variant="outlined" fullWidth />
-
+    
                         <Typography variant="subtitle1"
                             fontWeight={600} component="label" htmlFor='password' mb="3px" mt="15px">Password</Typography>
                         <CustomTextField id="password" variant="outlined" fullWidth />
-
+    
                         <Typography variant="subtitle1"
                             fontWeight={600} component="label" htmlFor='password_confirmation' mb="3px" mt="15px">Confirm Password</Typography>
                         <CustomTextField id="password_confirmation" variant="outlined" fullWidth />
-
+    
                         <Typography variant="subtitle1"
                             fontWeight={600} component="label" htmlFor='phone' mb="3px" mt="15px">Phone Number</Typography>
                         <CustomTextField id="phone" variant="outlined" fullWidth />
                     </Stack>
-
+    
                     <Button type="submit" color="primary" variant="contained" size="large" onClick={handleSubmit}  fullWidth>
                        Sign Up
                     </Button>
@@ -111,6 +114,6 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
             {subtitle}
         </>
     );
-};
-
-export default AuthRegister;
+    };
+    
+    export default AuthRegister;

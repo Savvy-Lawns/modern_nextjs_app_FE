@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import Link from "next/link";
 
@@ -8,6 +9,7 @@ import dynamic from "next/dynamic";
 import { baselightTheme } from '@/utils/theme/DefaultColors';
 import { ArrowBack, Refresh } from '@mui/icons-material';
 import ServicessPage from '../components/servicespage';
+import withAuth from '@/utils/withAuth';
 
 const Services = () => {
     return (
@@ -18,4 +20,4 @@ const Services = () => {
     );
 };
 
-export default Services;
+export default withAuth(Services);

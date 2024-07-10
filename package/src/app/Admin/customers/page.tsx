@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import Link from "next/link";
 
@@ -8,6 +9,7 @@ import dynamic from "next/dynamic";
 import { baselightTheme } from '@/utils/theme/DefaultColors';
 import { ArrowBack, Refresh } from '@mui/icons-material';
 import CustomerPage from '../components/customerpage';
+import withAuth from '@/utils/withAuth';
 
 const Customers = () => {
     return (
@@ -18,4 +20,4 @@ const Customers = () => {
     );
 };
 
-export default Customers;
+export default withAuth(Customers);

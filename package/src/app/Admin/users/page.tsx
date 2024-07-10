@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import Link from "next/link";
 
@@ -8,6 +9,7 @@ import dynamic from "next/dynamic";
 import { baselightTheme } from '@/utils/theme/DefaultColors';
 import UsersPage from '../components/userspage';
 import { ArrowBack, Refresh } from '@mui/icons-material';
+import withAuth from '@/utils/withAuth';
 
 
 
@@ -27,4 +29,4 @@ const Users = ( ) => {
     );
 };
 
-export default Users;
+export default withAuth(Users);

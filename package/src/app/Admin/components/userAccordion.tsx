@@ -1,5 +1,5 @@
 "use client";
-import React, {  createContext, useContext, useState,Children } from 'react';
+import React, {  createContext, useContext, useState,Children, useEffect, Key } from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -11,32 +11,36 @@ import { BorderBottom, Padding } from '@mui/icons-material';
 import { Button, colors } from '@mui/material';
 import { text } from 'stream/consumers';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
-import {  Users } from '@/app/Admin/users/users';
 import EditForm from './edit';
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
 import ViewMileage from './userMileage';
 import ViewHours from './userHours';
+import Cookie from 'js-cookie'; 
 
 type Props = {
-  userId?: number;
-    name?: string;
-    phone?: string;
-    email?: string;
-    acctType?: number;
-    mileage?: {
-    miles?: number;
+  index: Key | null | undefined;
+  
+  id?: string;
+  username?: string;
+  phone?: string;
+  email?: string;
+  acctType?: number;
+  mileage?: {
+  miles?: number;
+  created_at?: string;
+  }[];
+  hours?:{
+    total_hours?: number;
     created_at?: string;
     }[];
-    hours?:{
-      total_hours?: number;
-      created_at?: string;
-      }[];
+  
   };
 
+   
   const SelectedUser = () => {};
   const UserAccordion = ({
-    userId,
-    name,
+    id,
+    username,
     phone,
     email,
     acctType,
@@ -44,10 +48,49 @@ type Props = {
     hours,    
   }: Props) => {
     
-   
+    
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [Users, setUsers] = useState<Props[]>([]);
 
+    useEffect(() => {
+      const fetchUsers = async () => {
+        const token = Cookie.get('token');
+        if (!token) {
+          console.error('Token not found. User must be authenticated.');
+          return;
+        }
+    
+        try {
+          const response = await fetch('http://127.0.0.1:3000/api/v1/users', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+    
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+    
+          const { data } = await response.json();
+          const users = data.map((item: { id: { toString: () => any; }; attributes: { username: any; email: any; phone_number: any; role: any; }; }) => ({
+            id: item.id.toString(), // Ensure id is a string
+            username: item.attributes.username,
+            email: item.attributes.email,
+            phone: item.attributes.phone_number, // Adjusted to match the data structure
+            acctType: item.attributes.role, // Assuming role corresponds to acctType
+            // Add other fields as necessary
+          }));
+          setUsers(users);
+        } catch (error) {
+          console.error('Failed to fetch users:', error);
+        }
+      };
+    
+      fetchUsers();
+    }, []);
     
 
   const handleOpen = (user:typeof  Users) => {
@@ -56,12 +99,13 @@ type Props = {
   };
   const handleClose = () => setOpen(false);
 
-   const filteredUsers = Users.filter((user) =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.phone.includes(searchQuery)
-  );
-
+  const filteredUsers = Array.isArray(Users) ? Users.filter((user) =>
+    user.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.phone?.includes(searchQuery)
+  ) : [];
+  
+  
   return (
     <div>
       <CustomTextField
@@ -75,51 +119,44 @@ type Props = {
       />
 
   
-      {filteredUsers.map((user) => (
-        <Accordion key={user.userId}>
+{filteredUsers.map((user) => (
+        <Accordion key={user.id}>
           <AccordionSummary
             style={styles.AccordionSummaryStyle}
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
-            id={user.userId.toString()}
+            id={user.id!.toString()}
           >
-            <Typography>{user.name}</Typography>
+            <Typography>{user.username}</Typography>
           </AccordionSummary>
           <AccordionDetails style={styles.AccordionDetailsStyle}>
             <Typography sx={styles.serviceStyle}>
-            <div>
-            <Typography variant='body1'>Phone:</Typography>
-            <Typography variant='body2'>{user.phone}</Typography>
-            </div>
-            <div>
-            <Typography variant='body1'>Email:</Typography>
-            <Typography variant='body2'>{user.email}</Typography>
-            </div>
-            <div>
-            <Typography variant='body1'>Account Type:</Typography>
-            <Typography variant='body2'>{user.acctType}</Typography>
-            </div>
-            <ViewMileage mileage={user.mileage} />
-            <ViewHours hours={user.hours} />
-            
+              <div>
+                <Typography variant='body1'>Phone:</Typography>
+                <Typography variant='body2'>{user.phone}</Typography>
+              </div>
+              <div>
+                <Typography variant='body1'>Email:</Typography>
+                <Typography variant='body2'>{user.email}</Typography>
+              </div>
+              <div>
+                <Typography variant='body1'>Account Type:</Typography>
+                <Typography variant='body2'>{user.acctType}</Typography>
+              </div>
+              {/* <ViewMileage mileage={user.mileage} />
+              <ViewHours hours={user.hours} /> */}
             </Typography>
             <div style={styles.sidebyside}>
-            <EditForm title={`Edit User ${user.name}`} name={user.name} phone={user.phone} email={user.email} acctType={user.acctType}  buttonType={1}/>
+              <EditForm entityId={user.id ?? ''} entityType={'users'} title={`Edit User ${user.username}`} username={user.username} userPhone={user.phone} userEmail={user.email} acctType={user.acctType}  buttonType={1}/>
             </div>
           </AccordionDetails>
         </Accordion>
       ))}
-       
-      
-       
-    
     </div>
   );
 }
-
 export default UserAccordion;
-console.log(Object.keys(UserAccordion))
-export const activeSelection = SelectedUser
+
 
 const styles: {
   AccordionDetailsStyle: React.CSSProperties;

@@ -8,6 +8,7 @@ import ProductPerformance from '@/app/(DashboardLayout)/components/dashboard/Pro
 import Blog from '@/app/(DashboardLayout)/components/dashboard/Blog';
 import MonthlyEarnings from '@/app/(DashboardLayout)/components/dashboard/MonthlyEarnings';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
+import withAuth from '@/utils/withAuth';
 
 const Dashboard = () => {
   return (
@@ -28,4 +29,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard;
+export default withAuth(Dashboard);
