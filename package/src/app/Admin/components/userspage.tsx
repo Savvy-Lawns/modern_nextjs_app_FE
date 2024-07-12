@@ -24,7 +24,7 @@ const UsersPage = () => {
         <div>
             
             <div >
-            <UserAccordion />
+            <UserAccordion index={''} />
             
             
             

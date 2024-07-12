@@ -1,5 +1,5 @@
 "use client";
-import React, {  createContext, useContext, useState,Children, Key, ReactNode } from 'react';
+import React, {  createContext, useContext, useState,Children, Key, ReactNode, useEffect } from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -17,6 +17,9 @@ import {Customers as data} from '@/app/Admin/customers/customers';
 import EditIcon from '@mui/icons-material/Edit';
 import ViewNotes from './customerNotes';
 import ViewUpcomingEvents from './customerUpcomingEvents';
+import withAuth from '@/utils/withAuth';
+import Cookie from 'js-cookie';
+
 
 type Props = {
     customerId: string;
@@ -55,24 +58,52 @@ type Props = {
     amount: number;
   }
 
-  const SelectedCustomer = () => {};
-
-  const CustomerAccordion = ({
-    customerId,
-    customerName,
-    address,
-    phone,
-    email,
-    notes,
-    upcomingEvents, 
-      
-  }: Props) => {
+  const CustomerAccordion = () => {
     
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [visibleNotes, setVisibleNotes] = useState(3); // State to manage visible notes
     const [isEditFormVisible, setIsEditFormVisible] = useState(false);
+    const [customers, setCustomers] = useState<Props[]>([]);
     
+    useEffect(() => {
+      const fetchUsers = async () => {
+        const token = Cookie.get('token');
+        if (!token) {
+          console.error('Token not found. User must be authenticated.');
+          return;
+        }
+    
+        try {
+          const response = await fetch('http://127.0.0.1:3000/api/v1/customers', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          });
+    
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+    
+          const { data } = await response.json();
+          const customers = data.map((item: { id: { toString: () => any; }; attributes: { name: any; email: any; phone_number: any; address: any; }; }) => ({
+            id: item.id.toString(), // Ensure id is a string
+            name: item.attributes.name,
+            email: item.attributes.email,
+            phone: item.attributes.phone_number, // Adjusted to match the data structure
+            address: item.attributes.address, // role corresponds to acctType
+            // Add other fields as necessary
+          }));
+          setCustomers(customers);
+        } catch (error) {
+          console.error('Failed to fetch customers:', error);
+        }
+      };
+    
+      fetchUsers();
+    }, []);
 
     const toggleEditFormVisibility = () => {
       setIsEditFormVisible(prevState => !prevState);
@@ -92,8 +123,8 @@ type Props = {
 
   const filteredCustomers = (Customers as unknown as {
     customerId: Key | null | undefined;
-    customerName: ReactNode; eventId: number; dateService: string; services: { service: string; estimatedPrice: number; }[]; status: string; isPaid: boolean; estimatedTime: number; address: string;  phone: string; email: string; notes: { created_at: string; note: string; }[]; 
-}[]).filter((customer) => (customerName || "")?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    customerName: string; eventId: number; dateService: string; services: { service: string; estimatedPrice: number; }[]; status: string; isPaid: boolean; estimatedTime: number; address: string;  phone: string; email: string; notes: { created_at: string; note: string; }[]; 
+}[]).filter((customer) => (customer.customerName || "")?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         
         Object.values(customer.address || {}).some(address =>
           (address|| "").includes(searchQuery) )
@@ -107,31 +138,24 @@ type Props = {
     return input ? [input] : [];
   }
 
-    function handleEdit(event: { eventId: number; dateService: string; services: { service: string; estimatedPrice: number; }[]; status: string; isPaid: boolean; estimatedTime: number; address: { addressName: string; street1: string; street2: string; city: string; state: string; zip: string; }; onSiteContact: { name: string; phone: string; email: string; }; notes: { created_at: string; note: string; }[]; } | { eventId: number; dateService: string; services: { service: string; estimatedPrice: number; }[]; status: string; isPaid: boolean; estimatedTime: number; address: { addressName: string; street1: string; street2: string; city: string; state: string; zip: string; }; onSiteContact: { name: string; phone: string; email: string; }; notes: { created_at: string; note: string; }[]; }) {
-      throw new Error('Function not implemented.');
-    }
+   
 
-    const flattenedCustomers = filteredCustomers.map(customer => ({
-      ...customer,
-      address: customer.address,
-      
-      // Assume there's a way to derive or include the 'note' property here
-      note: "Example note" // Placeholder, adjust based on actual data
-    }));
+  
 
   return (
-    <div>
+    <div >
       <CustomTextField
+        style={{ ...styles.searchBar, marginBottom: '5px' }}
         type="search"
         variant="outlined"
         fullWidth
         label="Search"
-        mb='10'
-        style={{ marginBottom: '20px' }}
+        mb='0'
+        
         onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setSearchQuery(e.target.value)} // Update search query on input change
       />
 
-  
+    <div style={styles.scrollContainer}>
       {filteredCustomers.map((customer) => (
         <Accordion key={customer.customerId}>
           <AccordionSummary
@@ -160,12 +184,12 @@ type Props = {
                 
               
               <div>
-                <ViewUpcomingEvents 
+                {/* <ViewUpcomingEvents 
                 title={`Upcoming Events of ${customer.customerName}`} 
                 upcomingEventsAddress={customer.address} 
                 upcomingEventsDateService={customer.dateService} 
                 upcomingEventsEstimatedTime={customer.estimatedTime} 
-                upcomingEventsServices={customer.services} />
+                upcomingEventsServices={customer.services} /> */}
                 
               </div>
             
@@ -177,24 +201,27 @@ type Props = {
               customerName={customer.customerName}
               phone={customer.phone}
               email={customer.email}
-              
+              entityId='customerId'
+              entityType='customers'
               buttonType={1}
             />
             </div>
+            
           </AccordionDetails>
         </Accordion>
+        
       ))}
        
-      
+       </div>
        
     
     </div>
   );
 }
 
-export default CustomerAccordion;
+export default withAuth(CustomerAccordion);
 console.log(Object.keys(CustomerAccordion))
-export const activeSelection = SelectedCustomer
+
 
 const styles: {
   AccordionDetailsStyle: React.CSSProperties;
@@ -209,6 +236,8 @@ const styles: {
   editFormContainer: React.CSSProperties;
   editFormHidden: React.CSSProperties;
   editFormVisible: React.CSSProperties;
+  scrollContainer: React.CSSProperties;
+  searchBar: React.CSSProperties;
 } = {
  AccordionDetailsStyle: {
     backgroundColor: baselightTheme.palette.primary.main,
@@ -217,7 +246,7 @@ const styles: {
     boxShadow: 'inset 0px -3px 5px 1px rgba(0,0,0,0.75)',
     marginTop: '-20px',
     paddingTop: '20px',
-    marginBottom: '10px',
+    marginBottom: '0px',
  },
  AccordionSummaryStyle: {
     backgroundColor: baselightTheme.palette.primary.light,
@@ -249,22 +278,7 @@ serviceStyle:{
     boxShadow: 'inset 0px -2px 2px 1px rgba(0,0,0,0.75)',
 
 },
-notesSection:{
-  backgroundColor: 'rgba(0,0,0, .4)',
-  borderRadius: '15px',
-  width: '98%',
-  marginLeft: '-5px',
-  paddingLeft: '10px',
-  paddingTop: '8px',
-  paddingBottom: '15px',
-  boxShadow: 'inset 0px -2px 2px 1px rgba(0,0,0,0.75)',
-  
-},
-noteItems: {
-paddingTop: '5px',
-borderBottom: '1px solid rgba(255,255,255,0.45)',
-width: '90%',
-},
+
 eventsSection:{
   backgroundColor: 'rgba(0,0,0, .4)',
   borderRadius: '15px',
@@ -291,4 +305,10 @@ editFormHidden: {
   editFormVisible: {
     transform: 'translateX(0)',
   },
+  scrollContainer: { 
+  overflowY: 'scroll',
+  height: '415px',
+  marginBottom: '-45px',
+},
+
 };

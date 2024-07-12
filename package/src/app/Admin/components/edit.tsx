@@ -10,14 +10,20 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
 import withAuth from '@/utils/withAuth';
+import useFetchUsers from '../users/users';
+import { useUserContext } from './userContext';
 
 type Props = {
-    token: string;
+    token?: string;
     entityType: string;
     entityId: string;
     title?: string;
-    // Other props...
     buttonType: number;
+    
+    username: string;
+    phone_number: string;
+    email: string;
+    role: number;
 };
 
 function useDeepCompareEffect(callback: () => void, dependencies: {}[] | undefined) {
@@ -32,17 +38,18 @@ function useDeepCompareEffect(callback: () => void, dependencies: {}[] | undefin
 
 function EditForm({ title, buttonType, entityId, entityType, token, ...rest }: Props) {
     const [open, setOpen] = React.useState(false);
-    const [formData, setFormData] = useState<{ [key: string]: string }>({});
-
+    const [formData, setFormData] = useState<{ [key: string]: string | number }>({});
+    const {User, setUser} = useUserContext();
     useDeepCompareEffect(() => {
-        setFormData({ rest });
+        return setFormData({ ...rest });
     }, [rest]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = event.target;
+        
+        const  {name, value}  = event.target;
         setFormData(prevFormData => ({
             ...prevFormData,
-            [name]: value,
+            [name]: value.toString(),
         }));
     };
     
@@ -52,15 +59,17 @@ function EditForm({ title, buttonType, entityId, entityType, token, ...rest }: P
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formDataObj = new FormData();
+      
         
         // Append updated form data to formDataObj
         Object.entries(formData).forEach(([key, value]) => {
-            formDataObj.append(key, value);
+                formDataObj.set(key, typeof value === 'number' ? value.toString() : value);
+           
         });
     
         // Convert formDataObj to JSON
-        const formJson = Object.fromEntries(formDataObj.entries());
-        
+        const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
+
 
         try {
             const response = await axios.patch(`http://127.0.0.1:3000/api/v1/${entityType}/${entityId}`, formJson, {
@@ -70,8 +79,13 @@ function EditForm({ title, buttonType, entityId, entityType, token, ...rest }: P
                 },
             });
             
-            console.log(entityType, ' updated:', response.data);
-            alert(`${entityType} was updated successfully`);
+            console.log(entityType, ' updated:', response.data.data);
+            alert(`${response.data.data.attributes.username} was updated successfully`);
+            handleClose();
+            const updatedUser = User.map((u:any)=>{if (u.id === entityId){console.log(response.data.data); return response.data.data} else {console.log(u); return u;}});
+            setUser(updatedUser);
+
+            
         } catch (error) {
             // Handle error...
         }
@@ -90,12 +104,14 @@ function EditForm({ title, buttonType, entityId, entityType, token, ...rest }: P
                                 key={propName}
                                 margin="dense"
                                 id={propName}
+                                name={propName}
                                 label={propName.charAt(0).toUpperCase() + propName.slice(1)}
                                 type="text"
                                 fullWidth
                                 variant="outlined"
                                 defaultValue={String(propValue)}
                                 onChange={handleChange} // Convert propValue to a string
+                            
                             />
                         ))}
                     </DialogContent>

@@ -1,393 +1,58 @@
 "use-client"
-import { min } from "lodash";
+// useFetchUsers.ts
+import { useState, useEffect } from 'react';
+import Cookie from 'js-cookie';
 
+const useFetchUsers = () => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+      const token = Cookie.get('token');
+      if (!token) {
+        console.error('Token not found. User must be authenticated.');
+        
+        setLoading(false);
+        return;
+      }
 
-const Users = [
-    {
-        "userId": "1",
-        "name": "Samantha Smith",
-        "phone": "970-555-1234",
-        "email": "SSmith@gmail.com",
-        "acctType": 2,
-        "mileage": [{
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        ],
-        "hours":[{
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        ]
-    },
-    {
-        "userId": "2",
+      try {
+        const response = await fetch('http://127.0.0.1:3000/api/v1/users', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
 
-        "name": "Raj Patel",
-        "phone": "970-555-5678",
-        "email": "RPatel@gmail.com",
-        "acctType": 1,
-"mileage": [{
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        ],        "hours":[{
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        ]
-    },
-    {
-        "userId": "3",
-        "name": "Luisa Gomez",
-        "phone": "970-555-9101",
-        "email": "LGomez@gmail.com",
-        "acctType": 2,
-"mileage": [{
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-            {
-                "miles": 100,
-                "created_at": "2022-02-01"},
-            {
-                "miles": 100,
-                "created_at": "2022-02-01"},
-            {
-                "miles": 100,
-                "created_at": "2022-02-01"},
-            {
-                "miles": 100,
-                "created_at": "2022-02-01"},
-            {
-                "miles": 100,
-                "created_at": "2022-02-01"},
-            {
-                "miles": 100,
-                "created_at": "2022-02-01"},
-                {
-                    "miles": 100,
-                    "created_at": "2022-02-01"},
-                {
-                    "miles": 100,
-                    "created_at": "2022-02-01"},
-                {
-                    "miles": 100,
-                    "created_at": "2022-02-01"},
-                {
-                    "miles": 100,
-                    "created_at": "2022-02-01"},
-                {
-                    "miles": 100,
-                    "created_at": "2022-02-01"},
-                {
-                    "miles": 100,
-                    "created_at": "2022-02-01"},
-                    {
-                        "miles": 100,
-                        "created_at": "2022-02-01"},
-                    {
-                        "miles": 100,
-                        "created_at": "2022-02-01"},
-                    {
-                        "miles": 100,
-                        "created_at": "2022-02-01"},
-                    {
-                        "miles": 100,
-                        "created_at": "2022-02-01"},
-                    {
-                        "miles": 100,
-                        "created_at": "2022-02-01"},
-                    {
-                        "miles": 100,
-                        "created_at": "2022-02-01"},
-                        {
-                            "miles": 100,
-                            "created_at": "2022-02-01"},
-                        {
-                            "miles": 100,
-                            "created_at": "2022-02-01"},
-                        {
-                            "miles": 100,
-                            "created_at": "2022-02-01"},
-                        {
-                            "miles": 100,
-                            "created_at": "2022-02-01"},
-                        {
-                            "miles": 100,
-                            "created_at": "2022-02-01"},
-                        {
-                            "miles": 100,
-                            "created_at": "2022-02-01"},
-                            {
-                                "miles": 100,
-                                "created_at": "2022-02-01"},
-                            {
-                                "miles": 100,
-                                "created_at": "2022-02-01"},
-                            {
-                                "miles": 100,
-                                "created_at": "2022-02-01"},
-                            {
-                                "miles": 100,
-                                "created_at": "2022-02-01"},
-                            {
-                                "miles": 100,
-                                "created_at": "2022-02-01"},
-                            {
-                                "miles": 100,
-                                "created_at": "2022-02-01"},
-                                {
-                                    "miles": 100,
-                                    "created_at": "2022-02-01"},
-                                {
-                                    "miles": 100,
-                                    "created_at": "2022-02-01"},
-                                {
-                                    "miles": 100,
-                                    "created_at": "2022-02-01"},
-                                {
-                                    "miles": 100,
-                                    "created_at": "2022-02-01"},
-                                {
-                                    "miles": 100,
-                                    "created_at": "2022-02-01"},
-                                {
-                                    "miles": 100,
-                                    "created_at": "2022-02-01"},
-                                    {
-                                        "miles": 100,
-                                        "created_at": "2022-02-01"},
-                                    {
-                                        "miles": 100,
-                                        "created_at": "2022-02-01"},
-                                    {
-                                        "miles": 100,
-                                        "created_at": "2022-02-01"},
-                                    {
-                                        "miles": 100,
-                                        "created_at": "2022-02-01"},
-                                    {
-                                        "miles": 100,
-                                        "created_at": "2022-02-01"},
-                                    {
-                                        "miles": 100,
-                                        "created_at": "2022-02-01"},
-                                        {
-                                            "miles": 100,
-                                            "created_at": "2022-02-01"},
-                                        {
-                                            "miles": 100,
-                                            "created_at": "2022-02-01"},
-                                        {
-                                            "miles": 100,
-                                            "created_at": "2022-02-01"},
-                                        {
-                                            "miles": 100,
-                                            "created_at": "2022-02-01"},
-                                        {
-                                            "miles": 100,
-                                            "created_at": "2022-02-01"},
-                                        {
-                                            "miles": 100,
-                                            "created_at": "2022-02-01"},
-                                            {
-                                                "miles": 100,
-                                                "created_at": "2022-02-01"},
-                                            {
-                                                "miles": 100,
-                                                "created_at": "2022-02-01"},
-                                            {
-                                                "miles": 100,
-                                                "created_at": "2022-02-01"},
-                                            {
-                                                "miles": 100,
-                                                "created_at": "2022-02-01"},
-                                            {
-                                                "miles": 100,
-                                                "created_at": "2022-02-01"},
-                                            {
-                                                "miles": 100,
-                                                "created_at": "2022-02-01"},
-        ],        "hours":[{
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        ]
-    },
-    {
-        "userId": "4",
-        "name": "Xin Zhao",
-        "phone": "970-555-1213",
-        "email": "XZhao@gmail.com",
-        "acctType": 1,
-"mileage": [{
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        ],        "hours":[{
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        ]
-    },
-    {
-        "userId": "5",
-        "name": "Emily Hughes",
-        "phone": "970-555-1415",
-        "email": "EHughes@gmail.com",
-        "acctType": 2,
-"mileage": [{
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        {
-            "miles": 100,
-            "created_at": "2022-02-01"},
-        ],        "hours":[{
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        {
-            "total_hours": 100,
-            "created_at": "2022-02-01"},
-        ]
-    }
-];
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
 
-export { Users };
+        const { data } = await response.json();
+        const users = data.map(({ id, attributes }: { id: string, attributes: any }) => ({
+          id: id.toString(),
+          username: attributes.username,
+          email: attributes.email,
+          phone: attributes.phone_number,
+          acctType: attributes.role,
+        }));
+        setUsers(users);
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+        
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []); // Add dependencies if needed
+
+  return { users, loading, error };
+};
+
+export default useFetchUsers;

@@ -6,7 +6,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
-import { nth } from 'lodash';
+import { nth, set } from 'lodash';
 import { BorderBottom, Padding } from '@mui/icons-material';
 import { Button, colors } from '@mui/material';
 import { text } from 'stream/consumers';
@@ -16,6 +16,9 @@ import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elem
 import ViewMileage from './userMileage';
 import ViewHours from './userHours';
 import Cookie from 'js-cookie'; 
+import useFetchUsers from '../users/users';
+
+import { useUserContext } from './userContext'; 
 
 type Props = {
   index: Key | null | undefined;
@@ -51,55 +54,66 @@ type Props = {
     
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [Users, setUsers] = useState<Props[]>([]);
+    const { User, setUser } = useUserContext();
+    const { users, loading, error } = useFetchUsers();
+    
 
     useEffect(() => {
-      const fetchUsers = async () => {
-        const token = Cookie.get('token');
-        if (!token) {
-          console.error('Token not found. User must be authenticated.');
-          return;
-        }
+      setUser(users);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [users]);
+
     
-        try {
-          const response = await fetch('http://127.0.0.1:3000/api/v1/users', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-            }
-          });
-    
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-    
-          const { data } = await response.json();
-          const users = data.map((item: { id: { toString: () => any; }; attributes: { username: any; email: any; phone_number: any; role: any; }; }) => ({
-            id: item.id.toString(), // Ensure id is a string
-            username: item.attributes.username,
-            email: item.attributes.email,
-            phone: item.attributes.phone_number, // Adjusted to match the data structure
-            acctType: item.attributes.role, // Assuming role corresponds to acctType
-            // Add other fields as necessary
-          }));
-          setUsers(users);
-        } catch (error) {
-          console.error('Failed to fetch users:', error);
-        }
-      };
-    
-      fetchUsers();
-    }, []);
     
 
-  const handleOpen = (user:typeof  Users) => {
-    // Set the selected user as an array
-    setOpen(true); // Open the overlay
-  };
+
+    // useEffect(() => {
+    //   const fetchUsers = async () => {
+    //     const token = Cookie.get('token');
+    //     if (!token) {
+    //       console.error('Token not found. User must be authenticated.');
+    //       return;
+    //     }
+    
+    //     try {
+    //       const response = await fetch('http://127.0.0.1:3000/api/v1/users', {
+    //         method: 'GET',
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //           'Authorization': `Bearer ${token}`
+    //         }
+    //       });
+    
+    //       if (!response.ok) {
+    //         throw new Error('Network response was not ok');
+    //       }
+    
+    //       const { data } = await response.json();
+    //       const users = data.map((item: { id: { toString: () => any; }; attributes: { username: any; email: any; phone_number: any; role: any; }; }) => ({
+    //         id: item.id.toString(), // Ensure id is a string
+    //         username: item.attributes.username,
+    //         email: item.attributes.email,
+    //         phone: item.attributes.phone_number, // Adjusted to match the data structure
+    //         acctType: item.attributes.role, // Assuming role corresponds to acctType
+    //         // Add other fields as necessary
+    //       }));
+    //       setUsers(users);
+    //     } catch (error) {
+    //       console.error('Failed to fetch users:', error);
+    //     }
+    //   };
+    
+    //   fetchUsers();
+    // }, []);
+    
+
+    const handleOpen = (user: typeof User) => {
+      setUser(user); // Update the selected user in context
+      setOpen(true); // Open the overlay
+    };
   const handleClose = () => setOpen(false);
 
-  const filteredUsers = Array.isArray(Users) ? Users.filter((user) =>
+  const filteredUsers = Array.isArray(User) ? User.filter((user) =>
     user.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.phone?.includes(searchQuery)
@@ -120,6 +134,7 @@ type Props = {
 
   
 {filteredUsers.map((user) => (
+  
         <Accordion key={user.id}>
           <AccordionSummary
             style={styles.AccordionSummaryStyle}
@@ -147,7 +162,7 @@ type Props = {
               <ViewHours hours={user.hours} /> */}
             </Typography>
             <div style={styles.sidebyside}>
-              <EditForm entityId={user.id ?? ''} entityType={'users'} title={`Edit User ${user.username}`} username={user.username} userPhone={user.phone} userEmail={user.email} acctType={user.acctType}  buttonType={1}/>
+              <EditForm entityId={user.id ?? ''} entityType={'users'} title={`Edit User ${user.username}`} username={user.username} phone_number={user.phone} email={user.email} role={user.acctType}  buttonType={1} />
             </div>
           </AccordionDetails>
         </Accordion>
