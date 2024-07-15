@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import Cookie from 'js-cookie';
 
 
+
 interface loginType {
   title?: string;
   subtitle?: JSX.Element | JSX.Element[];
@@ -28,7 +29,9 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   const router = useRouter();
   const [loginSuccess, setLoginSuccess] = useState(false); // Step 1: New state for tracking login success
   const [token, setToken] = useState(''); // Step 2: New state for storing the token
-
+  useEffect(() => {
+    Cookie.remove('token');
+  }, []);
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);

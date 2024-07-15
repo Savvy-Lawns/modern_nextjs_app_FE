@@ -1,100 +1,59 @@
 "use-client"
-import { min } from "lodash";
+import { useState, useEffect } from 'react';
+import Cookie from 'js-cookie';
+import { Service } from '../components/servicesAccordion'; // Ensure this path is correct
 
-export const active = {
-    selection: ''
+
+const useFetchServices = () => {
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      setLoading(true);
+      const token = Cookie.get('token');
+      if (!token) {
+        console.error('Token not found. User must be authenticated.');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch('http://127.0.0.1:3000/api/v1/services', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const { data } = await response.json();
+        const services: Service[] = data.map(({ id, attributes }: { id: string, attributes: any }) => ({
+          id: parseInt(id, 10),
+          name: attributes.name,
+          measurement_unit: attributes.measurement_unit,
+          price: attributes.price,
+          notes: attributes.notes,
+          service_type: attributes.service_type,
+        }));
+        setServices(services);
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+        
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []); // Add dependencies if needed
+
+  return { services, loading, error };
 };
 
- const Services = [
-        {
-            "serviceId": '1',
-            "name": "Lawn Mowing",
-            "measurement": "sq ft",
-            "cost": 10.00,
-            "note": "",
-            "type": 1
-        },
-        {
-            "serviceId": "2",
-            "name": "Hedge Trimming",
-            "measurement": "linear ft",
-            "cost": 5.00,
-            "note": "",
-            "type": 1
-        },
-        {
-            "serviceId": "3",
-            "name": "Leaf Removal",
-            "measurement": "sq ft",
-            "cost": 8.00,
-            "note": "",
-            "type": 1
-        },
-        {
-            "serviceId": "4",
-            "name": "Weed Control",
-            "measurement": "sq ft",
-            "cost": 15.00,
-            "note": "4",
-            "type": 1
-        },
-        {
-            "serviceId": "5",
-            "name": "Fertilization",
-            "measurement": "sq ft",
-            "cost": 20.00,
-            "note": "",
-            "type": 1
-        },
-        {
-            "serviceId": "6",
-            "name": "Aeration",
-            "measurement": "sq ft",
-            "cost": 25.00,
-            "note": "",
-            "type": 1
-        },
-        {
-            "serviceId": "7",
-            "name": "Seeding",
-            "measurement": "sq ft",
-            "cost": 30.00,
-            "note": "",
-            "type": 1
-        },
-        {
-            "serviceId": "8",
-            "name": "Sod Installation",
-            "measurement": "sq ft",
-            "cost": 35.00,
-            "note": "",
-            "type": 1
-        },
-        {
-            "serviceId": "9",
-            "name": "Tree Planting",
-            "measurement": "per item",
-            "cost": 50.00,
-            "note": "",
-            "type": 1
-        },
-        {
-            "serviceId": "10",
-            "name": "Garden Maintenance",
-            "measurement": "sq ft",
-            "cost": 18.00,
-            "note": "",
-            "type": 1
-        },
-        {
-            "serviceId": "11",
-            "name": "Discount10",
-            "measurement": "dollars",
-            "cost": -10.00,
-            "note": "Discount for $10",
-            "type": 2
-        }
-    ]
-
-
-export { Services };
+export default useFetchServices;

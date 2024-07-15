@@ -1,5 +1,5 @@
 "use client";
-import React, {  createContext, useContext, useState,Children } from 'react';
+import React, {  createContext, useContext, useState,Children, useEffect } from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -10,46 +10,66 @@ import { BorderBottom, Padding } from '@mui/icons-material';
 import { Button, colors } from '@mui/material';
 import { text } from 'stream/consumers';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
-import {  Services } from '@/app/Admin/services/services';
 import EditForm from './edit';
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
+import useFetchServices from '../services/services';
+import { useServiceContext } from './serviceContext';
+
+export interface Service {
+  id: number;
+  name: string;
+  measurement_unit: string;
+  price: number;
+  notes: string;
+  service_type: string;
+}
 
 type Props = {
     serviceId?: number;
     name?: string;
-    measurement?: string; // Update the type of 'measurement' to string
-    cost?: number;
-    note?: string;
-    type?: number;
-   
+    measurement_unit?: string; // Update the type of 'measurement' to string
+    price?: number;
+    notes?: string;
+    service_type?: string;
+    title?: string; // Add the 'title' property to the 'Props' type
 };
 
   const SelectedService = () => {};
   const ServiceAccordion = ({
     serviceId,
     name,
-    measurement,
-    cost,
-    note,
-    type,   
+    measurement_unit,
+    price,
+    notes,
+    service_type,   
   }: Props) => {
     
    
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const { services, loading, error } = useFetchServices();
+    const { Service, setService } = useServiceContext();
 
+
+
+    useEffect(() => {
+      setService(Service);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [Service]);
     
 
-  const handleOpen = (service:typeof  Services) => {
-    // Set the selected service as an array
-    setOpen(true); // Open the overlay
-  };
+    const handleOpen = (service: typeof Service) => { // Ensure service is of type Service
+      setService(service);
+      setOpen(true);
+    };
   const handleClose = () => setOpen(false);
 
-  const filteredServices = Services.filter((service) =>
-    service.name.toLowerCase().includes(searchQuery.toLowerCase()) 
+  const filteredServices = services.filter((service) =>
+    service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    service.notes.toLowerCase().includes(searchQuery.toLowerCase()), 
   );
 
+  
   return (
     <div>
       <CustomTextField
@@ -64,38 +84,49 @@ type Props = {
 
   
       {filteredServices.map((service) => (
-        <Accordion key={service.serviceId}>
+        <Accordion key={service.id}>
           <AccordionSummary
             style={styles.AccordionSummaryStyle}
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
-            id={service.serviceId.toString()}
-          >
+            id={service.id.toString()}
+            >
             <Typography>{service.name}</Typography>
           </AccordionSummary>
           <AccordionDetails style={styles.AccordionDetailsStyle}>
             <Typography sx={styles.serviceStyle}>
             <div>
-            <Typography variant='body1'>Measurement:</Typography>
-            <Typography variant='body2'>{service.measurement}</Typography>
+            <Typography variant='body1'>Measurement Unit:</Typography>
+            <Typography variant='body2'>{service.measurement_unit}</Typography>
             </div>
             <div>
-            <Typography variant='body1'>Cost:</Typography>
-            <Typography variant='body2'>{service.cost}</Typography>
+            <Typography variant='body1'>Price:</Typography>
+            <Typography variant='body2'>$ {service.price}</Typography>
             </div>
             <div>
-            <Typography variant='body1'>Note:</Typography>
-            <Typography variant='body2'>{service.note}</Typography>
+            <Typography variant='body1'>Notes:</Typography>
+            <Typography variant='body2'>{service.notes}</Typography>
             </div>
             <div>
-            <Typography variant='body1'>Type:</Typography>
-            <Typography variant='body2'>{service.type}</Typography>
+            <Typography variant='body1'>Service Type:</Typography>
+            <Typography variant='body2'>{service.service_type}</Typography>
             </div>
             
             
             </Typography>
             <div style={styles.sidebyside}>
-            <EditForm title={`Edit Service ${service.name}`} name={service.name} measurement={service.measurement} cost={service.cost} note={service.note} type={service.type} />
+            <EditForm
+          title={`Edit Service ${service.name}`}
+          name={service.name}
+          measurement_unit={service.measurement_unit}
+          price={service.price}
+          notes={service.notes}
+          service_type={service.service_type}
+          buttonType={1}
+          entityId={String(service.id)}
+          entityType='services'
+          // Do not pass other props that EditForm might accept but you don't want to include
+        />
             </div>
           </AccordionDetails>
         </Accordion>

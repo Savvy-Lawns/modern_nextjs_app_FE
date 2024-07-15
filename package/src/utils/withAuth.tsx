@@ -8,7 +8,8 @@ const withAuth = <P extends object>(WrappedComponent: ComponentType<P>) => {
     useEffect(() => {
       const token = Cookie.get('token');
       if (!token) {
-        Router.push('/login'); // Adjust the path as necessary
+        Router.push('authentication/login'); 
+        alert("You must be logged in to view this page.");
       }
     }, []);
 

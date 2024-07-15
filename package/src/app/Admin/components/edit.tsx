@@ -13,18 +13,22 @@ import withAuth from '@/utils/withAuth';
 import useFetchUsers from '../users/users';
 import { useUserContext } from './userContext';
 
-type Props = {
-    token?: string;
+type Props = Partial<{
+    token: string;
     entityType: string;
     entityId: string;
-    title?: string;
+    title: string;
     buttonType: number;
-    
+    name: string;
     username: string;
     phone_number: string;
     email: string;
     role: number;
-};
+    measurement_unit: string;
+    price: number;
+    notes: string;
+    service_type: string;
+}>;
 
 function useDeepCompareEffect(callback: () => void, dependencies: {}[] | undefined) {
     const currentDependenciesRef = useRef<{}[] | undefined>();
@@ -33,7 +37,7 @@ function useDeepCompareEffect(callback: () => void, dependencies: {}[] | undefin
         currentDependenciesRef.current = dependencies;
     }
 
-    useEffect(callback, [currentDependenciesRef.current]); // Fixed to use the correct dependency
+    useEffect(callback, [currentDependenciesRef.current]);
 }
 
 function EditForm({ title, buttonType, entityId, entityType, token, ...rest }: Props) {

@@ -64,49 +64,6 @@ type Props = {
     }, [users]);
 
     
-    
-
-
-    // useEffect(() => {
-    //   const fetchUsers = async () => {
-    //     const token = Cookie.get('token');
-    //     if (!token) {
-    //       console.error('Token not found. User must be authenticated.');
-    //       return;
-    //     }
-    
-    //     try {
-    //       const response = await fetch('http://127.0.0.1:3000/api/v1/users', {
-    //         method: 'GET',
-    //         headers: {
-    //           'Content-Type': 'application/json',
-    //           'Authorization': `Bearer ${token}`
-    //         }
-    //       });
-    
-    //       if (!response.ok) {
-    //         throw new Error('Network response was not ok');
-    //       }
-    
-    //       const { data } = await response.json();
-    //       const users = data.map((item: { id: { toString: () => any; }; attributes: { username: any; email: any; phone_number: any; role: any; }; }) => ({
-    //         id: item.id.toString(), // Ensure id is a string
-    //         username: item.attributes.username,
-    //         email: item.attributes.email,
-    //         phone: item.attributes.phone_number, // Adjusted to match the data structure
-    //         acctType: item.attributes.role, // Assuming role corresponds to acctType
-    //         // Add other fields as necessary
-    //       }));
-    //       setUsers(users);
-    //     } catch (error) {
-    //       console.error('Failed to fetch users:', error);
-    //     }
-    //   };
-    
-    //   fetchUsers();
-    // }, []);
-    
-
     const handleOpen = (user: typeof User) => {
       setUser(user); // Update the selected user in context
       setOpen(true); // Open the overlay
