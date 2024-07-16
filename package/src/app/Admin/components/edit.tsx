@@ -28,6 +28,7 @@ type Props = Partial<{
     price: number;
     notes: string;
     service_type: string;
+    address: string;
 }>;
 
 function useDeepCompareEffect(callback: () => void, dependencies: {}[] | undefined) {

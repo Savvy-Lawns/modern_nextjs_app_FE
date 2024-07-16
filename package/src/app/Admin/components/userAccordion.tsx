@@ -63,7 +63,7 @@ type Props = {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [users]);
 
-    
+
     const handleOpen = (user: typeof User) => {
       setUser(user); // Update the selected user in context
       setOpen(true); // Open the overlay
@@ -89,7 +89,7 @@ type Props = {
         onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setSearchQuery(e.target.value)} // Update search query on input change
       />
 
-  
+  <div style={styles.scrollContainer}>
 {filteredUsers.map((user) => (
   
         <Accordion key={user.id}>
@@ -124,6 +124,7 @@ type Props = {
           </AccordionDetails>
         </Accordion>
       ))}
+      </div>
     </div>
   );
 }
@@ -136,6 +137,7 @@ const styles: {
   sidebyside: React.CSSProperties & { flexDirection: 'row' };
   jobbuttons: React.CSSProperties;
   serviceStyle: React.CSSProperties;
+  scrollContainer: React.CSSProperties;
 } = {
  AccordionDetailsStyle: {
     backgroundColor: baselightTheme.palette.primary.main,
@@ -174,6 +176,11 @@ serviceStyle:{
     backgroundColor: 'rgba(256,256,256,0.4)',
     boxShadow: 'inset 0px -2px 2px 1px rgba(0,0,0,0.75)',
 
+},
+scrollContainer: { 
+  overflowY: 'scroll',
+  height: '58vh',
+  marginBottom: '-45px',
 },
 
 };

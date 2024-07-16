@@ -8,6 +8,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import withAuth from '@/utils/withAuth';
 import { Typography } from '@mui/material';
+import { baselightTheme } from '@/utils/theme/DefaultColors';
 
 type Props = {
     token: string | undefined;
@@ -41,12 +42,13 @@ const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
     
         // Convert formDataObj to JSON
         const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
+        const entity = entityType
     
         const apiUrl = `http://127.0.0.1:3000/api/v1/${entityType}`;
     
         try {
             // Ensure the data is nested under the 'service' key
-            const requestData = { service: formJson };
+            const requestData = { [entity.slice(0, -1)]: formJson };
     
             const response = await axios.post(apiUrl, requestData, {
                 headers: {
@@ -68,10 +70,10 @@ const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
 
     return (
         <React.Fragment>
-            {buttonType === 1 && <Button color='secondary' variant='outlined' onClick={handleClickOpen}><Typography variant='h2'>+</Typography></Button>}
+            {buttonType === 1 && <Button sx={Styles.addButton} color='secondary' variant='outlined' onClick={handleClickOpen}><Typography variant='h2'>+</Typography></Button>}
             <Dialog open={open} onClose={handleClose}>
                 <form onSubmit={handleSubmit}>
-                    <DialogTitle>{title} {entityType}</DialogTitle>
+                    <DialogTitle>{title}</DialogTitle>
                     <DialogContent>
                         {Object.entries(rest).map(([propName, propValue]) => (
                             <TextField
@@ -97,3 +99,20 @@ const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
 };
 
 export default withAuth(AddForm);
+
+const Styles = {
+    addButton: {
+        position: 'fixed',
+        bottom: '20px',
+        right: '20px',
+        zIndex: 1000,
+        borderRadius: '50%',
+        backgroundColor: baselightTheme.palette.primary.main,
+        color: '#fff',
+        paddingBottom: '12px',
+        boxShadow: "inset 0px -1px 2px 0px rgba(0,0,0,0.75), 0px 3px 10px 1px rgba(0,0,0,0.75)",
+        border: '1px solid rgba(0,0,0,0.45)',
+        textBorder: '1 solid rbga(0,0,0,0.45)',
+
+    },
+};

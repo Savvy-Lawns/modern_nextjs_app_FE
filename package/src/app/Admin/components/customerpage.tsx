@@ -34,6 +34,7 @@ const [token, setToken] = useState<string | undefined>('');
       }
     });
 
+const date = new Date().toLocaleString();
 
 
   return (
@@ -46,12 +47,14 @@ const [token, setToken] = useState<string | undefined>('');
            <AddForm
         title="Add Customer"
         buttonType={1} // Assuming 1 is the correct type for showing the button
-        entityType="customer"
+        entityType="customers"
         token={token}
+        
         name=""
-        phone=""
+        phone_number=""
         email=""
         address=""
+        notes={'Created at ' + date}
       />
             
             
