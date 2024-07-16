@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import {UserProvider} from './Admin/components/userContext'
 import {ServiceProvider} from './Admin/components/serviceContext'
 import { CustomerProvider } from "./Admin/components/customerContext";
+import { ExpenseProvider } from "./Admin/components/expenseContext";
 
 
 
@@ -26,12 +27,14 @@ export default function RootLayout({
         <UserProvider>
         <ServiceProvider>
         <CustomerProvider>
+        <ExpenseProvider>
         <ThemeProvider theme={baselightTheme}>
         
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
           {children}
         </ThemeProvider>
+        </ExpenseProvider>
         </CustomerProvider>
         </ServiceProvider>
         </UserProvider>

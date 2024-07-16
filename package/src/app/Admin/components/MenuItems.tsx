@@ -1,4 +1,4 @@
-import { IconChecklist, IconFileDollar, IconHome, IconShovel, IconTrees, IconUsers } from "@tabler/icons-react";
+import { IconChecklist, IconFileDollar, IconHome, IconShovel, IconTrees, IconUsers, IconReportMoney } from "@tabler/icons-react";
 import {
     IconUserCircle,
     IconListCheck,
@@ -9,6 +9,7 @@ import {
   } from "@tabler/icons-react";
   
   import { uniqueId } from "lodash";
+import { title } from "process";
   
   const Menuitems = [
     
@@ -46,7 +47,12 @@ import {
         href: "/Admin/finance",
       },
     
-    
+    {
+      id: uniqueId(),
+      title: "Expenses",
+      icon: IconReportMoney,
+      href: "/Admin/expenses",
+    }
     
   ];
   
