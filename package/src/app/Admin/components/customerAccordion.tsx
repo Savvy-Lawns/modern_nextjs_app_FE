@@ -120,7 +120,9 @@ type Props = {
             <Typography>{customer.name}</Typography>
           </AccordionSummary>
           <AccordionDetails style={styles.AccordionDetailsStyle}>
+          
             <Typography sx={styles.serviceStyle}>
+              
             <div>
             <Typography variant='body1'>Address:</Typography>
             <Typography variant='body2'>{customer.address}</Typography>

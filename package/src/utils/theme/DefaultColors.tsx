@@ -64,7 +64,7 @@ const baselightTheme = createTheme({
       hoverOpacity: 0.02,
       hover: "#f6f9fc",
     },
-    divider: "#e5eaef",
+    divider: "transparent",
   },
   typography: {
     fontFamily: plus.style.fontFamily,

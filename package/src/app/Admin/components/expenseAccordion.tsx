@@ -53,13 +53,14 @@ type Props = {
     const { expenses, loading, error } = useFetchExpenses();
     const { Expense, setExpense } = useExpenseContext();
 
-    const groupExpensesByDate = (expenses: Expense[]): Record<string, Expense[]> => {
-        return expenses.reduce((acc: Record<string, Expense[]>, expense: Expense) => {
+    const groupExpensesByDate = (expenses: Expense[]): Record<string, { expenses: Expense[]; total: number }> => {
+        return expenses.reduce((acc: Record<string, { expenses: Expense[]; total: number }>, expense: Expense) => {
             const date = new Date(expense.created_at).toDateString(); // Convert to a simple date string for grouping
             if (!acc[date]) {
-                acc[date] = [];
+                acc[date] = { expenses: [], total: 0 };
             }
-            acc[date].push(expense);
+            acc[date].expenses.push(expense);
+            acc[date].total += expense.cost; // Add expense cost to total for the day
             return acc;
         }, {});
     };
@@ -97,24 +98,36 @@ type Props = {
         onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setSearchQuery(e.target.value)} // Update search query on input change
       />
 
-  
-        {sortedDates.map(([date, expenses]) => (
-            <div key={date}>
-                <Typography variant="h6" style={{ margin: '20px 0' }}>
-                {date} {/* Display the date */}
-                </Typography>
-                {expenses.map((expense) => (
-                <Accordion key={expense.id}>
+ 
+{sortedDates.map(([date, { expenses, total }]) => (
+            <Accordion key={date}  style={styles.accordionDate}>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id={`panel1a-header-${date}`}
+                    style={styles.accordionDateSummary}>
+
+                    <Typography variant="h6" style={{ margin: '0 0', paddingLeft: '5px' }}>
+                        {date}
+                        <Typography variant="body2" style={{ display: 'block' }}>
+                            Total: $ {Number(total).toFixed(2)}
+                        </Typography>
+                    </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    {expenses.map((expense) => (
+                <Accordion key={expense.id} sx={styles.accordionStyle}>
                     <AccordionSummary
                     style={styles.AccordionSummaryStyle}
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
                     id={expense.id.toString()}
                     >
-                    <Typography style={styles.AccordionSummaryText} variant="body1">
-                        {expense.name}
-                    </Typography>
-                    <Typography variant="body1">$ {expense.cost}</Typography>
+                        <div style={{width: '100%', display:'flex', justifyContent:'space-between', paddingLeft:'10px', paddingRight:'20px'}}>
+                    <Typography  variant="body1">{expense.name}</Typography>
+
+                     <Typography variant="body1">$ {Number(expense.cost).toFixed(2)}</Typography>
+                     </div>
                     </AccordionSummary>
                     <AccordionDetails style={styles.AccordionDetailsStyle}>
             <Typography sx={styles.expenseStyle}>
@@ -134,7 +147,7 @@ type Props = {
           name={expense.name}
           cost={expense.cost}
           notes={expense.notes}
-          user_id={expense.user_id}
+          id={expense.id}
           buttonType={1}
           entityId={String(expense.id)}
           entityType='expenses'
@@ -143,10 +156,15 @@ type Props = {
             </div>
           </AccordionDetails>
                 </Accordion>
-                ))}
-            </div>
+                
             ))}
-        </div>
+            </AccordionDetails>
+        </Accordion>
+    ))}
+    
+</div>
+         
+       
   );
 }
 
@@ -160,10 +178,22 @@ const styles: {
   sidebyside: React.CSSProperties & { flexDirection: 'row' };
   jobbuttons: React.CSSProperties;
   expenseStyle: React.CSSProperties;
-  AccordionSummaryText: React.CSSProperties;
+  accordionDateSummary: React.CSSProperties;
+  accordionDate: React.CSSProperties;
+  accordionStyle: React.CSSProperties;
+  
 } = {
+    accordionStyle: {
+        backgroundColor: 'transparent',
+        boxShadow: 'none',
+        border: 'none',
+        marginBottom: '0px',
+        height: 'auto',
+        marginTop: '-1px',
+        
+    },
  AccordionDetailsStyle: {
-    backgroundColor: baselightTheme.palette.primary.main,
+    backgroundColor: baselightTheme.palette.primary.dark,
     color: baselightTheme.palette.primary.contrastText,
     borderRadius: '0px 0px 15px 15px',
     boxShadow: 'inset 0px -3px 5px 1px rgba(0,0,0,0.75)',
@@ -201,6 +231,21 @@ expenseStyle:{
     backgroundColor: 'rgba(256,256,256,0.4)',
     boxShadow: 'inset 0px -2px 2px 1px rgba(0,0,0,0.75)',
 
+},
+accordionDateSummary: {
+    backgroundColor: baselightTheme.palette.primary.main,
+    color: baselightTheme.palette.primary.contrastText,
+    
+    
+    borderBottom: "3px solid rgba(0,0,0,0.75)",
+    
+},
+accordionDate: {
+    backgroundColor: baselightTheme.palette.primary.main,
+    borderBottom: "3px solid rgba(0,0,0,0.75)",
+    borderBottomLeftRadius: '15px',
+    borderBottomRightRadius: '15px',
+    marginBottom: '5px',
 },
 
 };
