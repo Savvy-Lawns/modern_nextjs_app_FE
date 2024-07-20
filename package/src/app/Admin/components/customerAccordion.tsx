@@ -20,6 +20,7 @@ import ViewUpcomingEvents from './customerUpcomingEvents';
 import withAuth from '@/utils/withAuth';
 import Cookie from 'js-cookie';
 import { useCustomerContext } from "./customerContext";
+import ViewCustomerEvents from './customerUpcomingEvents';
 
 
 type Props = {
@@ -123,21 +124,29 @@ type Props = {
           
             <Typography sx={styles.serviceStyle}>
               
-            <div>
-            <Typography variant='body1'>Address:</Typography>
-            <Typography variant='body2'>{customer.address}</Typography>
+            
+              <div style={{display:'flex', flexDirection:'column', marginTop:'10px', marginBottom:'6px', alignItems:'center',marginRight:'10px',}}>
+            <Typography variant='h5'>Address:</Typography>
+            <Typography variant='subtitle1'>{customer.address}</Typography>
             </div>
-            <div>
-            <div style={{ justifyContent:'space-between', width:"100%"}}><Typography variant='body1' >Phone:
-              </Typography></div>
-            <Typography variant='body2'>{customer.phone_number}</Typography>
-            <div style={{ justifyContent:'space-between', width:"100%"}}><Typography variant='body1'>Email:</Typography></div>
-            <Typography variant='body2'>{customer.email}</Typography>
+            <div style={{display:'flex', flexDirection:'column',  marginBottom:'6px', alignItems:'center',marginRight:'10px',}}>
+              <Typography variant='h5' >Phone:</Typography>
+            <Typography variant='subtitle1'>{customer.phone_number}</Typography>
             </div>
-           
+            <div style={{display:'flex', flexDirection:'column',  marginBottom:'10px', alignItems:'center', marginRight:'10px', }}>
+              <Typography variant='h5'>Email:</Typography>
+            <Typography variant='subtitle1'>{customer.email}</Typography>
+            </div>
+            
+          <div style={styles.buttonRow}>
             <ViewNotes notes={customer.notes} />
-                
-              
+            <ViewCustomerEvents
+              title={`Upcoming Events for ${customer.name}`}
+              name={customer.name}
+              address={customer.address}
+              phoneNumber={customer.phone_number}
+            />
+              </div>
               <div>
                 {/* <ViewUpcomingEvents 
                 title={`Upcoming Events of ${customer.customerName}`} 
@@ -193,6 +202,7 @@ const styles: {
   editFormHidden: React.CSSProperties;
   editFormVisible: React.CSSProperties;
   scrollContainer: React.CSSProperties;
+  buttonRow: React.CSSProperties;
   
 } = {
   AccordionDetailsStyle: {
@@ -217,6 +227,17 @@ const styles: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     textAlign: 'center',
+    height: '40px',
+    
+  },
+  buttonRow: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    textAlign: 'center',
+    marginBottom: '10px',
+    
+    
   },
   jobbuttons: {
     marginTop: '10px',

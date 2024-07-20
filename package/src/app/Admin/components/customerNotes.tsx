@@ -39,10 +39,10 @@ export default function ViewNotes({ notes }: Props) {
     
     return (
         <React.Fragment>
-            <div style={{ display: 'flex', justifyContent: 'space-around', marginRight: '20px', marginTop: '15px', marginBottom: '10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginRight:'10px', marginBottom: '10px' }}>
                 <Button
                     type="submit"
-                    style={{ backgroundColor: baselightTheme.palette.primary.main, color: '#fff' }}
+                    style={{ backgroundColor: baselightTheme.palette.primary.main, color: '#fff', padding: '20px 10px', width:'100%' }}
                     onClick={handleClickOpen}
                 >
                     View Notes

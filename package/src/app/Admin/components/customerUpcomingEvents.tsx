@@ -1,80 +1,101 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
-import { Typography } from '@mui/material';
-import { BorderBottom } from '@mui/icons-material';
 
-type Props = {
-        title: string;
-        upcomingEventsEventId: number;
-        upcomingEventsDateService: string;
-        upcomingEventsService: string;
-        upcomingEventsEstimatedPrice: number;
-        upcomingEventsStatus: string;
-        upcomingEventsIsPaid: boolean;
-        upcomingEventsEstimatedTime: number;
-        upcomingEventsAddress: string;
-        notesCreated_at: string;
-        notesNote: string;
-        servicesService: string;
-        servicesEstimatedPrice: number;
-        servicesEstimatedTime: number;
-};
+interface Props {
+  title: string;
+  name: string;
+  address: string;
+  phoneNumber: string;
+}
 
-export default function ViewCustomerEvents({ title, ...rest }: Props) {
-    const [open, setOpen] = React.useState(false);
-    // Ensure displayData is initialized with an array
-    
+const ViewCustomerEvents: React.FC<Props> = ({ title, name, address, phoneNumber }) => {
+  const [open, setOpen] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-        // Ensure setDisplayData is always called with an array
-    };
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const handleFormOpen = () => setFormOpen(true);
+  const handleFormClose = () => setFormOpen(false);
 
-    const handleClose = () => {
-        setOpen(false);
-    };
+  const handleFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    // Process form data here
+    console.log("Form submitted");
+    handleFormClose();
+  };
 
-
-    
-    
-
-    
-    return (
-        <React.Fragment>
-            <div style={{ display: 'flex', justifyContent: 'space-around', marginRight: '20px', marginTop: '15px', marginBottom: '10px' }}>
-                <Button
-                    type="submit"
-                    style={{ backgroundColor: baselightTheme.palette.primary.main, color: '#fff' }}
-                    onClick={handleClickOpen}
-                >
-                    View Upcoming Events
-                </Button>
-            </div>
-
-            <Dialog style={Styles.overlayWindow} open={open} onClose={handleClose} >
-                <DialogTitle style={{ display: 'flex', justifyContent: 'center' }}>{title}</DialogTitle>
-                <DialogContent>
-                    <div style={Styles.notesTable}>
-                    
-                      </div>
-                      <div >
-                            
-                       
-
-                    </div>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose}>Close</Button>
-                </DialogActions>
+  return (
+    <React.Fragment>
+      <Button
+        style={{ backgroundColor: baselightTheme.palette.primary.main, color: '#fff', padding: '20px 15px', marginRight:'10px'}}
+        onClick={handleClickOpen}
+      >
+        View Upcoming Events
+      </Button>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>{title}</DialogTitle>
+        <DialogContent>
+          {/* Display event list */}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleFormOpen}>Add Event</Button>
+          <Button onClick={handleClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={formOpen} onClose={handleFormClose}>
+        <form onSubmit={handleFormSubmit}>
+          <DialogTitle>Add New Event</DialogTitle>
+          <DialogContent>
+            <TextField
+              margin="dense"
+              id="name"
+              label="Customer Name"
+              type="text"
+              fullWidth
+              variant="outlined"
+              defaultValue={name}
+              disabled
+            />
+            <TextField
+              margin="dense"
+              id="address"
+              label="Address"
+              type="text"
+              fullWidth
+              variant="outlined"
+              defaultValue={address}
+              disabled
+            />
+            <TextField
+              margin="dense"
+              id="phoneNumber"
+              label="Phone Number"
+              type="text"
+              fullWidth
+              variant="outlined"
+              defaultValue={phoneNumber}
+              disabled
+            />
+                        {/* Add more fields as needed */}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleFormClose}>Cancel</Button>
+                        <Button type="submit">Submit</Button>
+                    </DialogActions>
+                </form>
             </Dialog>
         </React.Fragment>
     );
 }
+
+export default ViewCustomerEvents;
+
 
 const Styles = {
     overlayWindow: {
