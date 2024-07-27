@@ -21,6 +21,7 @@ import withAuth from '@/utils/withAuth';
 import Cookie from 'js-cookie';
 import { useCustomerContext } from "./customerContext";
 import ViewCustomerEvents from './customerUpcomingEvents';
+import DeleteButton from './delete';
 
 
 type Props = {
@@ -34,6 +35,7 @@ type Props = {
       created_at: string;
       note: string;
     }[];
+    
     
       
     
@@ -52,6 +54,21 @@ type Props = {
     const [isEditFormVisible, setIsEditFormVisible] = useState(false);
     const { customers, loading, error } = useFetchCustomers();
     const { Customer, setCustomer } = useCustomerContext();
+    const [token, setToken] = useState<string | undefined>('');
+
+  useEffect(() => {
+    // This useEffect is only responsible for setting the token
+    const fetchedToken = Cookie.get('token');
+    setToken(fetchedToken);
+  }, []); // Empty dependency array means this runs once on component mount
+  
+  useEffect(() => {
+    // This useEffect is responsible for checking the token's existence
+    if (!token) {
+      console.error('Token not found. User must be authenticated.');
+      // Here you might want to redirect the user to a login page or show an error message
+    }
+  }, [token]); 
     
     useEffect(() => {
       setCustomer(Customer);
@@ -76,7 +93,7 @@ type Props = {
 
   const filteredCustomers = (customers as unknown as {
     id: Key | null | undefined;
-    customerId: Key | null | undefined;
+    customerId: Key | null | undefined ;
     name: string; eventId: number; dateService: string; services: { service: string; estimatedPrice: number; }[]; status: string; isPaid: boolean; estimatedTime: number; address: string;  phone_number: string; email: string; notes: { created_at: string; note: string; }[]; 
 }[]).filter((customer) => (customer.name || "")?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         
@@ -116,7 +133,7 @@ type Props = {
             style={styles.AccordionSummaryStyle}
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
-            id={customer.customerId?.toString() ?? ''}
+            id={customer.customerId?.toString() ?? 'text'}
           >
             <Typography>{customer.name}</Typography>
           </AccordionSummary>
@@ -145,6 +162,8 @@ type Props = {
               name={customer.name}
               address={customer.address}
               phoneNumber={customer.phone_number}
+              token={token}
+              id={customer.customerId?.toString() ?? ''}
             />
               </div>
               <div>
@@ -170,6 +189,13 @@ type Props = {
               entityType='customers'
               buttonType={1}
             />
+            <DeleteButton
+        entityType='customers' 
+        entityId={customer.id?.toString() ?? ''}
+        title={'DeleteButton'}
+        token={token}
+        entityName={customer.name}
+           />
             </div>
             
           </AccordionDetails>

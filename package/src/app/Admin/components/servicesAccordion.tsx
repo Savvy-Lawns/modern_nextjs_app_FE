@@ -14,6 +14,7 @@ import EditForm from './edit';
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
 import useFetchServices from '../services/services';
 import { useServiceContext } from './serviceContext';
+import DeleteButton from './delete';
 
 export interface Service {
   id: number;
@@ -32,6 +33,7 @@ type Props = {
     notes?: string;
     service_type?: string;
     title?: string; // Add the 'title' property to the 'Props' type
+    token?: string | undefined;
 };
 
   const SelectedService = () => {};
@@ -41,7 +43,8 @@ type Props = {
     measurement_unit,
     price,
     notes,
-    service_type,   
+    service_type, 
+    token,  
   }: Props) => {
     
    
@@ -127,6 +130,13 @@ type Props = {
           entityType='services'
           // Do not pass other props that EditForm might accept but you don't want to include
         />
+        <DeleteButton
+        entityType='services' 
+        entityId={service.id}
+        title={'DeleteButton'}
+        token={token}
+        entityName={service.name}
+           />
             </div>
           </AccordionDetails>
         </Accordion>

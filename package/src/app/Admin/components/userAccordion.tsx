@@ -17,12 +17,12 @@ import ViewMileage from './userMileage';
 import ViewHours from './userHours';
 import Cookie from 'js-cookie'; 
 import useFetchUsers from '../users/users';
-
+import DeleteButton from './delete'
 import { useUserContext } from './userContext'; 
 
 type Props = {
   index: Key | null | undefined;
-  
+  token?: string | undefined;
   id?: string;
   username?: string;
   phone?: string;
@@ -48,7 +48,8 @@ type Props = {
     email,
     acctType,
     mileage,
-    hours,    
+    hours, 
+    token,   
   }: Props) => {
     
     
@@ -120,6 +121,13 @@ type Props = {
             </Typography>
             <div style={styles.sidebyside}>
               <EditForm entityId={user.id ?? ''} entityType={'users'} title={`Edit User ${user.username}`} username={user.username} phone_number={user.phone} email={user.email} role={user.acctType}  buttonType={1} />
+              <DeleteButton
+        entityType='users' 
+        entityId={user.id?.toString() ?? ''}
+        title={'DeleteButton'}
+        token={token}
+        entityName={user.username}
+           />
             </div>
           </AccordionDetails>
         </Accordion>

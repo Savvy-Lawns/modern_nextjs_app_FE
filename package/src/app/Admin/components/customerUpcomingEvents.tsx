@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC, ReactNode } from 'react';
+import axios from 'axios';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -10,46 +11,84 @@ import Autocomplete from '@mui/material/Autocomplete';
 import useFetchServices from '../services/services'
 import { Service } from './servicesAccordion';
 import AddServices from './addServices';
+import withAuth from '@/utils/withAuth';
+import { rest } from 'lodash';
+import Cookie from 'js-cookie';
+
 
 interface Props {
   title: string;
+  id: number | string;
   name: string;
   address: string;
   phoneNumber: string;
+  token: string | undefined;
+  
+
 }
 
-const ViewCustomerEvents: React.FC<Props> = ({ title, name, address, phoneNumber }) => {
+const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, token }) => {
   const [open, setOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
- const [SelectedServices, setSelectedServices] = useState<Array<{ service: Service | null, propertyMetric: number, recurrence: string }>>([]);
+  const [SelectedServices, setSelectedServices] = useState<Array<{ service: Service | null, propertyMetric: number, recurrence: string }>>([]);
   const [startDate, setStartDate] = useState<Date | null | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | null | undefined>(new Date());
 
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  console.log("Event Form Closed");
 
   const handleFormOpen = () => setFormOpen(true);
   const handleFormClose = () => {
     console.log("Form closed");
     setFormOpen(false);
-};
-  
-  
-  const handleFormSubmit = (event: React.FormEvent) => {
+  }
+
+  const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     // Set API call here
     
-    console.log("Event submitted");
-    handleFormClose();
-    setSelectedServices([]);
-  };
+    // Initialize a new FormData object
+    const formDataObj = new FormData();
+    
+    // Dynamically construct the data object based on the form fields
+    Object.keys(rest).forEach(key => {
+        const inputElement = document.getElementById(key) as HTMLInputElement;
+        if (inputElement) {
+            // Append data to formDataObj instead of creating a simple object
+            formDataObj.append(key, inputElement.value);
+        }
+    });
 
-  
+    // Convert formDataObj to JSON
+    const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
+    const customer = 'customers';
+    const customerId = id;
 
-  
+    const apiUrl = `http://127.0.0.1:3000/api/v1/customers/${customerId}/events`;
 
+    try {
+        // Ensure the data is nested under the 'service' key
+        const requestData = { [customer.slice(0, -1)]: formJson };
 
+        const response = await axios.post(apiUrl, requestData, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (response.status === 200 || response.status === 201) {
+            alert(`customers event created successfully`);
+            console.log("Event submitted");
+            handleFormClose();
+            setSelectedServices([]);
+        } else {
+            throw new Error(`Failed to create customers event. Status code: ${response.status}`);
+        }
+    } catch (error) {
+        console.error(`Error creating customers event:`, error);
+    }
+  }
 
   return (
     <React.Fragment>
@@ -130,54 +169,7 @@ const ViewCustomerEvents: React.FC<Props> = ({ title, name, address, phoneNumber
               defaultValue={phoneNumber}
               disabled
             />
-            {/* <Autocomplete
-            style={Styles.eventDetailField}
-              options={services}
-              getOptionLabel={(option) => option.name}
-              onChange={(event, newValue) => handleServiceSelect(newValue)}
-              renderInput={(params) => <TextField {...params} label="Select Service" />}
-            />
-            {renderSelectedServices()}
-            <Dialog open={metricAndRecurrenceDialogOpen} onClose={handleMetricAndRecurrenceDialogClose}>
-              <form id="service_details" onSubmit={handleMetricAndRecurrenceSubmit}>
-                <DialogTitle>Enter Service Details</DialogTitle>
-                <DialogContent>
-                  <TextField
-                    label="Property Metric"
-                    type="number"
-                    fullWidth
-                    variant="outlined"
-                    value={propertyMetric}
-                    onChange={(e) => setPropertyMetric(e.target.value)}
-                    style={Styles.eventDetailField}
-                  />
-                  <TextField
-                    label="Recurrence"
-                    select
-                    fullWidth
-                    variant="outlined"
-                    value={recurrence}
-                    onChange={(e) => setRecurrence(e.target.value)}
-                    SelectProps={{
-                      native: true,
-                    }}
-                  >
-                    <option value=""></option>
-                    <option value="one-time">One Time</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="bi-weekly">Bi-Weekly</option>
-                    <option value="monthly">Monthly</option>
-                  </TextField>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleMetricAndRecurrenceDialogClose}>Cancel</Button>
-                  <Button type="submit">Submit</Button>
-                </DialogActions>
-              </form>
-            </Dialog> */}
-
-<AddServices />
-
+            <AddServices />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleFormClose}>Cancel</Button>
@@ -189,7 +181,7 @@ const ViewCustomerEvents: React.FC<Props> = ({ title, name, address, phoneNumber
   );
 };
 
-export default ViewCustomerEvents;
+export default withAuth(ViewCustomerEvents);
 
 const Styles = {
   overlayWindow: {

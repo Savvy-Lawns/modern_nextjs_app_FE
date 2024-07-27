@@ -44,7 +44,7 @@ const ServicessPage = () => {
         <div>
             
             <div >
-            <ServicesAccordion  />
+            <ServicesAccordion token={token}  />
             <AddForm
         title="Add Service"
         buttonType={1} // Assuming 1 is the correct type for showing the button

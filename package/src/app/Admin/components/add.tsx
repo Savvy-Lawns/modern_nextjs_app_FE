@@ -9,6 +9,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import withAuth from '@/utils/withAuth';
 import { Typography } from '@mui/material';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
+import { useRouter } from 'next/router';
+
 
 type Props = {
     token: string | undefined;
@@ -21,7 +23,7 @@ type Props = {
 
 const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
     const [open, setOpen] = useState(false);
-
+    
     const handleClickOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
@@ -60,6 +62,7 @@ const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
             if (response.status === 200 || response.status === 201) {
                 alert(`${entityType} created successfully`);
                 handleClose();
+                
             } else {
                 throw new Error(`Failed to create ${entityType}. Status code: ${response.status}`);
             }
@@ -113,6 +116,11 @@ const Styles = {
         boxShadow: "inset 0px -1px 2px 0px rgba(0,0,0,0.75), 0px 3px 10px 1px rgba(0,0,0,0.75)",
         border: '1px solid rgba(0,0,0,0.45)',
         textBorder: '1 solid rbga(0,0,0,0.45)',
-
+        '&:hover': {
+            backgroundColor: baselightTheme.palette.primary.main,
+            boxShadow: "inset 0px -1px 2px 0px rgba(0,0,0,0.75), 0px 3px 10px 1px rgba(0,0,0,0.75)",
+        border: '1px solid rgba(0,0,0,0.45)',
+        textBorder: '1 solid rbga(0,0,0,0.45)',
+        },
     },
 };
