@@ -8,26 +8,14 @@ import dynamic from "next/dynamic";
 import { baselightTheme } from '@/utils/theme/DefaultColors';
 import { ArrowBack, Refresh } from '@mui/icons-material';
 import withAuth from '@/utils/withAuth';
+import QuotePage from '../components/quotePage';
 
-
-
-
-
-const Finance = ( ) => {
-    
-
-    
-
-   
+const Quote = () => {
     return (
-
-        <DashboardCard title={<div style={{display:'flex', justifyContent:'center'}}><a href="/Admin"><ArrowBack style={{paddingTop: '5px', position: "absolute", left: 35,}} /></a> Finance<a href='/Admin/finance'><Refresh style={{paddingTop:'5px', position: "absolute", right: 35}} /> </a></div>} >
-            
-            
-                
-           
+        <DashboardCard title={<div style={{display:'flex', justifyContent:'center'}}><a href="/Admin"><ArrowBack style={{paddingTop: '5px', position: "absolute", left: 35,}} /></a> Quote<a href='/Admin/quote'><Refresh style={{paddingTop:'5px', position: "absolute", right: 35}} /> </a></div>} >
+            <QuotePage />
         </DashboardCard>
     );
 };
 
-export default withAuth(Finance);
+export default Quote;

@@ -16,9 +16,9 @@ import { title } from "process";
   
     {
       id: uniqueId(),
-      title: "Events",
+      title: "Quotes",
       icon: IconTrees,
-      href: "/Admin/events",
+      href: "/Admin/quote",
     },
    
     {

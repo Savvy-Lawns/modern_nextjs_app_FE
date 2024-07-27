@@ -177,49 +177,9 @@ const pageLinks = [
   },
  
   {
-    href: '/Admin/addUser',
-    title: 'Add User'
-  },
-  {
-    href: '/Admin/addJob',
-    title: 'Add Job'
-  },
-  {
-    href: '/Admin/addService',
-    title: 'Add Service'
-  },
-  {
-    href: '/Admin/addMaterial',
-    title: 'Add Material'
-  },
-  {
-    href: '/Admin/addCustomer',
-    title: 'Add Customer'
-  },
-  {
-    href: '/Admin/addFinance',
-    title: 'Add Finance'
-  },
-  {
-    href: '/Admin/editJob',
-    title: 'Edit Job'
-  },
-  {
-    href: '/Admin/editService',
-    title: 'Edit Service'
-  },
-  {
-    href: '/Admin/editMaterial',
-    title: 'Edit Material'
-  },
-  {
-    href: '/Admin/editCustomer',
-    title: 'Edit Customer'
-  },
-  {
-    href: '/Admin/editFinance',
-    title: 'Edit Finance',
-  },
+    href: '/Admin/quote',
+    title: 'Admin Quote'
+  }
 ]
 
 export { notifications, profile, pageLinks, appsLink };
