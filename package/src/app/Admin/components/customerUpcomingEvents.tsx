@@ -45,50 +45,67 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
 
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    // Set API call here
-    
+  
     // Initialize a new FormData object
     const formDataObj = new FormData();
-    
+  
     // Dynamically construct the data object based on the form fields
     Object.keys(rest).forEach(key => {
-        const inputElement = document.getElementById(key) as HTMLInputElement;
-        if (inputElement) {
-            // Append data to formDataObj instead of creating a simple object
-            formDataObj.append(key, inputElement.value);
-        }
+      const inputElement = document.getElementById(key) as HTMLInputElement;
+      if (inputElement) {
+        // Append data to formDataObj instead of creating a simple object
+        formDataObj.append(key, inputElement.value);
+      }
     });
-
+  
     // Convert formDataObj to JSON
     const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
-    const customer = 'customers';
-    const customerId = id;
-
-    const apiUrl = `http://127.0.0.1:3000/api/v1/customers/${customerId}/events`;
-
+  
+    // Extract necessary data from formJson
+    const startDate = formJson['start_date'];
+    const endDate = formJson['end_date'];
+  
+    // Structure the data into the required format
+    const requestData = {
+      event: {
+        customer_id: id,
+        event_services_attributes: SelectedServices.map(service => ({
+          service_id: service.service?.id,
+          recurrence_type: service.recurrence,
+          start_date: startDate,
+          end_date: endDate,
+          status: "active",
+          property_metric: service.propertyMetric,
+          duration: 60, // Assuming a fixed duration, modify as needed
+          paid: false, // Assuming a fixed paid status, modify as needed
+          notes: Date.now, // Assuming a fixed note, modify as needed
+          recurrence_series_id: null // Assuming a fixed recurrence_series_id, modify as needed
+        }))
+      }
+    };
+  
+    const apiUrl = `http://127.0.0.1:3000/api/v1/customers/${id}/events`;
+  
     try {
-        // Ensure the data is nested under the 'service' key
-        const requestData = { [customer.slice(0, -1)]: formJson };
-
-        const response = await axios.post(apiUrl, requestData, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-
-        if (response.status === 200 || response.status === 201) {
-            alert(`customers event created successfully`);
-            console.log("Event submitted");
-            handleFormClose();
-            setSelectedServices([]);
-        } else {
-            throw new Error(`Failed to create customers event. Status code: ${response.status}`);
-        }
+      const response = await axios.post(apiUrl, requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (response.status === 200 || response.status === 201) {
+        alert(`Customer event created successfully`);
+        console.log("Event submitted");
+        handleFormClose();
+        setSelectedServices([]);
+      } else {
+        throw new Error(`Failed to create customer event. Status code: ${response.status}`);
+      }
     } catch (error) {
-        console.error(`Error creating customers event:`, error);
+      console.error(`Error creating customer event:`, error);
     }
-  }
+  };
 
   return (
     <React.Fragment>

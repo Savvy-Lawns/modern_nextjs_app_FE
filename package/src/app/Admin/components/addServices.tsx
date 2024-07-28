@@ -17,10 +17,13 @@ const AddServices = ({}) => {
     const { services, loading } = useFetchServices();
     const [propertyMetric, setPropertyMetric] = useState('');
     const [recurrence, setRecurrence] = useState('');
-    const [selectedServices, setSelectedServices] = useState<Array<{ service: Service | null, propertyMetric: number, recurrence: string }>>([]);
+    const [selectedServices, setSelectedServices] = useState<Array<{
+        duration: any; service: Service | null, propertyMetric: number, recurrence: string 
+}>>([]);
     const [metricAndRecurrenceDialogOpen, setMetricAndRecurrenceDialogOpen] = useState(false);
     const [tempService, setTempService] = useState<Service | null>(null);
     const [inputValue, setInputValue] = useState(''); 
+    const [duration, setDuration] = useState(0);
 
 
 
@@ -34,6 +37,7 @@ const AddServices = ({}) => {
     setMetricAndRecurrenceDialogOpen(false);
     setPropertyMetric("");
     setRecurrence("");
+    setDuration(0);
     };
 
     const calculateServiceCost = (service: Service, propertyMetric: number): number => {
@@ -55,13 +59,13 @@ const AddServices = ({}) => {
         if (tempService) {
           setSelectedServices(prevServices => [
             ...prevServices, 
-            { service: tempService, propertyMetric: Number(propertyMetric), recurrence }
+            { service: tempService, propertyMetric: Number(propertyMetric), recurrence, duration }
           ]);
           setTempService(null); // Clear temporary service
           setPropertyMetric(""); // Clear property metric
           setRecurrence(""); // Clear recurrence
           setMetricAndRecurrenceDialogOpen(false);
-          setInputValue('');
+          setDuration(0);
       
         }
       };
@@ -91,6 +95,7 @@ const AddServices = ({}) => {
                 <div style={Styles.serviceList}>
                     <div style={Styles.serviceListItem}><Typography variant={'subtitle1'}>Total Service Cost:</Typography> <Typography variant={'body2'}>${item.service ? `${calculateServiceCost(item.service, item.propertyMetric)}` : 'Service not available'}</Typography></div>
                     <div style={Styles.serviceListItem}><Typography variant={'subtitle1'}>Metric:</Typography> <Typography variant={'body2'}>{item.service ? `${item.propertyMetric} ${item.service.measurement_unit}` : `Service not available - Metric: ${item.propertyMetric}, `}</Typography></div>
+                    <div style={Styles.serviceListItem}><Typography variant={'subtitle1'}>Duration:</Typography> <Typography variant={'body2'}>{item.service ? `${item.duration} Minutes` : `Service not available - Duration: ${item.duration}, `}</Typography></div>
                     <div style={Styles.serviceListItem}><Typography variant={'subtitle1'}>Recurrence: </Typography>
                     <Typography variant={'body2'}>{item.recurrence ? `${item.recurrence}` : 'Recurrence not available'}</Typography></div>
                 </div>
@@ -116,10 +121,10 @@ return (
 
             {renderSelectedServices()}
             <Dialog open={metricAndRecurrenceDialogOpen} onClose={handleMetricAndRecurrenceDialogClose}>
-              <form id="service_details" onSubmit={handleMetricAndRecurrenceSubmit}>
+            <form id="service_details" onSubmit={handleMetricAndRecurrenceSubmit}>
                 <DialogTitle>Enter Service Details</DialogTitle>
                 <DialogContent>
-                  <TextField
+                <TextField
                     label="Property Metric"
                     type="number"
                     fullWidth
@@ -127,8 +132,17 @@ return (
                     value={propertyMetric}
                     onChange={(e) => setPropertyMetric(e.target.value)}
                     style={Styles.eventDetailField}
-                  />
-                  <TextField
+                />
+                <TextField
+                    label="Duration"
+                    type="number"
+                    fullWidth
+                    variant="outlined"
+                    value={duration}
+                    onChange={(e) => setDuration(Number(e.target.value))}
+                    style={Styles.eventDetailField}
+                />
+                <TextField
                     label="Recurrence"
                     select
                     fullWidth
@@ -136,21 +150,22 @@ return (
                     value={recurrence}
                     onChange={(e) => setRecurrence(e.target.value)}
                     SelectProps={{
-                      native: true,
+                    native: true,
                     }}
-                  >
+                >
                     <option value=""></option>
                     <option value="one-time">One Time</option>
                     <option value="weekly">Weekly</option>
                     <option value="bi-weekly">Bi-Weekly</option>
                     <option value="monthly">Monthly</option>
-                  </TextField>
+                </TextField>
+                
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={handleMetricAndRecurrenceDialogClose}>Cancel</Button>
-                  <Button type="submit">Submit</Button>
+                <Button onClick={handleMetricAndRecurrenceDialogClose}>Cancel</Button>
+                <Button type="submit">Submit</Button>
                 </DialogActions>
-              </form>
+            </form>
             </Dialog>
             </div>
     );

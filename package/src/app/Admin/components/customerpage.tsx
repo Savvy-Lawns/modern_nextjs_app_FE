@@ -25,6 +25,7 @@ import Cookie from 'js-cookie';
 const CustomerPage = () => {
 const [token, setToken] = useState<string | undefined>('');
 
+
   useEffect(() => {
     
       setToken(Cookie.get('token'));
@@ -43,7 +44,7 @@ const date = new Date().toLocaleString();
         <div>
             
             
-            <CustomerAccordion />
+            <CustomerAccordion token={token} />
            <AddForm
         title="Add Customer"
         buttonType={1} // Assuming 1 is the correct type for showing the button

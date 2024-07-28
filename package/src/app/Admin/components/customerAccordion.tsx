@@ -17,8 +17,6 @@ import useFetchCustomers from '../customers/customers';
 import EditIcon from '@mui/icons-material/Edit';
 import ViewNotes from './customerNotes';
 import ViewUpcomingEvents from './customerUpcomingEvents';
-import withAuth from '@/utils/withAuth';
-import Cookie from 'js-cookie';
 import { useCustomerContext } from "./customerContext";
 import ViewCustomerEvents from './customerUpcomingEvents';
 import DeleteButton from './delete';
@@ -30,7 +28,7 @@ type Props = {
     address: string;
       phone_number: string;
       email: string;
-    
+    token: string | undefined;
     notes: {
       created_at: string;
       note: string;
@@ -46,35 +44,27 @@ type Props = {
     amount: number;
   }
 
-  const CustomerAccordion = () => {
+  const CustomerAccordion = (token:any) => {
     
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [visibleNotes, setVisibleNotes] = useState(3); // State to manage visible notes
     const [isEditFormVisible, setIsEditFormVisible] = useState(false);
-    const { customers, loading, error } = useFetchCustomers();
+    const { customers, loading, error, } = useFetchCustomers();
     const { Customer, setCustomer } = useCustomerContext();
-    const [token, setToken] = useState<string | undefined>('');
+    const [refresh, setRefresh] = useState(false);
 
-  useEffect(() => {
-    // This useEffect is only responsible for setting the token
-    const fetchedToken = Cookie.get('token');
-    setToken(fetchedToken);
-  }, []); // Empty dependency array means this runs once on component mount
+
   
-  useEffect(() => {
-    // This useEffect is responsible for checking the token's existence
-    if (!token) {
-      console.error('Token not found. User must be authenticated.');
-      // Here you might want to redirect the user to a login page or show an error message
-    }
-  }, [token]); 
     
     useEffect(() => {
       setCustomer(Customer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [Customer]);
 
+    
+
+    
     const toggleEditFormVisibility = () => {
       setIsEditFormVisible(prevState => !prevState);
     };
@@ -87,6 +77,7 @@ type Props = {
   const handleViewMore = () => {
     setVisibleNotes((prevVisibleNotes) => prevVisibleNotes + 5); // Show 5 more notes on each click
   };
+ 
 
   console.log(customers);
   console.log(`Customers: ${Customer}`);
@@ -94,7 +85,18 @@ type Props = {
   const filteredCustomers = (customers as unknown as {
     id: Key | null | undefined;
     customerId: Key | null | undefined ;
-    name: string; eventId: number; dateService: string; services: { service: string; estimatedPrice: number; }[]; status: string; isPaid: boolean; estimatedTime: number; address: string;  phone_number: string; email: string; notes: { created_at: string; note: string; }[]; 
+    name: string; 
+    eventId: number; 
+    dateService: string; 
+    services: { service: string; estimatedPrice: number; }[]; 
+    status: string; 
+    isPaid: boolean; 
+    estimatedTime: number; 
+    address: string;  
+    phone_number: string; 
+    email: string; 
+    
+    notes: { created_at: string; note: string; }[]; 
 }[]).filter((customer) => (customer.name || "")?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         
         Object.values(customer.address || {}).some(address =>
@@ -188,6 +190,7 @@ type Props = {
               entityId={customer.id?.toString()}
               entityType='customers'
               buttonType={1}
+              
             />
             <DeleteButton
         entityType='customers' 
@@ -210,8 +213,8 @@ type Props = {
   );
 }
 
-export default withAuth(CustomerAccordion);
-console.log(Object.keys(CustomerAccordion))
+export default CustomerAccordion;
+
 
 
 const styles: {

@@ -31,6 +31,8 @@ type Props = Partial<{
     address: string;
     cost: number;
     id: number;
+   
+    
     
 }>;
 
@@ -44,10 +46,13 @@ function useDeepCompareEffect(callback: () => void, dependencies: {}[] | undefin
     useEffect(callback, [currentDependenciesRef.current]);
 }
 
-function EditForm({ title, buttonType, entityId, entityType, token, ...rest }: Props) {
+function EditForm({ title, buttonType, entityId, entityType, token,  ...rest }: Props) {
     const [open, setOpen] = React.useState(false);
     const [formData, setFormData] = useState<{ [key: string]: string | number }>({});
     const {User, setUser} = useUserContext();
+    const value = 'Refreshing...';
+    const value2 = '';
+
     useDeepCompareEffect(() => {
         return setFormData({ ...rest });
     }, [rest]);
@@ -89,10 +94,12 @@ function EditForm({ title, buttonType, entityId, entityType, token, ...rest }: P
             
             console.log(entityType, ' updated:', response.data.data);
             alert(`${response.data.data.attributes.username} was updated successfully`);
-            handleClose();
-            const updatedUser = User.map((u:any)=>{if (u.id === entityId){console.log(response.data.data); return response.data.data} else {console.log(u); return u;}});
-            setUser(updatedUser);
-
+            window.location.href = `/Admin/${entityType}`;
+            
+            
+            
+            
+            
             
         } catch (error) {
             // Handle error...

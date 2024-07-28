@@ -23,10 +23,9 @@ type Props = {
 
 const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
     const [open, setOpen] = useState(false);
-    
     const handleClickOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
+    
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
     
@@ -61,7 +60,9 @@ const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
     
             if (response.status === 200 || response.status === 201) {
                 alert(`${entityType} created successfully`);
+            
                 handleClose();
+                window.location.href = `/Admin/${entityType}`;
                 
             } else {
                 throw new Error(`Failed to create ${entityType}. Status code: ${response.status}`);

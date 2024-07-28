@@ -53,7 +53,8 @@ const useFetchCustomers = () => {
     fetchCustomers();
   }, []); // Add dependencies if needed
 
-  return { customers, loading, error };
+ 
+  return { customers, loading, error,  };
 };
 
 export default useFetchCustomers;
