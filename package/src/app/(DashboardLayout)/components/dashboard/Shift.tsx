@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Link from "next/link";
 
 import { Select, MenuItem, Button, styled } from '@mui/material';
@@ -7,6 +7,8 @@ import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCa
 import dynamic from "next/dynamic";
 import { baselightTheme } from '@/utils/theme/DefaultColors';
 import RecentTransactions from './RecentTransactions';
+import ShiftButtons from './ShiftButtons';
+
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 
@@ -26,13 +28,16 @@ const LinkStyled = styled(Link)(() => ({
   }));
 
 const NextRoute = ( ) => {
+  
 
     
 
     return (
 
-        <DashboardCard title="Today's Shift Next Route" footer={<RecentTransactions />}>
+        <DashboardCard title="Today's Shift"  >
             
+           
+
             <LinkStyled href="">
               <div>
                 <iframe
@@ -44,11 +49,30 @@ const NextRoute = ( ) => {
                 ></iframe>
               </div>
             </LinkStyled>
-                
-                
-           
+            
+            <ShiftButtons />
+            <div style={styles.scrollContainer}>
+              <RecentTransactions /> 
+            </div>
         </DashboardCard>
     );
 };
 
 export default NextRoute;
+
+const styles: {
+  scrollContainer: React.CSSProperties;
+  dayButton: React.CSSProperties;
+
+} = {
+  scrollContainer: {
+    overflowY: 'scroll',
+    height: '59vh',
+    marginBottom: '-45px',
+  },
+  dayButton: {
+    marginTop: 10,
+    borderRadius: 25,
+    color: 'white',
+  }
+}

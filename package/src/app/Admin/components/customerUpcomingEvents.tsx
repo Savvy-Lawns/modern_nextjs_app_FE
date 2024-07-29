@@ -34,10 +34,13 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
   const [startDate, setStartDate] = useState<Date | null | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | null | undefined>(new Date());
 
+  const handleSelectedServicesChange = (services: Array<{ duration: any; service: Service | null; propertyMetric: number; recurrence: string }>) => {
+    setSelectedServices(services);
+  };
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleFormOpen = () => setFormOpen(true);
+  const handleFormOpen = () => {setFormOpen(true), console.log(`id: ${id}`)};
   const handleFormClose = () => {
     console.log("Form closed");
     setFormOpen(false);
@@ -62,8 +65,11 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
     const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
   
     // Extract necessary data from formJson
-    const startDate = formJson['start_date'];
-    const endDate = formJson['end_date'];
+    const startDateElement = document.getElementById('start_date') as HTMLInputElement;
+  const endDateElement = document.getElementById('end_date') as HTMLInputElement;
+
+  const startDate = startDateElement ? startDateElement.value : '';
+  const endDate = endDateElement ? endDateElement.value : '';
   
     // Structure the data into the required format
     const requestData = {
@@ -83,6 +89,7 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
         }))
       }
     };
+    console.log(SelectedServices);
   
     const apiUrl = `http://127.0.0.1:3000/api/v1/customers/${id}/events`;
   
@@ -186,7 +193,7 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
               defaultValue={phoneNumber}
               disabled
             />
-            <AddServices />
+            <AddServices onSelectedServicesChange={handleSelectedServicesChange} />
           </DialogContent>
           <DialogActions>
             <Button onClick={handleFormClose}>Cancel</Button>

@@ -23,7 +23,7 @@ import DeleteButton from './delete';
 
 
 type Props = {
-    id: string;
+    id: string | number;
     name: string;
     address: string;
       phone_number: string;
@@ -83,8 +83,8 @@ type Props = {
   console.log(`Customers: ${Customer}`);
 
   const filteredCustomers = (customers as unknown as {
-    id: Key | null | undefined;
-    customerId: Key | null | undefined ;
+    id: Key | string | number;
+    customerId: Key | string | number ;
     name: string; 
     eventId: number; 
     dateService: string; 
@@ -165,7 +165,7 @@ type Props = {
               address={customer.address}
               phoneNumber={customer.phone_number}
               token={token}
-              id={customer.customerId?.toString() ?? ''}
+              id={customer.id?.toString() ?? ''}
             />
               </div>
               <div>

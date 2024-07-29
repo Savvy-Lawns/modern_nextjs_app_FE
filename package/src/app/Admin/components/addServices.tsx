@@ -12,8 +12,11 @@ import { Service } from './servicesAccordion';
 import withAuth  from '@/utils/withAuth';
 import { Typography } from '@mui/material';
 
+interface AddServicesProps {
+    onSelectedServicesChange: (services: Array<{ duration: any; service: Service | null; propertyMetric: number; recurrence: string }>) => void;
+  }
 
-const AddServices = ({}) => {
+  const AddServices: React.FC<AddServicesProps> = ({ onSelectedServicesChange }) => {
     const { services, loading } = useFetchServices();
     const [propertyMetric, setPropertyMetric] = useState('');
     const [recurrence, setRecurrence] = useState('');
@@ -25,7 +28,9 @@ const AddServices = ({}) => {
     const [inputValue, setInputValue] = useState(''); 
     const [duration, setDuration] = useState(0);
 
-
+    useEffect(() => {
+        onSelectedServicesChange(selectedServices);
+      }, [selectedServices, onSelectedServicesChange]);
 
 
     const handleServiceSelect = (newValue: Service | null) => {
@@ -154,9 +159,9 @@ return (
                     }}
                 >
                     <option value=""></option>
-                    <option value="one-time">One Time</option>
+                    <option value="one_time">One Time</option>
                     <option value="weekly">Weekly</option>
-                    <option value="bi-weekly">Bi-Weekly</option>
+                    <option value="biweekly">Bi-Weekly</option>
                     <option value="monthly">Monthly</option>
                 </TextField>
                 

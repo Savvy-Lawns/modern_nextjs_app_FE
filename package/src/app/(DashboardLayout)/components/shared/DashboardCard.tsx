@@ -6,11 +6,11 @@ type Props = {
   title?: string | JSX.Element;
   subtitle?: string;
   action?: JSX.Element | any;
-  footer?: JSX.Element;
+  footer?: JSX.Element | any;
   cardheading?: string | JSX.Element;
   headtitle?: string | JSX.Element;
   headsubtitle?: string | JSX.Element;
-  children?: JSX.Element;
+  children?: JSX.Element | any;
   middlecontent?: string | JSX.Element;
 };
 
