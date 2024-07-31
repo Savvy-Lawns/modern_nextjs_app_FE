@@ -13,7 +13,7 @@ import withAuth  from '@/utils/withAuth';
 import { Typography } from '@mui/material';
 
 interface AddServicesProps {
-    onSelectedServicesChange: (services: Array<{ duration: any; service: Service | null; propertyMetric: number; recurrence: string }>) => void;
+    onSelectedServicesChange?: (services: Array<{ duration: any; service: Service | null; propertyMetric: number; recurrence: string }>) => void;
   }
 
   const AddServices: React.FC<AddServicesProps> = ({ onSelectedServicesChange }) => {
@@ -29,8 +29,10 @@ interface AddServicesProps {
     const [duration, setDuration] = useState(0);
 
     useEffect(() => {
-        onSelectedServicesChange(selectedServices);
-      }, [selectedServices, onSelectedServicesChange]);
+        if (onSelectedServicesChange) {
+            onSelectedServicesChange(selectedServices);
+        }
+    }, [selectedServices, onSelectedServicesChange]);
 
 
     const handleServiceSelect = (newValue: Service | null) => {
