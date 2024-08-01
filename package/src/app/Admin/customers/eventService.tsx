@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import Cookie from 'js-cookie';
+import useFetchEvents from './events';
 
-const useFetchEventServices = () => {
+const useFetchEventServices = (customerId: number | string, eventId: number | string) => {
   const [eventServices, setEventServices] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { events} = useFetchEvents(customerId);
+
+  
 
   useEffect(() => {
     const fetchEventServices = async () => {
@@ -18,7 +22,7 @@ const useFetchEventServices = () => {
       }
 
       try {
-        const response = await fetch(`http://127.0.0.1:3000/api/v1/event_services`, {
+        const response = await fetch(`http://127.0.0.1:3000/api/v1/customer/${customerId}/events/${eventId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

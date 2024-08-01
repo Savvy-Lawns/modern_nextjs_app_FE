@@ -27,7 +27,8 @@ const useFetchEvents = (customerId: number | string) => {
         });
 
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          const errorData = await response.json();
+          throw new Error(errorData.exception || 'Network response was not ok');
         }
 
         const responseData = await response.json();
@@ -45,7 +46,9 @@ const useFetchEvents = (customerId: number | string) => {
           }
 
           return {
-            customer_id: event.id,
+            event_id: event.id, // Include event_id here
+            customer_id: event.relationships.customer.data.id,
+            status: event.attributes.status,
             event_services_attributes: eventServices.map((service: any) => ({
               service_id: service.service_id,
               recurrence_type: service.recurrence_type,
@@ -57,7 +60,17 @@ const useFetchEvents = (customerId: number | string) => {
               paid: service.paid,
               notes: service.notes,
               recurrence_series_id: service.recurrence_series_id
-            }))
+            })),
+            amount_paid: event.attributes.amount_paid,
+            balance: event.attributes.balance,
+            created_at: event.attributes.created_at,
+            estimated_service_cost: event.attributes.estimated_service_cost,
+            
+            updated_at: event.attributes.updated_at,
+            relationships: event.relationships,
+            event_notes: event.event_notes,
+            transactions: event.transactions,
+            user_events: event.user_events
           };
         }).filter((event: any) => event !== null); // Filter out any null events
 

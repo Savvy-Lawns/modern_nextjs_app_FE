@@ -14,7 +14,7 @@ import AddServices from './addServices';
 import withAuth from '@/utils/withAuth';
 import Cookie from 'js-cookie';
 import useFetchEvents from '../customers/events';
-import { format, parseISO } from 'date-fns';
+import { parseISO, format } from 'date-fns';
 import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { BorderLeft, BorderRight, Height, TextFormatOutlined } from '@mui/icons-material';
@@ -30,70 +30,96 @@ interface Props {
   token: string | undefined;
 }
 
+
+
+interface EventService {
+  id: number;
+  start_date: string;
+  // other properties...
+}
+
+interface EventAttributes {
+  id: string | number;
+  status: string;
+  amount_paid: number;
+  estimated_service_cost: number;
+  balance: number;
+  created_at: string;
+  updated_at: string;
+  event_services: EventService[];
+}
+
+interface EventRelationships {
+  customer: {
+    data: {
+      id: string;
+    };
+  };
+}
+
 interface Event {
-  customer_id: number | string;
-  event_services_attributes: Array<{
-    service_id: number;
-    recurrence_type: string;
-    start_date: string;
-    end_date: string;
-    status: string;
-    property_metric: number;
-    duration: number;
-    paid: boolean;
-    notes: string;
-    recurrence_series_id: number | null;
-    service_name: string;
-  }>;
+  customer_id: string;
+  event_services_attributes: EventAttributes;
+  id: string;
+  type: string;
+  attributes: EventAttributes;
+  relationships?: EventRelationships;
 }
 
-interface ChildComponentProps {
-  events: Event[];
-  service_name: string;
-}
+function groupEventsByMonthAndDay(events: Event[], customerId: string) {
 
-const groupEventsByMonthAndDay = (events: Event[], servicesMap: { [key: number]: string }) => {
+  const filteredEvents = events.filter(event => event.customer_id === customerId);
+  console.log('filteredEvents:', filteredEvents);
+  // Group events by month and day
   const groupedEvents: { [month: string]: { [day: string]: Event[] } } = {};
+  const sortedGroupedEvents: { [month: string]: { [day: string]: Event[] } } = {};
 
-  events.forEach(event => {
-    event.event_services_attributes.forEach(service => {
-      if (service.start_date) {
-        try {
-          const eventDate = parseISO(service.start_date);
-          const month = format(eventDate, 'MM');
-          const day = format(eventDate, 'dd');
-
+  filteredEvents.forEach(event => {
+    
+    
+    
+    if (filteredEvents) {
+      filteredEvents.forEach(event => {
+        // let serviceList = event.attributes.event_services !== undefined ? event.attributes.event_services : event.event_services_attributes;
+        let serviceList: any =  event.event_services_attributes;
+        if (serviceList === undefined) {
+          return;
+        } 
+        serviceList.forEach((service: any )=> {
+          console.log('Service:', service);
+          const startDate = parseISO(service.start_date);
+          const month = format(startDate, 'MM');
+          const day: number | string = format(startDate, 'dd');
+          console.log('Month:', month);
+          console.log('day: ', day);
+          console.log('start_date: ', startDate);
           if (!groupedEvents[month]) {
             groupedEvents[month] = {};
           }
 
           if (!groupedEvents[month][day]) {
             groupedEvents[month][day] = [];
+            
           }
 
-          // Convert service_id to service_name
-          const serviceWithDetails = {
-            ...service,
-            service_name: servicesMap[service.service_id] || 'Unknown Service'
-          };
-
-          // Push the event with the updated service details
-          groupedEvents[month][day].push({
-            ...event,
-            event_services_attributes: event.event_services_attributes.map(s => 
-              s.service_id === service.service_id ? serviceWithDetails : s
-            )
-          });
-        } catch (error) {
-          console.error(`Error parsing date for service: ${service.start_date}`, error);
-        }
-      } else {
-        console.warn(`Service with id ${service.service_id || 'undefined'} has an undefined start_date`);
-      }
+          groupedEvents[month][day].push(service);
+          console.log('groupedEvents: ', groupedEvents[month][day]);
+          console.log('groupedEvents: ', groupedEvents);
+          console.log('event_service Id: ', service.id);
+        })
+      
+      });
+  Object.keys(groupedEvents)
+    .sort((a, b) => parseInt(a) - parseInt(b))
+    .forEach(month => {
+      sortedGroupedEvents[month] = groupedEvents[month];
     });
-  });
+    } 
+    }
+  )
 
-  return groupedEvents;
+  return sortedGroupedEvents;
+  
 };
 
  
@@ -101,29 +127,45 @@ const groupEventsByMonthAndDay = (events: Event[], servicesMap: { [key: number]:
 const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, token, ...rest }) => {
   const [open, setOpen] = useState(false);
   const [formOpen, setFormOpen] = useState(false);
-  const [SelectedServices, setSelectedServices] = useState<Array<{ service: Service | null, propertyMetric: number, recurrence: string }>>([]);
+  const [SelectedServices, setSelectedServices] = useState<Array<{
+    duration: any; service: Service | null, propertyMetric: number, recurrence: string 
+}>>([]);
   const [startDate, setStartDate] = useState<Date | null | undefined>(new Date());
   const [endDate, setEndDate] = useState<Date | null | undefined>(new Date());
 
   const { events, loading, error } = useFetchEvents(id);
   const { services } = useFetchServices();
+  
+
+  
 
   const servicesMap = services.reduce((acc: { [key: number]: string }, service: Service) => {
     acc[service.id] = service.name;
     return acc;
   }, {});
-  const handleSelectedServicesChange = (services: Array<{ duration: any; service: Service | null; propertyMetric: number; recurrence: string }>) => {
-   return events
+  const handleSelectedServicesChange = (services: Array<{ duration: number | any; service: Service | null; propertyMetric: number; recurrence: string; }>) => {
+    setSelectedServices(services);
   };
 
-  const groupedEvents = groupEventsByMonthAndDay(events || [], servicesMap);
+  useEffect(() => {
+    console.log('Selected Services:', SelectedServices);
+  }, [SelectedServices]);
 
+ const groupedEvents = groupEventsByMonthAndDay(events, id.toString());
+  
   
 
   const handleClickOpen = () => {
     setOpen(true);
-    console.log(events)
-    console.log(groupedEvents)
+    console.log('bulk data: ', events);
+   
+    console.log('customer id from parameter:', id);
+    
+    console.log('grouped data: ', groupEventsByMonthAndDay(events, id.toString()));
+    console.log('Selected Services:', services);
+    // var myId = '2';
+    // var  myEvents = events.filter(event => event.customer_id == myId);
+    // console.log('filtered events: ', myEvents);
  
   };
 
@@ -157,9 +199,14 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
     const startDate = startDateElement ? startDateElement.value : '';
     const endDate = endDateElement ? endDateElement.value : '';
 
+    
+
+
+      
     const requestData = {
       event: {
         customer_id: id,
+        notes: Date.now().toString(),
         event_services_attributes: SelectedServices.map(service => ({
           service_id: service.service?.id,
           recurrence_type: service.recurrence,
@@ -167,9 +214,9 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
           end_date: endDate,
           status: "active",
           property_metric: service.propertyMetric,
-          duration: 60,
+          duration: service.duration,
           paid: false,
-          notes: Date.now,
+          
           recurrence_series_id: null
         }))
       }
@@ -189,8 +236,10 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
       if (response.status === 200 || response.status === 201) {
         alert(`Customer event created successfully`);
         console.log("Event submitted");
+        console.log("requestData: ", requestData);
         handleFormClose();
         setSelectedServices([]);
+        window.location.href = `/Admin/customers`;
       } else {
         throw new Error(`Failed to create customer event. Status code: ${response.status}`);
       }
@@ -199,7 +248,7 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
     }
   };
 
-  const isItPaid = (paid: boolean) => {
+  const isItPaid = (paid: boolean |string) => {
     if (paid) {
       return <span style={{ color: baselightTheme.palette.primary.main }}>Paid</span>;
     } else {
@@ -207,7 +256,7 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
     }
   };
 
-  const statusColor = (status: string) => {
+  const statusColor = (status: any) => {
     if (status === 'active') {
       return <span style={{ color: baselightTheme.palette.primary.light }}>Active</span>;
     } else if (status === 'cancelled') {
@@ -218,7 +267,18 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
   };
 
   const getMonthName = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  const getMonthById = (monthId: number) => getMonthName[monthId - 1];
+  const getMonthByIndex = (monthIndex: number) => getMonthName[monthIndex - 1];
+
+  const getServiceName = (serviceId: number| string | undefined) => {
+    for (const service of services) {
+      if (service.id === serviceId) {
+        return service.name;
+      }
+    }
+    return "service not found"; // or return a default message like "Service not found"
+  };
+  
+
   return (
     <React.Fragment>
       <Button
@@ -232,17 +292,17 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
   }}}>
         <DialogTitle>{title}</DialogTitle>
         <DialogContent sx={{'&.MuiDialogContent-root': {padding: '20px 10px', width:'100%', display:"flex", flexDirection:'column', justifyContent:'center', margin:'0 auto', overflowY:'scroll'}}}>
-        {Object.keys(groupedEvents).map(month => (
+        {Object.keys(groupedEvents).map((month: string | number) => (
           
           <Accordion style={Styles.serviceAccordion} sx={{'&.Mui-expanded': { marginBottom: '5px', paddingTop:'0px', paddingBottom: '0px',height:'100%', width:'90%'}}} key={month}>
             
             <AccordionSummary expandIcon={<ExpandMoreIcon />} style={Styles.serviceAccordion} sx={{'&.MuiAccordionSummary-content': {marginTop:'0px', marginBottom:'0px'},'&.MuiButtonBase-root':{minHeight:'12px'},'&.Mui-expanded': { paddingTop:'0px', paddingBottom: '0px', minHeight: '12px', width:'90%', marginTop:'-15px', 
                         marginBottom:'-10px'}}}>
-              <Typography variant={'h5'}>{getMonthById(Number(month))}</Typography>
+              <Typography variant={'h5'}>{getMonthByIndex(Number(month))}</Typography>
             </AccordionSummary>
 
             <AccordionDetails sx={{'&.MuiAccordionDetails-root': {padding: '8px 2px 8px',} }}>
-              {Object.keys(groupedEvents[month]).map(day => (
+              {Object.keys(groupedEvents[month]).map((day: string | number) => (
                 
                 <Accordion style={Styles.serviceDayAccordion} key={day}  sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: '100%', width:'90%'}}}>
 
@@ -264,20 +324,27 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
                     <Typography variant={'h6'}>{day}</Typography>
                   </AccordionSummary>
                   <AccordionDetails sx={{'&.MuiAccordionDetails-root': {padding: '8px 8px 8px', } }}>
-                    {groupedEvents[month][day].map((service, index) => (
-                      <div key={index}>
-                        <Accordion key={index} style={Styles.serviceAccordionList}>
-                          <AccordionSummary expandIcon={<ExpandMoreIcon />} >
-                            <Typography>{service.event_services_attributes[index].service_name}<br />{statusColor(service.event_services_attributes[index].status)} - {isItPaid(service.event_services_attributes[index].paid)}</Typography>
-                          </AccordionSummary>
-                          <AccordionDetails style={Styles.serviceItemDetails}>
-                            <Typography style={Styles.eventDetailField}>Duration: {service.event_services_attributes[index].duration} Minutes</Typography>
-                            <Typography style={Styles.eventDetailField}>Property Metric: {service.event_services_attributes[index].property_metric}</Typography>
-                            <Typography style={Styles.eventDetailField}>Notes: {service.event_services_attributes[index].notes}</Typography>
-                          </AccordionDetails>
-                        </Accordion>
-                      </div>
-                    ))}
+                    
+                  {groupedEvents[month][day].map((service: any, index: any) => (
+                  <Accordion key={index}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />} style={Styles.serviceAccordionList} sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: '100%', width:'90%'}}}>
+                    <Typography variant={'h6'}>{getServiceName(service.service_id)}</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails style={Styles.serviceItemDetails}>
+                    <p>Start Date: {service.start_date}</p>
+                    <p>Duration: {service.duration}</p>
+                    
+                    <p>Status: {statusColor(service.status)}</p>
+                    <p>Paid: {isItPaid(service.paid)}</p>
+                    <p>Property Metric: {service.property_metric}</p>
+                    <p>Recurrence Type: {service.recurrence_type}</p>
+                    </AccordionDetails>
+                    
+                  </Accordion>
+                ))}
+
+                  
+
                   </AccordionDetails>
                 </Accordion>
               ))}
@@ -350,6 +417,16 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
               defaultValue={phoneNumber}
               disabled
             />
+            <TextField
+              margin="dense"
+              id="notes"
+              label="Notes"
+              type="text"
+              fullWidth
+              variant="outlined"
+              defaultValue={''}
+              
+            />
             <AddServices onSelectedServicesChange={handleSelectedServicesChange} />
           </DialogContent>
           <DialogActions>
@@ -360,7 +437,7 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
       </Dialog>
     </React.Fragment>
   );
-};
+}
 
 export default withAuth(ViewCustomerEvents);
 

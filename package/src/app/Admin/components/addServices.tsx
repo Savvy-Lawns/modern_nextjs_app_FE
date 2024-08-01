@@ -27,11 +27,12 @@ interface AddServicesProps {
     const [tempService, setTempService] = useState<Service | null>(null);
     const [inputValue, setInputValue] = useState(''); 
     const [duration, setDuration] = useState(0);
+    const [notes, setNotes] = useState('');
 
     useEffect(() => {
-        if (onSelectedServicesChange) {
-            onSelectedServicesChange(selectedServices);
-        }
+      if (onSelectedServicesChange) {
+        onSelectedServicesChange(selectedServices);
+      }
     }, [selectedServices, onSelectedServicesChange]);
 
 
@@ -148,9 +149,17 @@ return (
                     value={duration}
                     onChange={(e) => setDuration(Number(e.target.value))}
                     style={Styles.eventDetailField}
+                /><TextField
+                    label="notes"
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    
                 />
                 <TextField
-                    label="Recurrence"
+                    label="recurrence_type"
                     select
                     fullWidth
                     variant="outlined"
@@ -160,11 +169,12 @@ return (
                     native: true,
                     }}
                 >
+                  
                     <option value=""></option>
-                    <option value="one_time">One Time</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="biweekly">Bi-Weekly</option>
-                    <option value="monthly">Monthly</option>
+                    <option value='one_time'>One Time</option>
+                    <option value='weekly'>Weekly</option>
+                    <option value='biweekly'>Bi-Weekly</option>
+                    <option value='monthly'>Monthly</option>
                 </TextField>
                 
                 </DialogContent>
