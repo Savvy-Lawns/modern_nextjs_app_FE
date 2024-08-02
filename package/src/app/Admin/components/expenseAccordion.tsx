@@ -78,7 +78,6 @@ type Props = {
   const handleClose = () => setOpen(false);
 
   const filteredExpenses = expenses.filter((expense) =>
-    expense.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     expense.notes.toLowerCase().includes(searchQuery.toLowerCase())
   );
 

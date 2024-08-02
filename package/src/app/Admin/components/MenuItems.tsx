@@ -1,4 +1,4 @@
-import { IconChecklist, IconFileDollar, IconHome, IconShovel, IconTrees, IconUsers, IconReportMoney } from "@tabler/icons-react";
+import { IconChecklist, IconFileDollar, IconHome, IconShovel, IconTrees, IconUsers, IconReportMoney, IconReceipt2 } from "@tabler/icons-react";
 import {
     IconUserCircle,
     IconListCheck,
@@ -39,6 +39,12 @@ import { title } from "process";
       title: "Users",
       icon: IconUsers,
       href: "/Admin/users",
+    },
+    {
+      id: uniqueId(),
+      title: "Billing",
+      icon: IconReceipt2,
+      href: "/Admin/billing",
     },
     {
         id: uniqueId(),

@@ -64,64 +64,71 @@ interface Event {
   type: string;
   attributes: EventAttributes;
   relationships?: EventRelationships;
+  dayOfWeek: string;
 }
 
 function groupEventsByMonthAndDay(events: Event[], customerId: string) {
-
   const filteredEvents = events.filter(event => event.customer_id === customerId);
   console.log('filteredEvents:', filteredEvents);
+
   // Group events by month and day
-  const groupedEvents: { [month: string]: { [day: string]: Event[] } } = {};
-  const sortedGroupedEvents: { [month: string]: { [day: string]: Event[] } } = {};
+  const filteredSortedEvents = filteredEvents.sort((a: any, b: any) => {
+    const aDate = parseISO(a.event_services_attributes.start_date);
+    const bDate = parseISO(b.event_services_attributes.start_date);
+    return aDate.getTime() - bDate.getTime();
+  });
 
-  filteredEvents.forEach(event => {
-    
-    
-    
-    if (filteredEvents) {
-      filteredEvents.forEach(event => {
-        // let serviceList = event.attributes.event_services !== undefined ? event.attributes.event_services : event.event_services_attributes;
-        let serviceList: any =  event.event_services_attributes;
-        if (serviceList === undefined) {
-          return;
-        } 
-        serviceList.forEach((service: any )=> {
-          console.log('Service:', service);
-          const startDate = parseISO(service.start_date);
-          const month = format(startDate, 'MM');
-          const day: number | string = format(startDate, 'dd');
-          console.log('Month:', month);
-          console.log('day: ', day);
-          console.log('start_date: ', startDate);
-          if (!groupedEvents[month]) {
-            groupedEvents[month] = {};
-          }
+  console.log('filteredSortedEvents: ', filteredSortedEvents);
 
-          if (!groupedEvents[month][day]) {
-            groupedEvents[month][day] = [];
-            
-          }
+  const groupedEvents: { [month: number]: { [day: number]: Event[] } } = {};
 
-          groupedEvents[month][day].push(service);
-          console.log('groupedEvents: ', groupedEvents[month][day]);
-          console.log('groupedEvents: ', groupedEvents);
-          console.log('event_service Id: ', service.id);
-        })
-      
+  if (filteredSortedEvents) {
+    filteredSortedEvents.forEach(event => {
+      let serviceList: any = event.event_services_attributes;
+      if (serviceList === undefined) {
+        return;
+      }
+      serviceList.forEach((service: any) => {
+        console.log('Service:', service);
+        const startDate = parseISO(service.start_date);
+        const month = startDate.getMonth() + 1; // getMonth() returns 0-11, so add 1
+        const day = startDate.getDate();
+        const dayOfWeek = format(startDate, 'EEEE'); 
+        event.dayOfWeek = dayOfWeek; // Add dayOfWeek to the event object
+        console.log('Month:', month);
+        console.log('day: ', day);
+        console.log('start_date: ', startDate);
+
+        if (!groupedEvents[month]) {
+          groupedEvents[month] = {};
+        }
+        if (!groupedEvents[month][day]) {
+          groupedEvents[month][day] = [];
+        }
+        groupedEvents[month][day].push(event); // Push the event object
+        console.log('groupedEvents: ', groupedEvents[month][day]);
       });
-  Object.keys(groupedEvents)
-    .sort((a, b) => parseInt(a) - parseInt(b))
-    .forEach(month => {
-      sortedGroupedEvents[month] = groupedEvents[month];
     });
-    } 
-    }
-  )
+  }
 
+  // Sort the months and days
+  const sortedGroupedEvents: { [month: number]: { [day: number]: Event[] } } = {};
+  Object.keys(groupedEvents)
+    .map(month => parseInt(month, 10))
+    .sort((a, b) => a - b)
+    .forEach(month => {
+      sortedGroupedEvents[month] = {};
+      Object.keys(groupedEvents[month])
+        .map(day => parseInt(day, 10))
+        .sort((a, b) => a - b)
+        .forEach(day => {
+          sortedGroupedEvents[month][day] = groupedEvents[month][day];
+        });
+    });
+
+  console.log('sorted group events: ', sortedGroupedEvents);
   return sortedGroupedEvents;
-  
-};
-
+}
  
 
 const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, token, ...rest }) => {
@@ -149,20 +156,17 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
 
   useEffect(() => {
     console.log('Selected Services:', SelectedServices);
+    
   }, [SelectedServices]);
 
  const groupedEvents = groupEventsByMonthAndDay(events, id.toString());
-  
+
+
   
 
   const handleClickOpen = () => {
     setOpen(true);
-    console.log('bulk data: ', events);
-   
-    console.log('customer id from parameter:', id);
     
-    console.log('grouped data: ', groupEventsByMonthAndDay(events, id.toString()));
-    console.log('Selected Services:', services);
     // var myId = '2';
     // var  myEvents = events.filter(event => event.customer_id == myId);
     // console.log('filtered events: ', myEvents);
@@ -302,7 +306,7 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
             </AccordionSummary>
 
             <AccordionDetails sx={{'&.MuiAccordionDetails-root': {padding: '8px 2px 8px',} }}>
-              {Object.keys(groupedEvents[month]).map((day: string | number) => (
+              {Object.keys(groupedEvents[month as number]).map((day: string | number) => (
                 
                 <Accordion style={Styles.serviceDayAccordion} key={day}  sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: '100%', width:'90%'}}}>
 
@@ -321,23 +325,25 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
                         marginTop:'-8px', 
                         marginBottom:'-10px'}}}>
 
-                    <Typography variant={'h6'}>{day}</Typography>
+                    <Typography variant={'h6'}>{day} - {groupedEvents[month as number][day as number][0].dayOfWeek} </Typography>
                   </AccordionSummary>
                   <AccordionDetails sx={{'&.MuiAccordionDetails-root': {padding: '8px 8px 8px', } }}>
                     
-                  {groupedEvents[month][day].map((service: any, index: any) => (
+                  {groupedEvents[month as number][day as number].map((service: any, index: any) => (
                   <Accordion key={index}>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />} style={Styles.serviceAccordionList} sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: '100%', width:'90%'}}}>
                     <Typography variant={'h6'}>{getServiceName(service.service_id)}</Typography>
                   </AccordionSummary>
                   <AccordionDetails style={Styles.serviceItemDetails}>
-                    <p>Start Date: {service.start_date}</p>
-                    <p>Duration: {service.duration}</p>
+                    <div>Start Date: {service.start_date}</div>
+                    <div>Duration: {service.duration}</div>
                     
-                    <p>Status: {statusColor(service.status)}</p>
-                    <p>Paid: {isItPaid(service.paid)}</p>
-                    <p>Property Metric: {service.property_metric}</p>
-                    <p>Recurrence Type: {service.recurrence_type}</p>
+                    <div>Status: {statusColor(service.status)}</div>
+                    <div>Paid: {isItPaid(service.paid)}</div>
+                    <div>Property Metric: {service.property_metric}</div>
+                    <div>Recurrence Type: {service.recurrence_type}</div>
+                    <div>notes: {service.notes}</div>
+                    {/* <Edit duration={service.duration} propertyMetric={service.property_metric}  /> */}
                     </AccordionDetails>
                     
                   </Accordion>
@@ -464,7 +470,8 @@ const Styles = {
     margin: '0px',
     backgroundColor: baselightTheme.palette.primary.light,
     color: '#fff',
-    TextFormatOutlined: '#000'
+    TextFormatOutlined: '#000',
+    textalign: 'center',
   },
   serviceAccordionList:{
     width: '100%',

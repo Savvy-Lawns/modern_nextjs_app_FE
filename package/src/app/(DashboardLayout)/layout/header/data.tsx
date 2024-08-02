@@ -146,7 +146,7 @@ const pageLinks = [
   
   {
     href: '/user-profile',
-    title: 'User Application'
+    title: 'User Profile'
   },
 
   
@@ -156,29 +156,33 @@ const pageLinks = [
   },
   {
     href: '/Admin/events',
-    title: 'Admin Events'
+    title: 'Events'
   },
   {
     href: '/Admin/services',
-    title: 'Admin Services'
+    title: 'Services'
   },
 
   {
     href: '/Admin/customers',
-    title: 'Admin Customers'
+    title: 'Customers'
   },
   {
     href: '/Admin/users',
-    title: 'Admin Users'
+    title: 'Users'
   },
   {
     href: '/Admin/finance',
-    title: 'Admin Finance'
+    title: 'Finance'
   },
  
   {
     href: '/Admin/quote',
-    title: 'Admin Quote'
+    title: 'Quote'
+  },
+  {
+    href: '/Admin/billing',
+    title: 'Billing'
   }
 ]
 
