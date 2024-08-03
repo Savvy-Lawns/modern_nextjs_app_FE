@@ -142,9 +142,15 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
 
   const { events, loading, error } = useFetchEvents(id);
   const { services } = useFetchServices();
-  
+  const [serviceFormOpen, setServiceFormOpen] = useState(false);
+  const [activeEvent, setActiveEvent] = useState<Event | null>(null);
 
-  
+  useEffect(() => {
+  if (events) {
+    const active = events.find(event => event.status === 'active');
+    setActiveEvent(active || null);
+  }
+}, [events]);
 
   const servicesMap = services.reduce((acc: { [key: number]: string }, service: Service) => {
     acc[service.id] = service.name;
@@ -154,15 +160,10 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
     setSelectedServices(services);
   };
 
-  useEffect(() => {
-    console.log('Selected Services:', SelectedServices);
-    
-  }, [SelectedServices]);
 
- const groupedEvents = groupEventsByMonthAndDay(events, id.toString());
+  const filteredEvents = events.filter(event => event.customer_id === id);
 
-
-  
+ 
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -172,6 +173,14 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
     // console.log('filtered events: ', myEvents);
  
   };
+  useEffect(() => {
+    console.log('Selected Services:', SelectedServices);
+    
+  }, [SelectedServices]);
+
+ const groupedEvents = groupEventsByMonthAndDay(events, id.toString());
+
+ 
 
   const handleClose = () => setOpen(false);
 
@@ -182,31 +191,89 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
     setFormOpen(false);
     
   };
+  const handleServiceFormOpen = () => {
+    setServiceFormOpen(true);
+    console.log(`id: ${id}`);
+  };
+
+  const handleServiceFormClose = () => {
+    console.log("Service form closed");
+    setServiceFormOpen(false);
+  };
+
+  const handleAddServiceToActiveEvent = () => {
+    if (activeEvent) {
+      setFormOpen(true);
+      console.log(`Adding service to event id: ${activeEvent.id}`);
+    }
+  };
 
   const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
+  
     const formDataObj = new FormData();
-
     Object.keys(rest).forEach(key => {
       const inputElement = document.getElementById(key) as HTMLInputElement;
       if (inputElement) {
         formDataObj.append(key, inputElement.value);
       }
     });
-
+  
     const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
-
     const startDateElement = document.getElementById('start_date') as HTMLInputElement;
     const endDateElement = document.getElementById('end_date') as HTMLInputElement;
-
     const startDate = startDateElement ? startDateElement.value : '';
     const endDate = endDateElement ? endDateElement.value : '';
+  
+    const requestData = {
+      event: {
+        customer_id: id,
+        notes: Date.now().toString(),
+        event_services_attributes: SelectedServices.map(service => ({
+          service_id: service.service?.id,
+          recurrence_type: service.recurrence,
+          start_date: startDate,
+          end_date: endDate,
+          status: "active",
+          property_metric: service.propertyMetric,
+          duration: service.duration,
+          paid: false,
+          recurrence_series_id: null,
+          notes: formJson.notes,
+        }))
+      }
+    };
+  
+    const apiUrl = activeEvent
+      ? `http://127.0.0.1:3000/api/v1/customers/${id}/events/${activeEvent.id}/event_services`
+      : `http://127.0.0.1:3000/api/v1/customers/${id}/events`;
+  
+    try {
+      const response = await axios.post(apiUrl, requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (response.status === 200 || response.status === 201) {
+        alert(`Customer event ${activeEvent ? 'service added' : 'created'} successfully`);
+        console.log("Event submitted");
+        console.log("requestData: ", requestData);
+        handleFormClose();
+        setSelectedServices([]);
+        window.location.href = `/Admin/customers`;
+      } else {
+        throw new Error(`Failed to ${activeEvent ? 'add service to' : 'create'} customer event. Status code: ${response.status}`);
+      }
+    } catch (error) {
+      console.error(`Error ${activeEvent ? 'adding service to' : 'creating'} customer event:`, error);
+    }
+  };
 
-    
+  const handleServiceFormSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
-
-      
     const requestData = {
       event: {
         customer_id: id,
@@ -225,9 +292,9 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
         }))
       }
     };
-    console.log(SelectedServices);
+  
 
-    const apiUrl = `http://127.0.0.1:3000/api/v1/customers/${id}/events`;
+    const apiUrl = `http://127.0.0.1:3000/api/v1/customers/${id}/events/${activeEvent?.id}/event_services`;
 
     try {
       const response = await axios.post(apiUrl, requestData, {
@@ -238,17 +305,17 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
       });
 
       if (response.status === 200 || response.status === 201) {
-        alert(`Customer event created successfully`);
-        console.log("Event submitted");
+        alert(`Event service added successfully`);
+        console.log("Service submitted");
         console.log("requestData: ", requestData);
-        handleFormClose();
+        handleServiceFormClose();
         setSelectedServices([]);
         window.location.href = `/Admin/customers`;
       } else {
-        throw new Error(`Failed to create customer event. Status code: ${response.status}`);
+        throw new Error(`Failed to add event service. Status code: ${response.status}`);
       }
     } catch (error) {
-      console.error(`Error creating customer event:`, error);
+      console.error(`Error adding event service:`, error);
     }
   };
 
@@ -359,7 +426,15 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
         ))}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleFormOpen}>Add Event</Button>
+        {activeEvent ? (
+  <Button variant="contained" color="primary" onClick={handleAddServiceToActiveEvent}>
+    Add Service
+  </Button>
+) : (
+  <Button variant="contained" color="primary" onClick={handleFormOpen}>
+    Add Event
+  </Button>
+)}
           <Button onClick={handleClose}>Close</Button>
         </DialogActions>
       </Dialog>
