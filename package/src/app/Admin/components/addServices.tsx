@@ -28,6 +28,7 @@ interface AddServicesProps {
     const [inputValue, setInputValue] = useState(''); 
     const [duration, setDuration] = useState(0);
     const [notes, setNotes] = useState('');
+    const [serviceId, setServiceId] = useState('');
 
     useEffect(() => {
       if (onSelectedServicesChange) {

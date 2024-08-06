@@ -15,7 +15,7 @@ import withAuth from '@/utils/withAuth';
 import Cookie from 'js-cookie';
 import useFetchEvents from '../customers/events';
 import { parseISO, format } from 'date-fns';
-import { Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails, Typography, duration } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { BorderLeft, BorderRight, Height, TextFormatOutlined } from '@mui/icons-material';
 
@@ -60,7 +60,7 @@ interface EventRelationships {
 interface Event {
   customer_id: string;
   event_services_attributes: EventAttributes;
-  id: string;
+  event_id: string | number;
   type: string;
   attributes: EventAttributes;
   relationships?: EventRelationships;
@@ -77,11 +77,9 @@ function groupEventsByMonthAndDay(events: Event[], customerId: string) {
     const bDate = parseISO(b.event_services_attributes.start_date);
     return aDate.getTime() - bDate.getTime();
   });
-
   console.log('filteredSortedEvents: ', filteredSortedEvents);
 
   const groupedEvents: { [month: number]: { [day: number]: Event[] } } = {};
-
   if (filteredSortedEvents) {
     filteredSortedEvents.forEach(event => {
       let serviceList: any = event.event_services_attributes;
@@ -99,13 +97,17 @@ function groupEventsByMonthAndDay(events: Event[], customerId: string) {
         console.log('day: ', day);
         console.log('start_date: ', startDate);
 
+        // Filter event_services_attributes to only include services with the same start_date
+        const filteredServices = serviceList.filter((s: any) => s.start_date === service.start_date);
+        const eventCopy = { ...event, event_services_attributes: filteredServices };
+
         if (!groupedEvents[month]) {
           groupedEvents[month] = {};
         }
         if (!groupedEvents[month][day]) {
           groupedEvents[month][day] = [];
         }
-        groupedEvents[month][day].push(event); // Push the event object
+        groupedEvents[month][day].push(eventCopy); // Push the event object with filtered services
         console.log('groupedEvents: ', groupedEvents[month][day]);
       });
     });
@@ -143,15 +145,15 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
   const { events, loading, error } = useFetchEvents(id);
   const { services } = useFetchServices();
   const [serviceFormOpen, setServiceFormOpen] = useState(false);
-  const [activeEvent, setActiveEvent] = useState<Event | null>(null);
-
+  const [activeEvent, setActiveEvent] = useState<Event >();
+console.log('events before:', events);
   useEffect(() => {
   if (events) {
     const active = events.find(event => event.status === 'active');
     setActiveEvent(active || null);
   }
 }, [events]);
-
+console.log('events after:', events);
   const servicesMap = services.reduce((acc: { [key: number]: string }, service: Service) => {
     acc[service.id] = service.name;
     return acc;
@@ -162,7 +164,9 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
 
 
   const filteredEvents = events.filter(event => event.customer_id === id);
-
+  const activeEventFieldId = events.find(event => event.event_id);
+  console.log('activeEventFeidlId', activeEventFieldId)
+  console.log('events bulk:', events);
  
 
   const handleClickOpen = () => {
@@ -204,7 +208,7 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
   const handleAddServiceToActiveEvent = () => {
     if (activeEvent) {
       setFormOpen(true);
-      console.log(`Adding service to event id: ${activeEvent.id}`);
+      console.log(`Adding service to event id: ${activeEventFieldId.event_id}`);
     }
   };
 
@@ -244,9 +248,7 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
       }
     };
   
-    const apiUrl = activeEvent
-      ? `http://127.0.0.1:3000/api/v1/customers/${id}/events/${activeEvent.id}/event_services`
-      : `http://127.0.0.1:3000/api/v1/customers/${id}/events`;
+    const apiUrl = `http://127.0.0.1:3000/api/v1/customers/${id}/events`;
   
     try {
       const response = await axios.post(apiUrl, requestData, {
@@ -273,28 +275,27 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
 
   const handleServiceFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
+    console.log('activeEventFieldId:', activeEventFieldId.event_id);
     const requestData = {
-      event: {
-        customer_id: id,
-        notes: Date.now().toString(),
-        event_services_attributes: SelectedServices.map(service => ({
-          service_id: service.service?.id,
-          recurrence_type: service.recurrence,
-          start_date: startDate,
-          end_date: endDate,
-          status: "active",
-          property_metric: service.propertyMetric,
-          duration: service.duration,
-          paid: false,
-          
-          recurrence_series_id: null
-        }))
+      event_service: {
+        event_id: activeEventFieldId.event_id,
+        service_id: SelectedServices[0]?.service?.id,
+        recurrence_type: SelectedServices[0]?.recurrence,
+        start_date: startDate,
+        end_date: endDate,
+        status: "active",
+        property_metric: SelectedServices[0]?.propertyMetric,
+        duration: SelectedServices[0]?.duration,
+        paid: false,
+        notes: '',
+        recurrence_series_id: null
       }
     };
+
+    
   
 
-    const apiUrl = `http://127.0.0.1:3000/api/v1/customers/${id}/events/${activeEvent?.id}/event_services`;
+    const apiUrl = `http://127.0.0.1:3000/api/v1/customers/${id}/events/${activeEventFieldId.event_id}/event_services`;
 
     try {
       const response = await axios.post(apiUrl, requestData, {
@@ -341,12 +342,17 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
   const getMonthByIndex = (monthIndex: number) => getMonthName[monthIndex - 1];
 
   const getServiceName = (serviceId: number| string | undefined) => {
+    console.log('grouped Events',groupedEvents);
+
+    console.log('services:', services);
+    console.log('serviceId:', serviceId);
     for (const service of services) {
+      console.log('services id:', service.id);
       if (service.id === serviceId) {
         return service.name;
       }
     }
-    return "service not found"; // or return a default message like "Service not found"
+    return "service not found";
   };
   
 
@@ -374,7 +380,7 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
 
             <AccordionDetails sx={{'&.MuiAccordionDetails-root': {padding: '8px 2px 8px',} }}>
               {Object.keys(groupedEvents[month as number]).map((day: string | number) => (
-                
+                console.log('day:', day),
                 <Accordion style={Styles.serviceDayAccordion} key={day}  sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: '100%', width:'90%'}}}>
 
                   <AccordionSummary expandIcon={<ExpandMoreIcon />} 
@@ -396,10 +402,15 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
                   </AccordionSummary>
                   <AccordionDetails sx={{'&.MuiAccordionDetails-root': {padding: '8px 8px 8px', } }}>
                     
-                  {groupedEvents[month as number][day as number].map((service: any, index: any) => (
+                  {groupedEvents[month as number][day as number].map((event: any, index: any) => (
+                    console.log('event:', event),
+                    event.event_services_attributes.map((service: any) => (
+                      console.log('service:', service),
+                      console.log('service id:', service.service_id),
                   <Accordion key={index}>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />} style={Styles.serviceAccordionList} sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: '100%', width:'90%'}}}>
                     <Typography variant={'h6'}>{getServiceName(service.service_id)}</Typography>
+                    
                   </AccordionSummary>
                   <AccordionDetails style={Styles.serviceItemDetails}>
                     <div>Start Date: {service.start_date}</div>
@@ -410,11 +421,12 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
                     <div>Property Metric: {service.property_metric}</div>
                     <div>Recurrence Type: {service.recurrence_type}</div>
                     <div>notes: {service.notes}</div>
-                    {/* <Edit duration={service.duration} propertyMetric={service.property_metric}  /> */}
+                    
                     </AccordionDetails>
                     
                   </Accordion>
-                ))}
+                ))
+              ))}
 
                   
 
@@ -427,7 +439,7 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
         </DialogContent>
         <DialogActions>
         {activeEvent ? (
-  <Button variant="contained" color="primary" onClick={handleAddServiceToActiveEvent}>
+  <Button variant="contained" color="primary" onClick={handleServiceFormOpen}>
     Add Service
   </Button>
 ) : (
@@ -512,6 +524,45 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
           </DialogContent>
           <DialogActions>
             <Button onClick={handleFormClose}>Cancel</Button>
+            <Button type="submit">Submit</Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+      <Dialog open={serviceFormOpen} onClose={handleServiceFormClose}>
+        <form id="add_new_event_service" onSubmit={handleServiceFormSubmit}>
+          <DialogTitle>Add New Event</DialogTitle>
+          <DialogContent>
+            <TextField
+              margin="dense"
+              id="start_date"
+              label="Start Date"
+              type="date"
+              fullWidth
+              variant="outlined"
+              value={startDate ? startDate.toISOString().split('T')[0] : ''}
+              onChange={(e) => setStartDate(e.target.value ? new Date(e.target.value) : null)}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+            <TextField
+              margin="dense"
+              id="end_date"
+              label="End Date"
+              type="date"
+              fullWidth
+              variant="outlined"
+              value={endDate ? endDate.toISOString().split('T')[0] : ''}
+              onChange={(e) => setEndDate(e.target.value ? new Date(e.target.value) : null)}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+           
+            <AddServices onSelectedServicesChange={handleSelectedServicesChange} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleServiceFormClose}>Cancel</Button>
             <Button type="submit">Submit</Button>
           </DialogActions>
         </form>
