@@ -421,7 +421,7 @@ console.log('events after:', events);
                     <div>Property Metric: {service.property_metric}</div>
                     <div>Recurrence Type: {service.recurrence_type}</div>
                     <div>notes: {service.notes}</div>
-                    <EventSerivceEditForm title="Edit Event Service" event_id={activeEventFieldId.event_id} customer_id={Number(id)}  duration={service.duration} status={service.status} paid={service.paid} property_metric={service.property_metric} notes={service.notes}  token={token} service_id={service.service_id} start_date={service.start_date} event_service_id={service.id} />
+                    <EventSerivceEditForm title="Edit Scheduled Service" event_id={activeEventFieldId.event_id} customer_id={Number(id)}  duration={service.duration} status={service.status}  property_metric={service.property_metric} notes={service.notes}  token={token} service_id={service.service_id} start_date={service.start_date} event_service_id={service.id} />
                     </AccordionDetails>
                     
                   </Accordion>
