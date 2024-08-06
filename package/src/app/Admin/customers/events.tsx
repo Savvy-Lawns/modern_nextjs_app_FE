@@ -50,6 +50,7 @@ const useFetchEvents = (customerId: number | string) => {
             customer_id: event.relationships.customer.data.id,
             status: event.attributes.status,
             event_services_attributes: eventServices.map((service: any) => ({
+              id: service.id,
               service_id: service.service_id,
               recurrence_type: service.recurrence_type,
               start_date: service.start_date,
