@@ -140,7 +140,7 @@ function EventServiceEditForm({ title, customer_id, event_id, service_id, start_
     };
 
     return (
-        <React.Fragment>
+        <React.Fragment >
             <Button sx={Styles.jobbuttons} color='secondary' variant='outlined' onClick={handleClickOpen}>Edit</Button>
             <Dialog style={Styles.overlayWindow} open={open} onClose={handleClose}>
                 <form onSubmit={handleSubmit}>
@@ -196,9 +196,18 @@ const Styles = {
         borderRadius: '45px',
     },
     jobbuttons: {
-        marginTop: '10px',
+        justifyContent: 'center',
+        margin: '10px 0',
         backgroundColor: baselightTheme.palette.secondary.light,
         color: baselightTheme.palette.secondary.contrastText,
         borderRadius: '15px',
+        padding: '10px',
+        
+    },
+    container: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '20px',
     },
 };

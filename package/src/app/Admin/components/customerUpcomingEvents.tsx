@@ -17,8 +17,9 @@ import useFetchEvents from '../customers/events';
 import { parseISO, format } from 'date-fns';
 import { Accordion, AccordionSummary, AccordionDetails, Typography, duration } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { BorderLeft, BorderRight, Height, TextFormatOutlined } from '@mui/icons-material';
+import { BorderLeft, BorderRight, Height, Margin, TextFormatOutlined } from '@mui/icons-material';
 import EventSerivceEditForm from './eventServiceEdit';
+import MoreButton from './moreButton';
 
 
 interface Props {
@@ -421,21 +422,20 @@ console.log('events after:', events);
                     <div>Property Metric: {service.property_metric}</div>
                     <div>Recurrence Type: {service.recurrence_type}</div>
                     <div>notes: {service.notes}</div>
+                    
+                    <div style={Styles.sideBySide}>
+                      <div><MoreButton title="More..." />
+                    
+                    </div><div>
                     <EventSerivceEditForm title="Edit Scheduled Service" event_id={activeEventFieldId.event_id} customer_id={Number(id)}  duration={service.duration} status={service.status}  property_metric={service.property_metric} notes={service.notes}  token={token} service_id={service.service_id} start_date={service.start_date} event_service_id={service.id} />
+                    </div>
+                    </div>
                     </AccordionDetails>
                     
                   </Accordion>
                 ))
               ))}
-{/* 
-passthrough relationship.event_services[index].id
-get index position from event_services_attributes based on
-          customer_id matches and event_id matches then search event_services_attributes for matching start_date and matching service_id
-          then get the index position of the matching start_date
-          then get that index position and access relationships.event_services[index].id
-then assign that to event_service_id
 
-                   */}
 
                   </AccordionDetails>
                 </Accordion>
@@ -620,6 +620,13 @@ const Styles = {
     borderBottom: '1px solid #000',
     BorderRight: '1px solid #000',
     color: '#000',
+  },
+  sideBySide:{
+    display: 'flex',
+    Margin: '0px',
+    justifyContent: 'center',
+    position: 'relative',
+    flexDirection: 'row',
   },
 
 };
