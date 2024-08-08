@@ -53,7 +53,7 @@ type Props = Partial<{
     property_metric: number;
     recurrence_type: string;
     customer_id: number | string;
-    event_id: number;
+    event_id: number| string| null;
     event_service_id: number;
     service_id: number | string;
 }>;

@@ -163,9 +163,11 @@ console.log('events after:', events);
     setSelectedServices(services);
   };
 
-
-  const filteredEvents = events.filter(event => event.customer_id === id);
-  const activeEventFieldId = events.find(event => event.event_id);
+  
+  
+  // const activeEventFieldId = activeEvent.event_id
+  const activeEventFieldId = activeEvent ? activeEvent.event_id : null;
+  
   console.log('activeEventFeidlId', activeEventFieldId)
   console.log('events bulk:', events);
  
@@ -173,9 +175,8 @@ console.log('events after:', events);
   const handleClickOpen = () => {
     setOpen(true);
     
-    // var myId = '2';
-    // var  myEvents = events.filter(event => event.customer_id == myId);
-    // console.log('filtered events: ', myEvents);
+    const active = events.find(event => event.status === 'active' && event.customer_id === id.toString());
+      setActiveEvent(active || null);
  
   };
   useEffect(() => {
@@ -209,7 +210,7 @@ console.log('events after:', events);
   const handleAddServiceToActiveEvent = () => {
     if (activeEvent) {
       setFormOpen(true);
-      console.log(`Adding service to event id: ${activeEventFieldId.event_id}`);
+      console.log(`Adding service to event id: ${activeEventFieldId}`);
     }
   };
 
@@ -276,27 +277,43 @@ console.log('events after:', events);
 
   const handleServiceFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log('activeEventFieldId:', activeEventFieldId.event_id);
+    console.log('activeEventFieldId:', activeEventFieldId);
+
+    const formDataObj = new FormData();
+    Object.keys(rest).forEach(key => {
+      const inputElement = document.getElementById(key) as HTMLInputElement;
+      if (inputElement) {
+        formDataObj.append(key, inputElement.value);
+      }
+    });
+  
+    const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
+    const startDateElement = document.getElementById('start_date') as HTMLInputElement;
+    const endDateElement = document.getElementById('end_date') as HTMLInputElement;
+    const startDate = startDateElement ? startDateElement.value : '';
+    const endDate = endDateElement ? endDateElement.value : '';
+
     const requestData = {
-      event_service: {
-        event_id: activeEventFieldId.event_id,
-        service_id: SelectedServices[0]?.service?.id,
-        recurrence_type: SelectedServices[0]?.recurrence,
+      event_services: SelectedServices.map(service => ({
+        event_id: activeEventFieldId, 
+        service_id: service.service?.id,
+        recurrence_type: service.recurrence,
         start_date: startDate,
         end_date: endDate,
         status: "active",
-        property_metric: SelectedServices[0]?.propertyMetric,
-        duration: SelectedServices[0]?.duration,
+        property_metric: service.propertyMetric,
+        duration: service.duration,
         paid: false,
-        notes: '',
-        recurrence_series_id: null
-      }
+        recurrence_series_id: null,
+        notes: formJson.notes,
+      }))
     };
 
+    console.log('requestData before send:', requestData);
     
   
 
-    const apiUrl = `http://127.0.0.1:3000/api/v1/customers/${id}/events/${activeEventFieldId.event_id}/event_services`;
+    const apiUrl = `http://127.0.0.1:3000/api/v1/customers/${id}/events/${activeEventFieldId}/event_services`;
 
     try {
       const response = await axios.post(apiUrl, requestData, {
@@ -369,10 +386,11 @@ console.log('events after:', events);
     width: '100%', maxWidth:'100%'
   }}}>
         <DialogTitle>{title}</DialogTitle>
-        <DialogContent sx={{'&.MuiDialogContent-root': {padding: '20px 10px', width:'100%', display:"flex", flexDirection:'column', justifyContent:'center', margin:'0 auto', overflowY:'scroll'}}}>
+        <DialogContent sx={{'&.MuiDialogContent-root': {padding: '20px 10px', width:'100%', display:"flex", flexDirection:'column', justifyContent:'center', margin:'0 auto', }}}>
+          <div>
         {Object.keys(groupedEvents).map((month: string | number) => (
           
-          <Accordion style={Styles.serviceAccordion} sx={{'&.Mui-expanded': { marginBottom: '5px', paddingTop:'0px', paddingBottom: '0px',height:'100%', width:'90%'}}} key={month}>
+          <Accordion style={Styles.serviceAccordion} sx={{'&.Mui-expanded': { marginBottom: '5px', paddingTop:'0px', paddingBottom: '0px',height:'100%', width:'90%', }}} key={month}>
             
             <AccordionSummary expandIcon={<ExpandMoreIcon />} style={Styles.serviceAccordion} sx={{'&.MuiAccordionSummary-content': {marginTop:'0px', marginBottom:'0px'},'&.MuiButtonBase-root':{minHeight:'12px'},'&.Mui-expanded': { paddingTop:'0px', paddingBottom: '0px', minHeight: '12px', width:'90%', marginTop:'-15px', 
                         marginBottom:'-10px'}}}>
@@ -427,7 +445,7 @@ console.log('events after:', events);
                       <div><MoreButton title="More..." />
                     
                     </div><div>
-                    <EventSerivceEditForm title="Edit Scheduled Service" event_id={activeEventFieldId.event_id} customer_id={Number(id)}  duration={service.duration} status={service.status}  property_metric={service.property_metric} notes={service.notes}  token={token} service_id={service.service_id} start_date={service.start_date} event_service_id={service.id} />
+                    <EventSerivceEditForm title="Edit Scheduled Service" event_id={activeEventFieldId} customer_id={Number(id)}  duration={service.duration} status={service.status}  property_metric={service.property_metric} notes={service.notes}  token={token} service_id={service.service_id} start_date={service.start_date} event_service_id={service.id} />
                     </div>
                     </div>
                     </AccordionDetails>
@@ -443,6 +461,7 @@ console.log('events after:', events);
             </AccordionDetails>
           </Accordion>
         ))}
+        </div>
         </DialogContent>
         <DialogActions>
         {activeEvent ? (
@@ -624,9 +643,11 @@ const Styles = {
   sideBySide:{
     display: 'flex',
     Margin: '0px',
-    justifyContent: 'center',
-    position: 'relative',
-    flexDirection: 'row',
+    
   },
+  accordionOverflow: {
+    overflow: 'auto',
+    height: '90%',
+  }
 
 };

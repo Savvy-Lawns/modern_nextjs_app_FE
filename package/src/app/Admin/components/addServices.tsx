@@ -66,6 +66,7 @@ interface AddServicesProps {
         event.preventDefault();
         event.stopPropagation(); // Prevent the form from submitting traditionally
         if (tempService) {
+          setSelectedServices([]);
           setSelectedServices(prevServices => [
             ...prevServices, 
             { service: tempService, propertyMetric: Number(propertyMetric), recurrence, duration }
