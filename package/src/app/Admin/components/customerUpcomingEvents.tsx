@@ -154,8 +154,9 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
 console.log('events before:', events);
 useEffect(() => {
   if (open) {
-    const active = events.find(event => event.status === 'active');
-    setActiveEvent(active || null);
+    const active = events.find(event => event.customer_id === id);
+    setActiveEvent(active || undefined);
+    console.log('active:', active);
   }
 
   return () => {
