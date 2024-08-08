@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import axios from 'axios';
 import isEqual from 'lodash/isEqual';
 import Button from '@mui/material/Button';
@@ -53,54 +53,51 @@ type Props = Partial<{
     property_metric: number;
     recurrence_type: string;
     customer_id: number | string;
-    event_id: number| string| null;
+    event_id: number | string | null;
     event_service_id: number;
     service_id: number | string;
 }>;
 
 function useDeepCompareEffect(callback: () => void, dependencies: {}[] | undefined) {
     const currentDependenciesRef = useRef<{}[] | undefined>();
+    const hasChanged = !isEqual(currentDependenciesRef.current, dependencies);
 
-    if (!isEqual(currentDependenciesRef.current, dependencies)) {
-        currentDependenciesRef.current = dependencies;
-    }
-
-    useEffect(callback, [callback]);
+    useEffect(() => {
+        if (hasChanged) {
+            currentDependenciesRef.current = dependencies;
+            callback();
+        }
+    }, [callback, dependencies, hasChanged]);
 }
 
 function EventServiceEditForm({ title, customer_id, event_id, service_id, start_date, event_service_id, token, ...rest }: Props) {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState<{ [key: string]: string | number | boolean }>({});
     const { User, setUser } = useUserContext();
-    const value = 'Refreshing...';
-    const value2 = '';
-
     const fetchResult = useFetchEvents(Number(customer_id));
-    console.log('event_id:', event_id);
-    console.log('service_id:', service_id);
-    console.log('start_date:', start_date);
-    console.log('customer_id:', customer_id);
-    console.log('useFetchEvents result:', fetchResult);
-
     const [events, loading, error] = Array.isArray(fetchResult) ? fetchResult : [[], false, null];
-
     const [activeEvent, setActiveEvent] = useState<Event | null>(null);
+    const memoizedRest = useMemo(() => rest, [rest]);
+
     useEffect(() => {
         if (events) {
-            const active = events.find((events: { customer_id: number | string; event_id: number | string; }) => events.customer_id === customer_id && events.event_id === event_id);
-            setActiveEvent(active);
+            const active = events.find((event: Event) => event.customer_id === customer_id && event.event_id === event_id);
+            if (activeEvent !== active) {
+                setActiveEvent(active);
+            }
         }
-    }, [events]);
-    console.log('activeEvent:', activeEvent);
+    }, [events, customer_id, event_id, activeEvent]);
 
     useDeepCompareEffect(() => {
-        return setFormData({ ...rest });
-    }, [rest]);
+        setFormData({ ...memoizedRest });
+    }, [memoizedRest]);
 
     const handleSelectChange = (event: SelectChangeEvent<string>, child: React.ReactNode) => {
         const { name, value } = event.target;
-        // Handle the change event
-        console.log(`Name: ${name}, Value: ${value}`);
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            [name!]: value,
+        }));
     };
 
     const handleChange = (event: React.ChangeEvent<{ name?: string; value: string }>) => {
@@ -117,11 +114,9 @@ function EventServiceEditForm({ title, customer_id, event_id, service_id, start_
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formDataObj = new FormData();
-
         Object.entries(formData).forEach(([key, value]) => {
             formDataObj.set(key, typeof value === 'number' ? value.toString() : String(value));
         });
-
         const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
         try {
             const response = await axios.put(`http://127.0.0.1:3000/api/v1/customers/${customer_id}/events/${event_id}/event_services/${event_service_id}`, formJson, {
@@ -130,7 +125,6 @@ function EventServiceEditForm({ title, customer_id, event_id, service_id, start_
                     'Authorization': `Bearer ${token}`,
                 },
             });
-
             console.log('Scheduled Service has been updated:', response.data.data);
             alert(`Scheduled Service was updated successfully`);
             window.location.href = `/Admin/customers`;
@@ -140,16 +134,16 @@ function EventServiceEditForm({ title, customer_id, event_id, service_id, start_
     };
 
     return (
-        <React.Fragment >
+        <React.Fragment>
             <Button sx={Styles.jobbuttons} color='secondary' variant='outlined' onClick={handleClickOpen}>Edit</Button>
             <Dialog style={Styles.overlayWindow} open={open} onClose={handleClose}>
                 <form onSubmit={handleSubmit}>
                     <DialogTitle style={{ display: 'flex', justifyContent: 'center' }}>{title}</DialogTitle>
                     <DialogContent>
-                        {Object.entries(rest).map(([propName, propValue]) => (
+                        {Object.entries(rest).map(([propName, propValue], index) => (
                             propName === 'status' ? (
                                 <Select
-                                    key={propName}
+                                    key={`${propName}-${index}`}
                                     margin="dense"
                                     id={propName}
                                     name={propName}
@@ -165,7 +159,7 @@ function EventServiceEditForm({ title, customer_id, event_id, service_id, start_
                                 </Select>
                             ) : (
                                 <TextField
-                                    key={propName}
+                                    key={`${propName}-${index}`}
                                     margin="dense"
                                     id={propName}
                                     name={propName}
@@ -202,7 +196,6 @@ const Styles = {
         color: baselightTheme.palette.secondary.contrastText,
         borderRadius: '15px',
         padding: '10px',
-        
     },
     container: {
         display: 'flex',

@@ -40,6 +40,8 @@ interface EventService {
 }
 
 interface EventAttributes {
+  forEach(arg0: (service: any) => void): unknown;
+  filter(arg0: (s: any) => boolean): unknown;
   id: string | number;
   status: string;
   amount_paid: number;
@@ -81,26 +83,28 @@ function groupEventsByMonthAndDay(events: Event[], customerId: string) {
   console.log('filteredSortedEvents: ', filteredSortedEvents);
 
   const groupedEvents: { [month: number]: { [day: number]: Event[] } } = {};
+
   if (filteredSortedEvents) {
     filteredSortedEvents.forEach(event => {
-      let serviceList: any = event.event_services_attributes;
-      if (serviceList === undefined) {
+      const serviceList = event.event_services_attributes;
+      if (!serviceList) {
         return;
       }
-      serviceList.forEach((service: any) => {
+
+      serviceList.forEach(service => {
         console.log('Service:', service);
         const startDate = parseISO(service.start_date);
         const month = startDate.getMonth() + 1; // getMonth() returns 0-11, so add 1
         const day = startDate.getDate();
-        const dayOfWeek = format(startDate, 'EEEE'); 
+        const dayOfWeek = format(startDate, 'EEEE');
         event.dayOfWeek = dayOfWeek; // Add dayOfWeek to the event object
         console.log('Month:', month);
         console.log('day: ', day);
         console.log('start_date: ', startDate);
 
-        // Filter event_services_attributes to only include services with the same start_date
-        const filteredServices = serviceList.filter((s: any) => s.start_date === service.start_date);
-        const eventCopy = { ...event, event_services_attributes: filteredServices };
+        // Filter event_services_attributes to only include services with the same start_date and unique id
+        const filteredServices = serviceList.filter(s => s.start_date === service.start_date && s.id === service.id);
+        const eventCopy: any = { ...event, event_services_attributes: filteredServices };
 
         if (!groupedEvents[month]) {
           groupedEvents[month] = {};
@@ -148,12 +152,16 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
   const [serviceFormOpen, setServiceFormOpen] = useState(false);
   const [activeEvent, setActiveEvent] = useState<Event >();
 console.log('events before:', events);
-  useEffect(() => {
-  if (events) {
+useEffect(() => {
+  if (open) {
     const active = events.find(event => event.status === 'active');
     setActiveEvent(active || null);
   }
-}, [events]);
+
+  return () => {
+    setActiveEvent(undefined); // Clean up when the dialog closes
+  };
+}, [open, events]);
 console.log('events after:', events);
   const servicesMap = services.reduce((acc: { [key: number]: string }, service: Service) => {
     acc[service.id] = service.name;
@@ -174,21 +182,20 @@ console.log('events after:', events);
 
   const handleClickOpen = () => {
     setOpen(true);
-    
-    const active = events.find(event => event.status === 'active' && event.customer_id === id.toString());
-      setActiveEvent(active || null);
- 
   };
+
   useEffect(() => {
     console.log('Selected Services:', SelectedServices);
-    
   }, [SelectedServices]);
 
  const groupedEvents = groupEventsByMonthAndDay(events, id.toString());
 
  
 
-  const handleClose = () => setOpen(false);
+ const handleClose = () => {
+  setOpen(false);
+  setActiveEvent(undefined); // Reset the active event when the dialog closes
+};
 
   const handleFormOpen = () => { setFormOpen(true), console.log(`id: ${id}`) };
 

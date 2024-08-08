@@ -30,7 +30,7 @@ const date = new Date().toLocaleString();
         <div>
             
             
-            <BillingAccordion token={token} index={undefined} />
+            <BillingAccordion token={token}  />
            
             
             

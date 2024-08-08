@@ -16,9 +16,10 @@ import { useCustomerContext } from './customerContext';
 import useFetchServices from '../services/services';
 import { useServiceContext } from './serviceContext';
 import { useEventContext } from './eventContext';
+import { TextField } from '@mui/material';
 
 
-  interface Customers {
+  interface Customer {
     id: string;
     name: string;
     phone: string;
@@ -55,113 +56,208 @@ import { useEventContext } from './eventContext';
     attributes: EventAttributes;
     relationships?: EventRelationships;
     dayOfWeek: string;
+    status: string;
   }
 
   interface EventService {
     id: number;
     start_date: string;
+    status: string;
+    property_metric: number;
+    paid: boolean;
     // other properties...
   }
 
   type Props = {
     token?: string | undefined;
   };
-   
+  
+  function groupingEvents(events: Event[], services: any[], customers: Customer[], customerId: string, start_date: string, end_date: string) {
+    const activeEvents = events.filter(event => event.status === 'active');
+    const filteredEvents = activeEvents.filter(event => event.customer_id === customerId);
+
+    const startDate = new Date(start_date);
+    const endDate = new Date(end_date);
+
+    const groupedData = filteredEvents.reduce((acc: any, event) => {
+        const customer = customers.find(c => c.id === event.customer_id);
+        if (!customer) return acc;
+
+        const eventServices = event.attributes.event_services.filter(service => {
+            const serviceDate = new Date(service.start_date);
+            return serviceDate >= startDate && serviceDate <= endDate && service.status === 'completed' && service.paid === false;
+        });
+
+        if (eventServices.length > 0) {
+            acc[event.customer_id] = acc[event.customer_id] || {
+                name: customer.name,
+                address: customer.address,
+                email: customer.email,
+                phone: customer.phone,
+                events: []
+            };
+
+            const eventData = {
+                event_id: event.event_id,
+                status: event.status,
+                event_services: eventServices.map(service => {
+                    const serviceDetails = services.find(s => s.id === service.id);
+                    const total_service_cost = service.property_metric * (serviceDetails ? serviceDetails.price : 0);
+                    return {
+                        event_service_id: service.id,
+                        start_date: service.start_date,
+                        status: service.status,
+                        service_id: service.id,
+                        property_metric: service.property_metric,
+                        measurement_unit: serviceDetails ? serviceDetails.measurement_unit : '',
+                        total_service_cost
+                    };
+                })
+            };
+
+            acc[event.customer_id].events.push(eventData);
+        }
+
+        return acc;
+    }, {});
+
+    console.log('groupedData:', groupedData);
+    return groupedData;
+}
  
-  const BillingAccordion = ({
-    
-    
-    token,   
+const BillingAccordion = ({
+    token,
   }: Props) => {
-    
-    
-    
-    const { customers } = useFetchCustomers();
     const { Customer, setCustomer } = useCustomerContext();
-    const { events, loading, error } = useFetchEvents(Customer.id);
+    console.log('1. Customer:', Customer);
+    const { events } = useFetchEvents(Customer.id);
+    console.log('2. Events:', events);
     const { services } = useFetchServices();
+    console.log('3. Services:', services);
+    const { customers } = useFetchCustomers();
+    console.log('4. Customers:', customers);
     const [searchQuery, setSearchQuery] = useState('');
-    
-    
     const [open, setOpen] = useState(false);
-
+    const [groupedData, setGroupedData] = useState<any>({});
+    console.log('5. Grouped Data:', groupedData);
+    const [start_date, setStartDate] = useState('');
+    console.log('6. Start Date:', start_date);
+    const [end_date, setEndDate] = useState('');
+    console.log('7. End Date:', end_date);
+  
     useEffect(() => {
-      setCustomer(customers);
-      
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [customers]);
+      if (events && services && customers) {
+        const grouped = groupingEvents(events, services, Customer, Customer.id, start_date, end_date);
+        setGroupedData(grouped);
+      }
+    }, [events, services, Customer, Customer.id]);
+    console.log('5A. Grouped Data:', groupedData);
 
-
-    const handleOpen = (customer: typeof Customer) => {
-        setCustomer(Customer); // Update the selected user in context
-      setOpen(true); // Open the overlay
+    const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setStartDate(event.target.value);
     };
-  const handleClose = () => setOpen(false);
+    const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setEndDate(event.target.value);
+    }
+  
+    const handleOpen = (customer: typeof Customer) => {
+      setOpen(true);
+    };
+  
+    const handleClose = () => setOpen(false);
+    
+    const currentMonth = new Date().toLocaleString('default', { month: '2-digit' });
+    const lastDayCurrentMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toLocaleString('default', { day: '2-digit' });
 
-  const completedUnpaid = {
-
+    return (
+      <div>
+        <CustomTextField
+          type="search"
+          variant="outlined"
+          fullWidth
+          label="Search"
+          mb='10'
+          style={{ marginBottom: '20px' }}
+          onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setSearchQuery(e.target.value)}
+        />
+        <TextField
+                        margin="dense"
+                        id="start_date"
+                        label="Start Date"
+                        type="date"
+                        fullWidth
+                        variant="outlined"
+                        value={start_date ? start_date.toString().split('T')[0] : ''}
+                        onChange={(e) => handleStartDateChange(e.target.value ? new Date(e.target.value) : null)}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        />
+                        <TextField
+                        margin="dense"
+                        id="end_date"
+                        label="End Date"
+                        type="date"
+                        fullWidth
+                        variant="outlined"
+                        defaultValue={'2024-11-31'}
+                        value={end_date ? end_date.toString().split('T')[0] : ''}
+                        onChange={(e) => handleEndDateChange(e.target.value ? new Date(e.target.value) : null)}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        />
+  
+        <div style={styles.scrollContainer}>
+          {/* Render grouped data */}
+          {Object.keys(groupedData).map((customerId: string) => (
+            <Accordion key={customerId}>
+              <AccordionSummary
+                style={styles.AccordionSummaryStyle}
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id={customerId}
+              >
+                <Typography>{groupedData[customerId].name}</Typography>
+              </AccordionSummary>
+              <AccordionDetails style={styles.AccordionDetailsStyle}>
+                <Typography sx={styles.serviceStyle}>
+                  <div>
+                    <Typography variant='body1'>Phone:</Typography>
+                    <Typography variant='body2'>{groupedData[customerId].phone}</Typography>
+                  </div>
+                  <div>
+                    <Typography variant='body1'>Email:</Typography>
+                    <Typography variant='body2'>{groupedData[customerId].email}</Typography>
+                  </div>
+                  {/* Render event details */}
+                  {groupedData[customerId].events.map((event: any) => (
+                    <div key={event.event_id}>
+                      <Typography variant='body1'>Event ID:</Typography>
+                      <Typography variant='body2'>{event.event_id}</Typography>
+                      <Typography variant='body1'>Status:</Typography>
+                      <Typography variant='body2'>{event.status}</Typography>
+                      {/* Render event services */}
+                      {event.event_services.map((service: any) => (
+                        <div key={service.event_service_id}>
+                          <Typography variant='body1'>Service ID:</Typography>
+                          <Typography variant='body2'>{service.service_id}</Typography>
+                          <Typography variant='body1'>Total Cost:</Typography>
+                          <Typography variant='body2'>{service.total_service_cost}</Typography>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </div>
+      </div>
+    );
   };
   
-  
-  return (
-    <div>
-      <CustomTextField
-        type="search"
-        variant="outlined"
-        fullWidth
-        label="Search"
-        mb='10'
-        style={{ marginBottom: '20px' }}
-        onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setSearchQuery(e.target.value)} // Update search query on input change
-      />
-
-  <div style={styles.scrollContainer}>
-{completedUnpaid.map((customer) => (
-  
-        <Accordion key={user.id}>
-          <AccordionSummary
-            style={styles.AccordionSummaryStyle}
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id={user.id!.toString()}
-          >
-            <Typography>{user.username}</Typography>
-          </AccordionSummary>
-          <AccordionDetails style={styles.AccordionDetailsStyle}>
-            <Typography sx={styles.serviceStyle}>
-              <div>
-                <Typography variant='body1'>Phone:</Typography>
-                <Typography variant='body2'>{user.phone}</Typography>
-              </div>
-              <div>
-                <Typography variant='body1'>Email:</Typography>
-                <Typography variant='body2'>{user.email}</Typography>
-              </div>
-              <div>
-                <Typography variant='body1'>Account Type:</Typography>
-                <Typography variant='body2'>{user.acctType}</Typography>
-              </div>
-              {/* <ViewMileage mileage={user.mileage} />
-              <ViewHours hours={user.hours} /> */}
-            </Typography>
-            <div style={styles.sidebyside}>
-              <EditForm entityId={user.id ?? ''} entityType={'users'} title={`Edit User ${user.username}`} username={user.username} phone_number={user.phone} email={user.email} role={user.acctType}  buttonType={1} />
-              <DeleteButton
-        entityType='users' 
-        entityId={user.id?.toString() ?? ''}
-        title={'DeleteButton'}
-        token={token}
-        entityName={user.username}
-           />
-            </div>
-          </AccordionDetails>
-        </Accordion>
-      ))}
-      </div>
-    </div>
-  );
-}
-export default BillingAccordion;
+  export default BillingAccordion;
 
 
 const styles: {
