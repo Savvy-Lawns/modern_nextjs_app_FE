@@ -400,7 +400,7 @@ console.log('events after:', events);
             <AccordionDetails sx={{'&.MuiAccordionDetails-root': {padding: '8px 2px 8px',} }}>
               {Object.keys(groupedEvents[month as number]).map((day: string | number) => (
                 console.log('day:', day),
-                <Accordion style={Styles.serviceDayAccordion} key={day}  sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: '100%', width:'90%'}}}>
+                <Accordion style={Styles.serviceDayAccordion} key={day}  sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: '100%', width:'90%'}, '&.MuiAccordion-root': {marginBottom:'6px'}}}>
 
                   <AccordionSummary expandIcon={<ExpandMoreIcon />} 
                   sx={{
@@ -426,8 +426,8 @@ console.log('events after:', events);
                     event.event_services_attributes.map((service: any) => (
                       console.log('service:', service),
                       console.log('service id:', service.service_id),
-                  <Accordion key={index}>
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />} style={Styles.serviceAccordionList} sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: '100%', width:'90%'}}}>
+                  <Accordion key={index} sx={{'&.MuiAccordion-root': {backgroundColor:baselightTheme.palette.primary.dark}}}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />} style={Styles.serviceAccordionList} sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: '100%', width:'90%', }}}>
                     <Typography variant={'h6'}>{getServiceName(service.service_id)}</Typography>
                     
                   </AccordionSummary>
@@ -442,9 +442,10 @@ console.log('events after:', events);
                     <div>notes: {service.notes}</div>
                     
                     <div style={Styles.sideBySide}>
-                      <div><MoreButton title="More..." />
+                      <div  style={{marginRight:'5px'}}>
+                        <MoreButton title="More..." token={token} service_id={service.service_id} start_date={service.start_date} event_service_id={service.id} event_id={activeEventFieldId} customer_id={Number(id)}   />
                     
-                    </div><div>
+                    </div><div style={{marginLeft:'5px'}}>
                     <EventSerivceEditForm title="Edit Scheduled Service" event_id={activeEventFieldId} customer_id={Number(id)}  duration={service.duration} status={service.status}  property_metric={service.property_metric} notes={service.notes}  token={token} service_id={service.service_id} start_date={service.start_date} event_service_id={service.id} />
                     </div>
                     </div>

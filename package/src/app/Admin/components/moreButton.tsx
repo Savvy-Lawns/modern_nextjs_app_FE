@@ -21,12 +21,13 @@ import { Style } from '@mui/icons-material';
 type Props = Partial<{
     title: string;
     customer_id: number | string;
-    event_id: number;
+    event_id: number| string| null;
     event_service_id: number;
     start_date: string;
     end_date: string;
     token: string;
     recurrence_series_id: number | string;
+    service_id: number | string;
    
     
     
@@ -155,7 +156,7 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
                     border: `${baselightTheme.palette.secondary.main} .5px solid`,
                     marginTop: '10px',
                     backgroundColor: baselightTheme.palette.secondary.light,
-                    width: '80%',
+                    width: '100%',
                     
                 },
                 '&.Mui-expanded': { 
@@ -200,7 +201,7 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
                     paddingTop:'0px', 
                     paddingBottom: '0px',
                     minHeight: '12px', 
-                    width:'90%', 
+                    width:'100%', 
                     marginTop: '0px',
                     marginBottom:'-10px'
                     }}}>

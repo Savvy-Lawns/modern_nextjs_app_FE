@@ -65,7 +65,7 @@ function useDeepCompareEffect(callback: () => void, dependencies: {}[] | undefin
         currentDependenciesRef.current = dependencies;
     }
 
-    useEffect(callback, [currentDependenciesRef.current]);
+    useEffect(callback, [callback]);
 }
 
 function EventServiceEditForm({ title, customer_id, event_id, service_id, start_date, event_service_id, token, ...rest }: Props) {
