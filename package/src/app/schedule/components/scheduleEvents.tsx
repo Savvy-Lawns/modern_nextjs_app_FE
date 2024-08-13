@@ -61,20 +61,25 @@ interface Event {
   dayOfWeek: string;
 }
 
-function groupEventsByMonthAndDay(events: Event[]) {
-    const filteredEvents = events;
+function groupEventsByMonthAndDay(events: Event[], date: string) {
+    const parsedDate = parseISO(date);
+    console.log('filteredEvents parsedDate:', parsedDate);
+    const filteredEvents = events.map(event => {
+      const filteredServices = (event.event_services_attributes as EventAttributes).filter(service =>
+        parseISO(service.start_date) >= parsedDate
+      );
+      return { ...event, event_services_attributes: filteredServices };
+    });
     console.log('filteredEvents:', filteredEvents);
-  
-    
   
     const groupedEvents: { [month: number]: { [day: number]: Event[] } } = {};
     if (filteredEvents) {
-        filteredEvents.forEach(event => {
-        const serviceList = event.event_services_attributes;
+      filteredEvents.forEach(event => {
+        const serviceList = event.event_services_attributes as EventAttributes;
         if (!serviceList) {
           return;
         }
-        serviceList.forEach(service => {
+        serviceList.forEach((service: { start_date: string; id: string | number; }) => {
           if (!service.start_date) {
             return; // Skip if start_date is undefined
           }
@@ -89,7 +94,7 @@ function groupEventsByMonthAndDay(events: Event[]) {
           console.log('start_date: ', startDate);
   
           // Filter event_services_attributes to only include services with the same start_date and unique id
-          const filteredServices = serviceList.filter(s => s.start_date === service.start_date && s.id === service.id);
+          const filteredServices = serviceList.filter((s: { start_date: any; id: any; }) => s.start_date === service.start_date && s.id === service.id);
           const eventCopy: any = { ...event, event_services_attributes: filteredServices };
           if (!groupedEvents[month]) {
             groupedEvents[month] = {};
@@ -102,37 +107,21 @@ function groupEventsByMonthAndDay(events: Event[]) {
         });
       });
     }
-  
-    // Sort the months and days
-    const sortedGroupedEvents: { [month: number]: { [day: number]: Event[] } } = {};
-    Object.keys(groupedEvents)
-      .map(month => parseInt(month, 10))
-      .sort((a, b) => a - b)
-      .forEach(month => {
-        sortedGroupedEvents[month] = {};
-        Object.keys(groupedEvents[month])
-          .map(day => parseInt(day, 10))
-          .sort((a, b) => a - b)
-          .forEach(day => {
-            sortedGroupedEvents[month][day] = groupedEvents[month][day];
-          });
-      });
-    console.log('sorted group events: ', sortedGroupedEvents);
-    return sortedGroupedEvents;
+    return groupedEvents;
   }
- 
 
 const ScheduleEvents  = () => {
   
-  const [date, setDate] = useState<Date | null | undefined>(new Date());
-  const [activeEvent, setActiveEvent] = useState<Event >();
+    const [date, setDate] = useState<string>(format(new Date(), 'yyyy-MM-dd'));
+    const [activeEvent, setActiveEvent] = useState<Event >();
 
-  const { events, loading, error } = useFetchEvents();
-  const { services } = useFetchServices();
-  
+    const { events, loading, error } = useFetchEvents();
+    const { services } = useFetchServices();
+    const today = String(Date.now());
 useEffect(() => {
     
     if (events) {
+        
         console.log('events:', events);
     }
 });
@@ -142,22 +131,24 @@ console.log('events after:', events);
 
  
 
-  
-  
- 
+
   
  
+  
+ 
 
 
  
 
- const groupedEvents = groupEventsByMonthAndDay(events);
+ const groupedEvents = groupEventsByMonthAndDay(events, date);
 
  
 
 
-
- 
+    const handleDateChange =  (event: React.ChangeEvent<HTMLInputElement>) => {
+        setDate(event.target.value);
+      };
+   
 
   const isItPaid = (paid: boolean |string) => {
     if (paid) {
@@ -199,14 +190,17 @@ console.log('events after:', events);
     
       
           <div>
+            <div style={{display:'flex', justifyContent:'center', marginBottom:'10px'}}>
             <TextField
               id="date"
               label="Date"
               type="date"
-              defaultValue={Date.now()}
+              value={date}
+              onChange={handleDateChange}
               InputLabelProps={{
                 shrink: true,
               }} />
+              </div>
         {Object.keys(groupedEvents).map((month: string | number) => (
           
           <Accordion style={Styles.serviceAccordion} sx={{'&.Mui-expanded': { marginBottom: '5px', paddingTop:'0px', paddingBottom: '0px',height:'100%', width:'90%', }}} key={month}>
@@ -335,3 +329,7 @@ const Styles = {
   }
 
 };
+// function isAfter(arg0: Date, parsedDate: Date): boolean {
+//     throw new Error('Function not implemented.');
+// }
+
