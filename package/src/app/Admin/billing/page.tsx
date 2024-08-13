@@ -14,7 +14,7 @@ import BillingPage from '../components/billingpage';
 
 const Billing = () => {
     return (
-        <DashboardCard title={<div style={{display:'flex', justifyContent:'center'}}><a href="/Admin"><ArrowBack style={{paddingTop: '5px', position: "absolute", left: 35,}} /></a>Expenses<a href='/Admin/expenses'><Refresh style={{paddingTop:'5px', position: "absolute", right: 35}} /> </a></div>} >
+        <DashboardCard title={<div style={{display:'flex', justifyContent:'center'}}><a href="/Admin"><ArrowBack style={{paddingTop: '5px', position: "absolute", left: 35,}} /></a>Billing<a href='/Admin/billing'><Refresh style={{paddingTop:'5px', position: "absolute", right: 35}} /> </a></div>} >
             {/* Added a child element to satisfy the expected 'children' prop */}
             <BillingPage />
         </DashboardCard>

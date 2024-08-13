@@ -39,7 +39,8 @@ const useFetchCustomers = () => {
           address: attributes.address, // Corrected from attributes.measurement_unit to attributes.address
           phone_number: attributes.phone_number, // Corrected from attributes.price to attributes.phone_number
           notes: attributes.notes,
-          email: attributes.email, // Corrected from attributes.customer_type to attributes.email
+          email: attributes.email,
+          bill_date: attributes.bill_date // Corrected from attributes.customer_type to attributes.email
         }));
         setCustomers(customers);
       } catch (error) {

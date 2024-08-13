@@ -31,13 +31,6 @@ const date = new Date().toLocaleString();
             
             
             <BillingAccordion token={token}  />
-           
-            
-            
-            
-          
-         
-         
          
         
             </div>

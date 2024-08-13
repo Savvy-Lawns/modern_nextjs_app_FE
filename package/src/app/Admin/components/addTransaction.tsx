@@ -14,24 +14,28 @@ import { useRouter } from 'next/router';
 
 type Props = {
     token: string | undefined;
-    entityType: string;
     title?: string;
-    buttonType: number;
-    [key: string | number]: any; // To accept any other props dynamically
+    event_id: number | string;
+    amount: number | string;
+    payment_type: string;
+    event_service_ids: any[];
+    rest: any;
     
 };
 
-const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
+const AddTransactions = ({ title,  token, event_id, amount, payment_type, event_service_ids, ...rest }: Props) => {
     const [open, setOpen] = useState(false);
     const handleClickOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [paymentType, setPaymentType] = useState(payment_type);
+    const [amountValue, setAmount] = useState(amount);
     
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-    
+        console.log('event', event)
         // Initialize a new FormData object
         const formDataObj = new FormData();
-    
+        console.log('rest:', rest);
         // Dynamically construct the data object based on the form fields
         Object.keys(rest).forEach(key => {
             const inputElement = document.getElementById(key) as HTMLInputElement;
@@ -40,16 +44,18 @@ const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
                 formDataObj.append(key, inputElement.value);
             }
         });
-    
+        
         // Convert formDataObj to JSON
         const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
-        const entity = entityType
-    
-        const apiUrl = `http://127.0.0.1:3000/api/v1/${entityType}`;
+        const removeDollarSign = String(amountValue).replace(/\$/g, "");
+        
+        
+        const apiUrl = `http://127.0.0.1:3000/api/v1/events/${event_id}/transactions`;
     
         try {
             // Ensure the data is nested under the 'service' key
-            const requestData = { [entity.slice(0, -1)]: formJson };
+            const requestData = { transaction: {amount: Number(removeDollarSign), payment_type: paymentType, paid_at: ''}, event_service_ids: event_service_ids };
+            
     
             const response = await axios.post(apiUrl, requestData, {
                 headers: {
@@ -59,53 +65,69 @@ const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
             });
     
             if (response.status === 200 || response.status === 201) {
-                alert(`${entityType} created successfully`);
+                alert(`Payment successfully posted!`);
             
                 handleClose();
-                window.location.href = `/Admin/${entityType}`;
+                window.location.href = `/Admin/billing`;
                 
             } else {
-                throw new Error(`Failed to create ${entityType}. Status code: ${response.status}`);
+                throw new Error(`Failed to make payment. Status code: ${response.status}`);
             }
         } catch (error) {
-            console.error(`Error creating ${entityType}:`, error);
+            console.error(`Error making payment:`, error);
         }
     };
 
     return (
         <React.Fragment>
-            {buttonType === 1 ? (
-            <Button sx={Styles.addButton} color='secondary' variant='outlined' onClick={handleClickOpen}>
-                <Typography variant='h2'>+</Typography>
-            </Button>
-            ) : buttonType === 2 ? (
-            <Button sx={Styles.Payment} color='primary' variant='contained' onClick={handleClickOpen}>
-                <Typography variant='h6'>start day</Typography>
-            </Button>
-            ) : buttonType === 3 ? (
-                <Button sx={Styles.Payment} color='primary' variant='contained' onClick={handleClickOpen}>
-                    <Typography variant='h6'>End day</Typography>
-                </Button>) :  null}            
-                <Dialog open={open} onClose={handleClose}>
+           <Button style={Styles.addButton} variant='contained' onClick={handleClickOpen}><Typography variant='body2'>Make Payment</Typography></Button>
+            <Dialog open={open} onClose={handleClose}>
                 <form onSubmit={handleSubmit}>
                     <DialogTitle>{title}</DialogTitle>
                     <DialogContent>
-                        {Object.entries(rest).map(([propName, propValue]) => (
                             <TextField
-                                key={propName}
+                                key={'amount'}
                                 margin="dense"
-                                id={propName}
-                                label={propName.charAt(0).toUpperCase() + propName.slice(1)}
+                                id='amount'
+                                label='amount'
                                 type="text"
                                 fullWidth
                                 variant="outlined"
-                                defaultValue={String(propValue)}
+                                defaultValue={String(amount)}
+                                onChange={(e) => setAmount(e.target.value.replace(/\$/g, ""))}
                             />
-                        ))}
+                             <TextField
+                             key={'payment_type'}
+                                select
+                                margin="dense"
+                                id='payment_type'
+                                label='payment_type'
+                                type="text"
+                                fullWidth
+                                variant="outlined"
+                                defaultValue={String(payment_type)}
+                                value={paymentType}
+                                onChange={(e) => setPaymentType(e.target.value)}
+                                SelectProps={{
+                                    native: true,
+                                    }}
+                            >
+                        
+                          
+                            <option value=""></option>
+                            <option value='cash'>Cash</option>
+                            <option value='card'>Card</option>
+                            <option value='check'>Check</option>
+                            <option value='digital'>Digital</option>
+                            <option value='other'>Other</option>
+                        </TextField>
+                        
+                           
+                        
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
-                        <Button type="submit">Save</Button>
+                        <Button type="submit">Submit</Button>
                     </DialogActions>
                 </form>
             </Dialog>
@@ -113,18 +135,16 @@ const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
     );
 };
 
-export default withAuth(AddForm);
+export default withAuth(AddTransactions);
 
 const Styles = {
     addButton: {
-        position: 'fixed',
-        bottom: '20px',
-        right: '20px',
-        zIndex: 1000,
-        borderRadius: '50%',
-        backgroundColor: baselightTheme.palette.primary.main,
+       
+        
+        backgroundColor: baselightTheme.palette.primary.light,
         color: '#fff',
         paddingBottom: '12px',
+        marginBottom: '12px',
         boxShadow: "inset 0px -1px 2px 0px rgba(0,0,0,0.75), 0px 3px 10px 1px rgba(0,0,0,0.75)",
         border: '1px solid rgba(0,0,0,0.45)',
         textBorder: '1 solid rbga(0,0,0,0.45)',
@@ -135,8 +155,4 @@ const Styles = {
         textBorder: '1 solid rbga(0,0,0,0.45)',
         },
     },
-    Payment: {
-
-    },
-
 };

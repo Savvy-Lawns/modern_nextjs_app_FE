@@ -9,7 +9,7 @@ const withAuth = <P extends object>(WrappedComponent: ComponentType<P>) => {
     useEffect(() => {
       const token = Cookie.get('token');
       if (!token) {
-        Router.push('authentication/login'); 
+        window.location.href = '/authentication/login';
         alert("You must be logged in to view this page.");
       }
     }, []);
