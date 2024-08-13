@@ -32,12 +32,12 @@ const ShiftButtons = ({ title,  token,  ...rest  }: Props) => {
   };
   const handleStartDialogClose = () => {
     setOpenStartDialog(false);
-    setStartDay(true);
+    
   };
 
   const handleEndDialogClose = () => {
     setOpenEndDialog(false);
-    setStartDay(false);
+    
   };
 
   const handleStartDaySubmit = async (event: React.FormEvent) => {
@@ -77,6 +77,7 @@ const ShiftButtons = ({ title,  token,  ...rest  }: Props) => {
             console.log('response', response.data.data.id);
             localStorage.setItem('mileage_id', response.data.data.id);
             setMileageId(response.data.data.id)
+            setStartDay(true);
             handleStartDialogClose();
         
             
@@ -97,7 +98,7 @@ const ShiftButtons = ({ title,  token,  ...rest  }: Props) => {
     if (storedEndMileage) {
     setStartMileage(storedEndMileage);
     }
-    
+
     if (storedId) {
       setMileageId(storedId);
         setStartDay(true);
@@ -147,6 +148,7 @@ const handleEndDaySubmit = async (event: React.FormEvent) => {
           alert(`Mileage posted successfully`);
          localStorage.removeItem('mileage_id');
           localStorage.setItem('end_mileage', String(endMileage));
+          setStartDay(false);
           handleEndDialogClose();
       
           
