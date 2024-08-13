@@ -1,25 +1,22 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useUserContext } from '@/app/Admin/components/userContext';
 
 
 
-
 type Props = {
   token: string | undefined;
- 
-  title?: string;
   
+  title?: string;
   [key: string | number]: any; // To accept any other props dynamically
-  mileage_start: number | string;
+  
 };
 
-const ShiftButtons = ({ title,  token, ...rest }: Props) => {
+const ShiftButtons = ({ title,  token,  ...rest  }: Props) => {
   const [open, setOpen] = useState(false);
   
-  const { User } = useUserContext();
-  const userId = User?.id;
+  const [mileage_id, setMileageId] = useState<number | string>('');
   const [startDay, setStartDay] = useState(false);
   const [openStartDialog, setOpenStartDialog] = useState(false);
   const [openEndDialog, setOpenEndDialog] = useState(false);
@@ -77,7 +74,9 @@ const ShiftButtons = ({ title,  token, ...rest }: Props) => {
 
         if (response.status === 200 || response.status === 201) {
             alert(`Mileage posted successfully`);
-        
+            console.log('response', response.data.data.id);
+            localStorage.setItem('mileage_id', response.data.data.id);
+            setMileageId(response.data.data.id)
             handleStartDialogClose();
         
             
@@ -89,6 +88,24 @@ const ShiftButtons = ({ title,  token, ...rest }: Props) => {
     }
 };
 
+
+  
+  useEffect(() => {
+    
+    const storedId = localStorage.getItem('mileage_id');
+    const storedEndMileage = localStorage.getItem('end_mileage');
+    if (storedEndMileage) {
+    setStartMileage(storedEndMileage);
+    }
+    
+    if (storedId) {
+      setMileageId(storedId);
+        setStartDay(true);
+    } else {
+        setStartDay(false);
+    }
+}, []);
+
 const handleEndDaySubmit = async (event: React.FormEvent) => {
   event.preventDefault();
 
@@ -97,24 +114,29 @@ const handleEndDaySubmit = async (event: React.FormEvent) => {
 
   // Dynamically construct the data object based on the form fields
   Object.keys(rest).forEach(key => {
-      const inputElement = document.getElementById(key) as HTMLInputElement;
+      const inputElement = String(endMileage);
+     
+      
+      
+      console.log('inputElement:', inputElement);
       if (inputElement) {
           // Append data to formDataObj instead of creating a simple object
-          formDataObj.append(key, inputElement.value);
+          formDataObj.append('end_mileage', inputElement);
       }
   });
+  console.log('formDataObj: ', formDataObj);
 
   // Convert formDataObj to JSON
   const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
+ 
 
-
-  const apiUrl = `http://127.0.0.1:3000/api/v1/mileages`;
+  const apiUrl = `http://127.0.0.1:3000/api/v1/mileages/${mileage_id}`;
   const entity = 'mileage';
   try {
       // Ensure the data is nested under the 'service' key
       const requestData = { [entity]: formJson };
 
-      const response = await axios.post(apiUrl, requestData, {
+      const response = await axios.put(apiUrl, requestData, {
           headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${token}`,
@@ -123,8 +145,9 @@ const handleEndDaySubmit = async (event: React.FormEvent) => {
 
       if (response.status === 200 || response.status === 201) {
           alert(`Mileage posted successfully`);
-      
-          handleStartDialogClose();
+         localStorage.removeItem('mileage_id');
+          localStorage.setItem('end_mileage', String(endMileage));
+          handleEndDialogClose();
       
           
       } else {
@@ -188,26 +211,29 @@ const handleEndDaySubmit = async (event: React.FormEvent) => {
 
       {/* End Mileage Dialog */}
       <Dialog open={openEndDialog} onClose={handleEndDialogClose}>
+        <form onSubmit={handleEndDaySubmit}>
         <DialogTitle>End Day</DialogTitle>
         <DialogContent>
-          <DialogContentText>Please enter the ending mileage:</DialogContentText>
+          <DialogContentText>Please enter your mileage:</DialogContentText>
           <TextField
             autoFocus
             margin="dense"
-            id="endMileage"
+            id="mileage_end"
             label="Ending Mileage"
             type="number"
             fullWidth
             value={endMileage}
             onChange={(e) => setEndMileage(e.target.value)}
+            required     
+            key={'mileage_end'}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleEndDialogClose} color="primary">
+          <Button type='submit' color="primary">
             Submit
           </Button>
         </DialogActions>
-        
+        </form>
       </Dialog>
     </div>
   );
