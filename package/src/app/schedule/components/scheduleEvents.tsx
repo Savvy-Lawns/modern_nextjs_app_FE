@@ -12,7 +12,6 @@ import { Accordion, AccordionSummary, AccordionDetails, Typography, duration, Te
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EventSerivceEditForm from '@/app/Admin/components/eventServiceEdit';
 import MoreButton from '@/app/Admin/components/moreButton';
-import Cookies from 'js-cookie';
 
 interface Props {
   title: string;
@@ -132,12 +131,7 @@ const ScheduleEvents  = () => {
   const { services } = useFetchServices();
   
 useEffect(() => {
-    const token = Cookie.get('token');
-      if (!token) {
-        console.error('Token not found. User must be authenticated.');
-        setLoading(false);
-        return;
-      }
+    
     if (events) {
         console.log('events:', events);
     }
