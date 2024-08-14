@@ -81,15 +81,19 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
         const startDate = startDateElement ? startDateElement.value : '';
         const endDate = endDateElement ? endDateElement.value : '';
 
+        const changeSingleRequestData = {
+            new_start_date: String(startDate),
+            new_end_date: String(endDate),
+        };
         const changeRequestData = {
-            start_date: startDate,
-            end_date: endDate,
+            new_start_date: startDate,
+        
         };
         console.log('rescheduleOption:', rescheduleOption);
         try {
             let response;
             if (rescheduleOption === 'single') {
-                response = await axios.patch(`http://127.0.0.1:3000/api/v1/event_services/${event_service_id}/reschedule_single_in_series`, changeRequestData, {
+                response = await axios.patch(`http://127.0.0.1:3000/api/v1/event_services/${event_service_id}/reschedule_single_in_series`, changeSingleRequestData, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,

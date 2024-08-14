@@ -4,6 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
 import useFetchShiftServices from './shiftServices';
 import { use, useEffect, useState } from 'react';
+import CompleteEventServices from '@/app/Admin/components/complete';
 
 
 
@@ -33,6 +34,9 @@ const TodaysServices = ({ onSetFirstService }: { onSetFirstService: any }) => {
    const handleSetFirstService = (services: any) => {
     setFirstService(services[0].customer_address);
   };
+  const listEventServiceId: any = [];
+
+
 
   
   return (
@@ -52,23 +56,32 @@ const TodaysServices = ({ onSetFirstService }: { onSetFirstService: any }) => {
         <AccordionDetails>
           <div style={styles.AccordionSummaryStyle}>
           
-            
+            <div style={{...styles.sideBySide, justifyContent:'space-evenly'}}> 
+              <div style={{width:'60%', padding:'0px'}}>
             {customer.event_services.map((service: any) => (
             <div key={service.event_service_id} style={{...styles.servicesCompleted, color:'#fff', backgroundColor:baselightTheme.palette.primary.light, marginLeft:'0px', paddingLeft:'10px',textAlign:'left', marginBottom:'0px',paddingBottom:'0px', paddingTop:'5px', marginTop:'0px'}}>
-              <Typography variant='body1'>{service.service_name}</Typography>
-              <Typography sx={{fontSize:'10px'}}>{minutesToHours(service.duration)}</Typography>
+              <Typography variant='subtitle2'>{service.service_name}</Typography>
+              <Typography sx={{fontSize:'10px', lineHeight:'13px'}}>{minutesToHours(service.duration)}</Typography>
             </div>
-))}
-          
+        ))}
+        </div>
+            <div style={{width:'25%', verticalAlign:'middle', position:'relative'}}> <CompleteEventServices  event_service_ids={listEventServiceId} buttonType={1}/></div>
+            </div>
+        
           
           </div>
+  
 
           <div style={{...styles.sideBySide, color:'#fff', marginTop:'10px'}}>
             <div style={{width:'50%', textAlign:'center'}}>
-              <Typography>Phone:</Typography>
-              <Typography>{customer.customer_phone}</Typography>
+              <Typography variant='h6'>Phone:</Typography>
+              <Typography variant='body2'>{customer.customer_phone}</Typography>
               </div>
-            <div  style={{width:'50%', textAlign:'center'}}><Typography>{customer.customer_address}</Typography></div>
+              
+            <div  style={{width:'50%', textAlign:'center'}}>
+            <Typography variant='h6'>Address:</Typography>
+              <Typography variant='body2'>{customer.customer_address}</Typography></div>
+           
             </div>
           </AccordionDetails>
         
