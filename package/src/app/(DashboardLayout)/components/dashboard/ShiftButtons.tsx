@@ -248,7 +248,7 @@ const styles: {
   buttonContainer: React.CSSProperties;
 } = {
   dayButton: {
-    marginTop: 10,
+    marginTop: '0px',
     borderRadius: 25,
     color: 'white',
   },

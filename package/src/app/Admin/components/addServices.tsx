@@ -13,7 +13,7 @@ import withAuth  from '@/utils/withAuth';
 import { Typography } from '@mui/material';
 
 interface AddServicesProps {
-    onSelectedServicesChange?: (services: Array<{ duration: any; service: Service | null; propertyMetric: number; recurrence: string }>) => void;
+    onSelectedServicesChange?: (services: Array<{ duration: any; service: Service | null; propertyMetric: number; recurrence: string }> ) => void;
   }
 
   const AddServices: React.FC<AddServicesProps> = ({ onSelectedServicesChange }) => {
@@ -126,7 +126,7 @@ return (
               renderInput={(params) => <TextField {...params} label="Select Service"/>}
               noOptionsText={'No services found'}
             />
-
+          
             <Typography variant={'h6'}>Total Cost: ${calculateTotalCost()}</Typography>
 
             {renderSelectedServices()}
@@ -186,6 +186,8 @@ return (
                 </DialogActions>
             </form>
             </Dialog>
+
+            
             </div>
     );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from "next/link";
 import { Select, MenuItem, Button, styled } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -9,57 +9,100 @@ import TodaysServices from './todaysServices';
 import ShiftButtons from './ShiftButtons';
 import withAuth from '@/utils/withAuth';
 import Cookie from 'js-cookie';
-import AddForm from '@/app/Admin/components/add';
+import { BorderRight } from '@mui/icons-material';
 
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+declare global {
+    interface Window {
+        initMap: () => void;
+    }
+}
+const windowHeightServices = window.innerHeight*.25;
+const windowHeightMap = window.innerHeight*.3;
 
-const LinkStyled = styled(Link)(() => ({
+
+const LinkStyled = styled('div')({
     width: "100%",
     overflow: "auto",
     display: "flex",
     justifyContent: "center",
-    padding: "3px 3px 5px 3px",
+    padding: "0px 0px 5px 0px",
     marginBottom: "20px",
-    borderRadius: "25px",
+    
     backgroundColor: baselightTheme.palette.primary.light, 
     boxShadow: "inset 0px -8px 10px 1px rgba(0,0,0,0.75), 0px 7px 10px 1px rgba(0,0,0,0.75)",
-}));
+});
+
+const mapContainerStyle = {
+    width: '96%',
+    height: `${windowHeightMap}px`,
+    marginTop: '3px',
+    marginBottom: '4px',
+    BorderRadius: '45px',
+};
 
 const NextRoute = () => {
     const [firstService, setFirstService] = useState<string | null>(null);
     const [token, setToken] = useState<string | undefined>('');
-
+    const mapRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-    
-      setToken(Cookie.get('token'));
-      if (!token) {
-        console.error('Token not found. User must be authenticated.');
-        return;
-      }
-    });
-    console.log('first service', firstService);
+        setToken(Cookie.get('token'));
+        if (!token) {
+            console.error('Token not found. User must be authenticated.');
+            return;
+        }
+    }, [token]);
+
     const handleSetFirstService = (service: string) => {
         setFirstService(service);
     };
-    console.log('first service', firstService);
 
-    const urlAddress = firstService?.replace(" ", "_");
+    const urlAddress = firstService?.replaceAll(" ", "+");
+
+    const googleMapsApiKey = process.env.G_API ;
+
+    useEffect(() => {
+        
+        window.initMap = () => {
+            if (mapRef.current && firstService) {
+                const geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ address: firstService }, (results, status) => {
+                    if (status === 'OK' && results && results[0]) {
+                        const map = new google.maps.Map(mapRef.current as HTMLElement, {
+                            center: results[0].geometry.location,
+                            zoom: 15,
+                        });
+                        const marker = new google.maps.Marker({
+                            map: map,
+                            position: results[0].geometry.location,
+                        });
+                    } else {
+                        console.error('Geocode was not successful for the following reason: ' + status);
+                    }
+                });
+            }
+        };
+    
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initMap`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    }, [firstService, googleMapsApiKey]);
 
     return (
         <DashboardCard title="Today's Shift">
-            <LinkStyled href={`https://www.google.com/maps/?q=${urlAddress}&maptype=satellite`}>
-                <div>
-                    <iframe
-                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3034.551961921518!2d-105.06565002341642!3d40.4851759714287!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x87694d1c6d535655%3A0x5e0439b762d845fb!2s802%20Snowy%20Plain%20Rd%2C%20Fort%20Collins%2C%20CO%2080525!5e0!3m2!1sen!2sus!4v1718825483529!5m2!1sen!2sus&zoom=18&maptype=satellite"
-                        width="100%"
-                        height="300"
-                        loading="lazy"
-                        style={{ borderRadius: 25, border: "0 solid #000", marginTop: 2 }}
-                    ></iframe>
-                </div>
+            <LinkStyled>
+                <div ref={mapRef} style={mapContainerStyle}></div>
+                {/* <iframe
+                    loading="lazy"
+                    allowfullscreen
+                    referrerpolicy="no-referrer-when-downgrade"
+                    src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAl3RquFEaUpVrsF94qYCPPfucPqCwCuj4
+                        &q=Space+Needle,Seattle+WA">
+                </iframe> */}
             </LinkStyled>
-            <ShiftButtons  token={token} mileage_start={0}   />
+            <ShiftButtons token={token} mileage_start={localStorage.getItem('end_mileage')} />
             <div style={styles.scrollContainer}>
                 <TodaysServices onSetFirstService={handleSetFirstService} />
             </div>
@@ -75,7 +118,8 @@ const styles: {
 } = {
     scrollContainer: {
         overflowY: 'scroll',
-        height: '59vh',
+        height: `${windowHeightServices}px`,
+        maxHeight: '59vh',
         marginBottom: '-45px',
         marginTop: '15px',
     },

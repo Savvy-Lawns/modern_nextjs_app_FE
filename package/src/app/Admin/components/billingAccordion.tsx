@@ -9,6 +9,8 @@ import { baselightTheme } from '@/utils/theme/DefaultColors';
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
 import AddTransactions from './addTransaction';
 import useFetchUnpaidServices from '../billing/billing';
+import Invoice from '../billing/invoiceGen';
+import { Today } from '@mui/icons-material';
 
 const BillingAccordion = ({ token }: { token?: string }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -154,7 +156,7 @@ console.log('displayData billingpage 2:', displayData);
                   ))}
                 </div>
               ))}
-              
+              <Invoice customer_name={customer.name} start_date={start_date} end_date={end_date} bill_date={String(Date.now())} amount={Number(calculateTotal)} customer_address={customer.address} customer_phone={customer.phone} customer_email={customer.email} listOfUnpaidServices={event_service_ids_list} />
             </AccordionDetails>
           </Accordion>
         ))}

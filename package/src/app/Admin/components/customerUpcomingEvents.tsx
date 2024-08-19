@@ -7,17 +7,14 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
-import Autocomplete from '@mui/material/Autocomplete';
 import useFetchServices from '../services/services';
 import { Service } from './servicesAccordion';
 import AddServices from './addServices';
 import withAuth from '@/utils/withAuth';
-import Cookie from 'js-cookie';
 import useFetchEvents from '../customers/events';
 import { parseISO, format } from 'date-fns';
 import { Accordion, AccordionSummary, AccordionDetails, Typography, duration } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { BorderLeft, BorderRight, Height, Margin, TextFormatOutlined } from '@mui/icons-material';
 import EventSerivceEditForm from './eventServiceEdit';
 import MoreButton from './moreButton';
 
@@ -151,7 +148,10 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
   const { services } = useFetchServices();
   const [serviceFormOpen, setServiceFormOpen] = useState(false);
   const [activeEvent, setActiveEvent] = useState<Event >();
+
+
 console.log('events before:', events);
+
 useEffect(() => {
   if (open) {
     const active = events.find(event => event.customer_id === id);
@@ -164,6 +164,7 @@ useEffect(() => {
   };
 }, [open, events]);
 console.log('events after:', events);
+
   const servicesMap = services.reduce((acc: { [key: number]: string }, service: Service) => {
     acc[service.id] = service.name;
     return acc;
@@ -454,7 +455,7 @@ console.log('events after:', events);
                         <MoreButton title="More..." token={token} service_id={service.service_id} start_date={service.start_date} event_service_id={service.id} event_id={activeEventFieldId} customer_id={Number(id)}   />
                     
                     </div><div style={{marginLeft:'5px'}}>
-                    <EventSerivceEditForm title="Edit Scheduled Service" event_id={activeEventFieldId} customer_id={Number(id)}  duration={service.duration} status={service.status}  property_metric={service.property_metric} notes={service.notes}  token={token} service_id={service.service_id} start_date={service.start_date} event_service_id={service.id} />
+                    <EventSerivceEditForm title="Edit Scheduled Service" event_id={activeEventFieldId} customer_id={Number(id)}  duration={service.duration} status={service.status}  property_metric={service.property_metric} notes={service.notes}  token={token} service_id={service.service_id} start_date={service.start_date} event_service_id={service.id} redirect={1} />
                     </div>
                     </div>
                     </AccordionDetails>
@@ -565,7 +566,7 @@ console.log('events after:', events);
       </Dialog>
       <Dialog open={serviceFormOpen} onClose={handleServiceFormClose}>
         <form id="add_new_event_service" onSubmit={handleServiceFormSubmit}>
-          <DialogTitle>Add New Event</DialogTitle>
+          <DialogTitle>Add New Service</DialogTitle>
           <DialogContent>
             <TextField
               margin="dense"

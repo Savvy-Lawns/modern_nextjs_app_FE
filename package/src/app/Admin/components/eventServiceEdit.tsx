@@ -56,6 +56,7 @@ type Props = Partial<{
     event_id: number | string | null;
     event_service_id: number;
     service_id: number | string;
+    redirect: number;
 }>;
 
 function useDeepCompareEffect(callback: () => void, dependencies: {}[] | undefined) {
@@ -70,7 +71,7 @@ function useDeepCompareEffect(callback: () => void, dependencies: {}[] | undefin
     }, [callback, dependencies, hasChanged]);
 }
 
-function EventServiceEditForm({ title, customer_id, event_id, service_id, start_date, event_service_id, token, ...rest }: Props) {
+function EventServiceEditForm({ title, customer_id, event_id, service_id, start_date, event_service_id, token, redirect, ...rest }: Props) {
     const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState<{ [key: string]: string | number | boolean }>({});
     const { User, setUser } = useUserContext();
@@ -127,7 +128,11 @@ function EventServiceEditForm({ title, customer_id, event_id, service_id, start_
             });
             console.log('Scheduled Service has been updated:', response.data.data);
             alert(`Scheduled Service was updated successfully`);
+            if (redirect === 1) {
             window.location.href = `/Admin/customers`;
+            } else {
+                handleClose();
+            }
         } catch (error) {
             // Handle error...
         }

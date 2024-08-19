@@ -63,6 +63,9 @@ const AddTransactions = ({ title,  token, event_id, amount, payment_type, event_
                     'Authorization': `Bearer ${token}`,
                 },
             });
+            console.log(' updated:', response.data.data);
+            alert(`${response.data.data.attributes.username} was updated successfully`);
+            window.location.href = `/Admin/billing`;
     
             if (response.status === 200 || response.status === 201) {
                 alert(`Payment successfully posted!`);
