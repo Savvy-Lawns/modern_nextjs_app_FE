@@ -20,44 +20,36 @@ const TodaysServices = ({ onSetFirstService }: { onSetFirstService: any }) => {
 
   useEffect(() => {
     const sortCompletedServices = () => {
-      const completedCustomers:any = [];
-      const activeCustomers:any = [];
+      const completedCustomers: any = [];
+      const activeCustomers: any = [];
       const uniqueCustomerIds = new Set();
-  
-      shiftServices.forEach((customer: any) => {
-        if (!uniqueCustomerIds.has(customer.customer_id)) {
-          uniqueCustomerIds.add(customer.customer_id);
-          const allServicesCompleted = customer.event_services.every((service: any) => service.status === 'completed');
-          if (allServicesCompleted) {
-            completedCustomers.push(customer);
-          } else {
-            activeCustomers.push(customer);
+      const settingData = () => {
+        shiftServices.forEach((customer: any) => {
+          if (!uniqueCustomerIds.has(customer.customer_id)) {
+            uniqueCustomerIds.add(customer.customer_id);
+            const allServicesCompleted = customer.event_services.every((service: any) => service.status === 'completed');
+            if (allServicesCompleted) {
+              completedCustomers.push(customer);
+            } else {
+              activeCustomers.push(customer);
+            }
           }
-        }
-      });
-  
-      // Combine active customers with completed customers at the end
+        });
+      };
+      settingData();
       const sortedServices = [...activeCustomers, ...completedCustomers];
       setServices(sortedServices);
     };
-  
     sortCompletedServices();
   }, [shiftServices]);
 
-useEffect(() => {
-  let addresses: any = [];
-  services.map((customer: any) => {
-    addresses.push(customer.customer_address);
-  });
-  setAddressList(addresses);
-});
+  
 
   useEffect(() => {
-  if (services[0]) {
-    
-    onSetFirstService(services[0].customer_address);
-  }
-}, [onSetFirstService, services]); 
+    if (services[0]) {
+      setFirstService(services[0].customer_address);
+    }
+  }, [setFirstService, services]);
 
 
   useEffect(() => {

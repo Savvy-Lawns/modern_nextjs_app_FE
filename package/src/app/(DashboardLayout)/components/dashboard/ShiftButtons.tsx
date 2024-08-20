@@ -2,18 +2,26 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useUserContext } from '@/app/Admin/components/userContext';
+import RouteOptimizer from './routeOptimization';
 
 
 
 type Props = {
   token: string | undefined;
-  
+  listOfAddresses: any;
   title?: string;
   [key: string | number]: any; // To accept any other props dynamically
   
 };
+interface ShiftButtonsProps {
+  listOfAddresses: any; // Ideally, replace 'any' with a more specific type
+  title?: string;
+  token: string | undefined;
+  [key: string | number]: any; // To accept any other props dynamically
+  mapsKey: string;
+}
 
-const ShiftButtons = ({ title,  token,  ...rest  }: Props) => {
+const ShiftButtons: React.FC<ShiftButtonsProps> = ({ title,  token, listOfAddresses, mapsKey,  ...rest  }) => {
   const [open, setOpen] = useState(false);
   
   const [mileage_id, setMileageId] = useState<number | string>('');
@@ -22,7 +30,11 @@ const ShiftButtons = ({ title,  token,  ...rest  }: Props) => {
   const [openEndDialog, setOpenEndDialog] = useState(false);
   const [startMileage, setStartMileage] = useState<number | string>('');
   const [endMileage, setEndMileage] = useState<number | string>('');
+  const [todaysAddresses, setTodaysAddresses] = useState<any[]>([]);
 
+  useEffect(() => {
+    setTodaysAddresses(listOfAddresses);
+  }, [listOfAddresses]);
   const handleStartDay = () => {
     setOpenStartDialog(true);
   };
@@ -160,7 +172,7 @@ const handleEndDaySubmit = async (event: React.FormEvent) => {
   }
 };
 
-
+  const googleMapsApiKey = process.env.G_API || 'AIzaSyC0fLvmCuw1iCGu1z8CNKeHeB-BVIOFe7k';
   
 
   const startEndDay = () => {
@@ -182,9 +194,7 @@ const handleEndDaySubmit = async (event: React.FormEvent) => {
   return (
     <div style={styles.buttonContainer}>
       {startEndDay()}
-      <Button variant="contained" color="secondary" style={styles.dayButton}>
-        Organize Route
-      </Button>
+      <RouteOptimizer  listOfAddresses={todaysAddresses} mapsKey={mapsKey}/>
 
       {/* Start Mileage Dialog */}
       <Dialog open={openStartDialog} onClose={handleStartDialogClose}>
@@ -257,5 +267,6 @@ const styles: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
+    marginBottom: '20px',
   },
 };
