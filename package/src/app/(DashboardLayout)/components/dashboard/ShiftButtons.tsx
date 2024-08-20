@@ -172,7 +172,7 @@ const handleEndDaySubmit = async (event: React.FormEvent) => {
   }
 };
 
-  const googleMapsApiKey = process.env.G_API || 'AIzaSyC0fLvmCuw1iCGu1z8CNKeHeB-BVIOFe7k';
+  const googleMapsApiKey = process.env.G_API;
   
 
   const startEndDay = () => {
