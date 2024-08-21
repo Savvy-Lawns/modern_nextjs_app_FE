@@ -25,6 +25,7 @@ type Props = Partial<{
   event_service_ids: event_service_ids[];
   customer_id: number | string;
   event_id: number | string;
+  
 }>;
 
 interface event_service_ids {
@@ -52,7 +53,6 @@ function CompleteEventServices({ title, buttonType, token, ...rest }: Props) {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<{ [key: string]: string | number }>({});
   const [eventServices, setEventServices] = useState<event_service_ids[]>([]);
-  const { User, setUser } = useUserContext();
   const [selectedServices, setSelectedServices] = useState<any[]>([]);
   const { services } = useFetchServices();
   const [serviceFormOpen, setServiceFormOpen] = useState(false);
@@ -127,6 +127,7 @@ function CompleteEventServices({ title, buttonType, token, ...rest }: Props) {
       });
       console.log('Completed:', selectedServices);
       alert(`Event service(s) was updated successfully`);
+
       window.location.href = `/`;
     } catch (error) {
       // Handle error...

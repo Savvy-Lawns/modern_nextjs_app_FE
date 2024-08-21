@@ -172,7 +172,7 @@ const handleEndDaySubmit = async (event: React.FormEvent) => {
   }
 };
 
-  const googleMapsApiKey = process.env.G_API || 'AIzaSyC0fLvmCuw1iCGu1z8CNKeHeB-BVIOFe7k';
+  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ';
   
 
   const startEndDay = () => {
@@ -194,7 +194,7 @@ const handleEndDaySubmit = async (event: React.FormEvent) => {
   return (
     <div style={styles.buttonContainer}>
       {startEndDay()}
-      <RouteOptimizer  listOfAddresses={todaysAddresses} mapsKey={mapsKey}/>
+      {/* <RouteOptimizer  listOfAddresses={todaysAddresses} mapsKey={mapsKey}/> */}
 
       {/* Start Mileage Dialog */}
       <Dialog open={openStartDialog} onClose={handleStartDialogClose}>

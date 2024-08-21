@@ -1,7 +1,7 @@
 "use-client";
 import React, { useState, useEffect, useRef } from 'react';
 import Link from "next/link";
-import { Select, MenuItem, Button, styled, Typography } from '@mui/material';
+import { Select, MenuItem, Button, styled, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dynamic from "next/dynamic";
@@ -11,13 +11,20 @@ import ShiftButtons from './ShiftButtons';
 import withAuth from '@/utils/withAuth';
 import Cookie from 'js-cookie';
 import { BorderRight } from '@mui/icons-material';
-import useFetchShiftServices from './shiftServices';
+import useFetchShiftServices, { reorderShiftServices } from './shiftServices';
 import { text } from 'stream/consumers';
+import { getOptimizedAddresses } from './routeOptimization';
+import { IconRoute } from '@tabler/icons-react';
 
 declare global {
   interface Window {
     initMap: () => void;
   }
+}
+
+interface Service {
+  customer_address: string;
+  // Add other properties of Service here
 }
 
 const LinkStyled = styled('div')({
@@ -33,40 +40,63 @@ const LinkStyled = styled('div')({
 });
 
 const NextRoute = () => {
-  const [firstService, setFirstService] = useState<string | null>(null);
+  const [firstService, setFirstService] = useState<string |
+   any>(null);
   const [token, setToken] = useState<string | undefined>(Cookie.get('token'));
   const mapRef = useRef<HTMLDivElement>(null);
   const { shiftServices, loading, error } = useFetchShiftServices();
-  const [services, setServices] = useState<any[]>([]);
+  const [services, setServices] = useState<any[]>([shiftServices]);
   const [addressList, setAddressList] = useState<any[]>([]);
   const [windowHeightServices, setWindowHeightServices] = useState<number>(window.innerHeight * 0.9);
   const [windowHeightMap, setWindowHeightMap] = useState<number>(window.innerHeight * 0.3);
-
+  const [optimized, setOptimized] = useState<boolean>(false);
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const googleToken = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ";
   console.log('mapRef:', mapRef);
+  console.log('shiftServices TOP:', shiftServices);
+  console.log('first address TOP:', shiftServices[0]);
 
+  
 
+  
+
+  const HandleFetch = () =>  useFetchShiftServices();
 
   useEffect(() => {
     const initializeData = async () => {
         try {
-            // Set services asynchronously
-            await setServices(shiftServices);
+          // const settingservices = async function  () {
+          //   setTimeout( async () => {
+          //     await setServices(shiftServices);
+          //   }, 2000);
+          // };
+          // settingservices();   
+         
+            
+          //   console.log('setting services:', shiftServices);
 
             // Check if services exist
-            if (services && services.length > 0) {
-                // Set the first service
-                await setFirstService(services[0].customer_address);
-
-                // Set the address list
-                await setAddressList(services.map((customer: any) => {
-                    console.log('customer:', customer);
-                    console.log('customer.customer_address:', customer.customer_address);
-                    return customer.customer_address;
-                }));
-            } else {
+            if (shiftServices && shiftServices.length > 0) {
+              const settingFirstService = async function () {
+                setTimeout( async () => {
+                   setFirstService(shiftServices[0].customer_address);
+                }, 2000);
+              };
+            settingFirstService();
+         
+              console.log('right before addresses:', shiftServices);
+              await setAddressList(shiftServices.map((customer: any) => {
+                  console.log('customer:', customer);
+                  console.log('customer.customer_address:', customer.customer_address);
+                  return customer.customer_address;
+              }));
+           } else {
+                localStorage.setItem('optimizedShiftServices', JSON.stringify([]));
+                localStorage.setItem('optimizedShiftServicesExpiration', JSON.stringify(''));
+                await HandleFetch();
                 console.log('services is not defined or empty', services);
-            }
-        } catch (error) {
+            }}
+         catch (error) {
             console.error('Error setting initial data:', error);
         }
     };
@@ -74,23 +104,49 @@ const NextRoute = () => {
     initializeData();
 }, [shiftServices]);
 
-console.log('addressList after UseEffect:', addressList);
+console.log('first  address UseEffect:', firstService);
   
 
-  
+const handleOptimize = async () => {
+    if (optimized) {
+      setOpenDialog(true);
+    } else {
+      await runOptimization();
+    }
+  };
+
+  const runOptimization = async () => {
+    try {
+      const optimizedAddresses = await getOptimizedAddresses(addressList, googleToken);
+      const reorderedServices = reorderShiftServices(services, optimizedAddresses, setOptimized);
+      setServices(reorderedServices);
+      setOptimized(true);
+    } catch (error) {
+      console.error('Error optimizing route:', error);
+    }
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+  };
+
+  const handleDialogConfirm = async () => {
+    setOpenDialog(false);
+    await runOptimization();
+  };
 
   const handleSetFirstService = (service: string) => {
     setFirstService(service);
   };
 
-  const googleToken = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY 
+  
 
   useEffect(() => {
     const initializeMap = () => {
-      if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined' && mapRef.current) {
         let geocoder: google.maps.Geocoder;
         let map: google.maps.Map;
-  
+
         const codeAddress = (address: string) => {
           geocoder.geocode({ address }, (results, status) => {
             if (status === 'OK' && results && results[0]) {
@@ -104,22 +160,24 @@ console.log('addressList after UseEffect:', addressList);
             }
           });
         };
-  
+
         window.initMap = () => {
           geocoder = new google.maps.Geocoder();
           const mapOptions = {
             zoom: 15,
-            center: new google.maps.LatLng(0, 0) // Temporary center, will be updated by codeAddress
+            center: new google.maps.LatLng(0, 0), // Temporary center
+            disableDefaultUI: false,
+            clickableIcons: true,
           };
           map = new google.maps.Map(mapRef.current as HTMLElement, mapOptions);
-  
-          if (firstService) {
+          console.log('firstService before code address:', firstService);
+          if (firstService !== null) {
             codeAddress(firstService);
           } else {
             console.error('firstService is not defined');
           }
         };
-  
+
         // Check if the script is already present
         const scriptUrl = `https://maps.googleapis.com/maps/api/js?key=${googleToken}&callback=initMap&libraries=places&loading=async`;
         if (!document.querySelector(`script[src="${scriptUrl}"]`)) {
@@ -131,7 +189,7 @@ console.log('addressList after UseEffect:', addressList);
             console.error('Failed to load the Google Maps script');
           };
           document.head.appendChild(script);
-  
+
           return () => {
             document.head.removeChild(script);
           };
@@ -143,19 +201,19 @@ console.log('addressList after UseEffect:', addressList);
         }
       }
     };
-  
+
     initializeMap();
   }, [firstService, googleToken]);
 
 
   return (
-    <DashboardCard title="Today's Shift">
+    <DashboardCard title={<div style={{display:'flex', justifyContent:'center'}}>Today&apos;s Shift<Button variant="outlined" color="primary" onClick={handleOptimize} style={{paddingTop:'5px', position: "absolute", right: 35}} ><IconRoute /></Button></div>}>
       {Array.isArray(services) && services.length > 0 ? (
         <div style={styles.scrollContainer}>
           <LinkStyled>
             <div ref={mapRef} style={{ ...mapContainerStyle, height: `${windowHeightMap}px` }}></div>
           </LinkStyled>
-          <ShiftButtons token={token} mileage_start={localStorage.getItem('end_mileage')} listOfAddresses={addressList} mapsKey={googleToken} />
+          <ShiftButtons token={token} mileage_start={localStorage.getItem('end_mileage')} listOfAddresses={addressList} mapsKey={googleToken}  />
           <TodaysServices onSetFirstService={handleSetFirstService} />
         </div>
       ) : (
@@ -163,6 +221,23 @@ console.log('addressList after UseEffect:', addressList);
           <Typography variant='h3'>There is no Events for today</Typography>
         </div>
       )}
+      
+      <Dialog open={openDialog} onClose={handleDialogClose}>
+        <DialogTitle>Route Optimization</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            The route has already been optimized. Are you sure you want to optimize again?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            No
+          </Button>
+          <Button onClick={handleDialogConfirm} color="primary" autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </DashboardCard>
   );
 };
@@ -190,10 +265,10 @@ const styles: {
 };
 
 const mapContainerStyle = {
-  width: `92%`,
-  height: '30vh', // Default height, will be updated in useEffect
-  marginTop: '3px',
-  marginBottom: '4px',
-  borderRadius: '15px',
-  textAlign: 'center',
-};
+    width: '92%',
+    height: '30vh', // Default height, will be updated in useEffect
+    marginTop: '3px',
+    marginBottom: '4px',
+    borderRadius: '15px',
+    textAlign: 'center' as 'center', // Type assertion
+  };
