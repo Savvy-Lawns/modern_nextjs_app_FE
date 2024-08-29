@@ -1,114 +1,143 @@
 "use client";
-import React, {  createContext, useContext, useState,Children, useHistory } from 'react';
+import React, {  createContext, useContext, useState,Children, useEffect, Key } from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
-
-import { nth } from 'lodash';
+import { nth, set } from 'lodash';
 import { BorderBottom, Padding } from '@mui/icons-material';
 import { Button, colors } from '@mui/material';
 import { text } from 'stream/consumers';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
-import EditOverlay from '@/app/Admin/components/overlay';
-import {  Users, active } from '@/app/Admin/users/users';
+import EditForm from './edit';
+import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
+import ViewMileage from './userMileage';
+import ViewHours from './userHours';
+import Cookie from 'js-cookie'; 
+import useFetchUsers from '../users/users';
+import DeleteButton from './delete'
+import { useUserContext } from './userContext'; 
 
 type Props = {
-  userId?: number;
-    name?: JSX.Element;
-    phone?: JSX.Element;
-    email?: JSX.Element;
-    acctType?: JSX.Element;
-    mileage?: JSX.Element;
-    hours?: JSX.Element;
+  index: Key | null | undefined;
+  token?: string | undefined;
+  id?: string;
+  username?: string;
+  phone?: string;
+  email?: string;
+  acctType?: number;
+  mileage?: {
+  miles?: number;
+  created_at?: string;
+  }[];
+  hours?:{
+    total_hours?: number;
+    created_at?: string;
+    }[];
+  
   };
 
-  var SelectedUser= "";
+   
+  const SelectedUser = () => {};
   const UserAccordion = ({
-    userId,
-    name,
+    id,
+    username,
     phone,
     email,
     acctType,
     mileage,
-    hours,    
+    hours, 
+    token,   
   }: Props) => {
     
-   
-
+    
     const [open, setOpen] = useState(false);
-    
+    const [searchQuery, setSearchQuery] = useState('');
+    const { User, setUser } = useUserContext();
+    const { users, loading, error } = useFetchUsers();
     
 
-  const handleOpen = (user:typeof  Users) => {
-    // Set the selected user as an array
-    setOpen(true); // Open the overlay
-  };
+    useEffect(() => {
+      setUser(users);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [users]);
+
+
+    const handleOpen = (user: typeof User) => {
+      setUser(user); // Update the selected user in context
+      setOpen(true); // Open the overlay
+    };
   const handleClose = () => setOpen(false);
 
+  const filteredUsers = Array.isArray(User) ? User.filter((user) =>
+    user.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.phone?.includes(searchQuery)
+  ) : [];
+  
+  
   return (
     <div>
-      {Users.map((user) => (
-        <Accordion key={user.userId}>
+      <CustomTextField
+        type="search"
+        variant="outlined"
+        fullWidth
+        label="Search"
+        mb='10'
+        style={{ marginBottom: '20px' }}
+        onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setSearchQuery(e.target.value)} // Update search query on input change
+      />
+
+  <div style={styles.scrollContainer}>
+{filteredUsers.map((user) => (
+  
+        <Accordion key={user.id}>
           <AccordionSummary
             style={styles.AccordionSummaryStyle}
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1a-content"
-            id={user.userId.toString()}
+            id={user.id!.toString()}
           >
-            <Typography>{user.name}</Typography>
+            <Typography>{user.username}</Typography>
           </AccordionSummary>
           <AccordionDetails style={styles.AccordionDetailsStyle}>
             <Typography sx={styles.serviceStyle}>
-            <div>
-            <Typography variant='body1'>Phone:</Typography>
-            <Typography variant='body2'>{user.phone}</Typography>
-            </div>
-            <div>
-            <Typography variant='body1'>Email:</Typography>
-            <Typography variant='body2'>{user.email}</Typography>
-            </div>
-            <div>
-            <Typography variant='body1'>Account Type:</Typography>
-            <Typography variant='body2'>{user.acctType}</Typography>
-            </div>
-            <div>
-            <Typography variant='body1'>Mileage:</Typography>
-            <Typography variant='body2'>{user.mileage?.toString()}</Typography>
-            </div>
-            <div>
-            <Typography variant='body1'>Hours:</Typography>
-            <Typography variant='body2'>{user.hours?.toString()}</Typography>
-            </div>
-            
+              <div>
+                <Typography variant='body1'>Phone:</Typography>
+                <Typography variant='body2'>{user.phone}</Typography>
+              </div>
+              <div>
+                <Typography variant='body1'>Email:</Typography>
+                <Typography variant='body2'>{user.email}</Typography>
+              </div>
+              <div>
+                <Typography variant='body1'>Account Type:</Typography>
+                <Typography variant='body2'>{user.acctType}</Typography>
+              </div>
+              {/* <ViewMileage mileage={user.mileage} />
+              <ViewHours hours={user.hours} /> */}
             </Typography>
             <div style={styles.sidebyside}>
-            <Button
-              sx={styles.jobbuttons}
-              color="secondary"
-              variant="outlined"
-              onClick={() => updateActiveSelection(user.userId)}
-              href='/Admin/editUser' // Pass the current user to handleOpen
-            >
-              Edit
-            </Button>
+              <EditForm entityId={user.id ?? ''} entityType={'users'} title={`Edit User ${user.username}`} username={user.username} phone_number={user.phone} email={user.email} role={user.acctType}  buttonType={1} />
+              <DeleteButton
+        entityType='users' 
+        entityId={user.id?.toString() ?? ''}
+        title={'DeleteButton'}
+        token={token}
+        entityName={user.username}
+           />
             </div>
           </AccordionDetails>
         </Accordion>
       ))}
-       
-      
-       
-    
+      </div>
     </div>
   );
 }
-
 export default UserAccordion;
 
-export const activeSelection = SelectedUser
 
 const styles: {
   AccordionDetailsStyle: React.CSSProperties;
@@ -116,6 +145,7 @@ const styles: {
   sidebyside: React.CSSProperties & { flexDirection: 'row' };
   jobbuttons: React.CSSProperties;
   serviceStyle: React.CSSProperties;
+  scrollContainer: React.CSSProperties;
 } = {
  AccordionDetailsStyle: {
     backgroundColor: baselightTheme.palette.primary.main,
@@ -154,6 +184,11 @@ serviceStyle:{
     backgroundColor: 'rgba(256,256,256,0.4)',
     boxShadow: 'inset 0px -2px 2px 1px rgba(0,0,0,0.75)',
 
+},
+scrollContainer: { 
+  overflowY: 'scroll',
+  height: '58vh',
+  marginBottom: '-45px',
 },
 
 };

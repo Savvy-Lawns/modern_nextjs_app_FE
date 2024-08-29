@@ -5,6 +5,15 @@ import { Box, List } from "@mui/material";
 import NavItem from "./NavItem";
 import NavGroup from "./NavGroup/NavGroup";
 
+// Define the interface for menu items
+interface MenuItem {
+  id: string;
+  title: string;
+  icon: (props: any) => JSX.Element; // Assuming TablerIconsProps type or similar for props
+  href: string;
+  subheader?: string; // Optional subheader property
+}
+
 const SidebarItems = ({ toggleMobileSidebar }: any) => {
   const pathname = usePathname();
   const pathDirect = pathname;
@@ -12,13 +21,9 @@ const SidebarItems = ({ toggleMobileSidebar }: any) => {
   return (
     <Box sx={{ px: 3 }}>
       <List sx={{ pt: 0 }} className="sidebarNav" component="div">
-        {Menuitems.map((item) => {
-          // {/********SubHeader**********/}
+        {Menuitems.map((item: MenuItem) => { // Use the MenuItem interface
           if (item.subheader) {
             return <NavGroup item={item} key={item.subheader} />;
-
-            // {/********If Sub Menu**********/}
-            /* eslint no-else-return: "off" */
           } else {
             return (
               <NavItem

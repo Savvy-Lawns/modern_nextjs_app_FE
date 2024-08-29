@@ -1,4 +1,4 @@
-import { IconChecklist, IconFileDollar, IconHome, IconShovel, IconTrees, IconUsers } from "@tabler/icons-react";
+import { IconChecklist, IconFileDollar, IconHome, IconShovel, IconTrees, IconUsers, IconReportMoney, IconReceipt2 } from "@tabler/icons-react";
 import {
     IconUserCircle,
     IconListCheck,
@@ -9,15 +9,16 @@ import {
   } from "@tabler/icons-react";
   
   import { uniqueId } from "lodash";
+import { title } from "process";
   
   const Menuitems = [
     
   
     {
       id: uniqueId(),
-      title: "Jobs",
+      title: "Quotes",
       icon: IconTrees,
-      href: "/Admin/jobs",
+      href: "/Admin/quote",
     },
    
     {
@@ -26,12 +27,7 @@ import {
       icon: IconChecklist,
       href: "/Admin/services",
     },
-    {
-      id: uniqueId(),
-      title: "Materials",
-      icon: IconShovel,
-      href: "/Admin/materials",
-    }, 
+    
     {
       id: uniqueId(),
       title: "Customers",
@@ -45,13 +41,24 @@ import {
       href: "/Admin/users",
     },
     {
+      id: uniqueId(),
+      title: "Billing",
+      icon: IconReceipt2,
+      href: "/Admin/billing",
+    },
+    {
         id: uniqueId(),
         title: "Finance",
         icon: IconFileDollar,
         href: "/Admin/finance",
       },
     
-    
+    {
+      id: uniqueId(),
+      title: "Expenses",
+      icon: IconReportMoney,
+      href: "/Admin/expenses",
+    }
     
   ];
   

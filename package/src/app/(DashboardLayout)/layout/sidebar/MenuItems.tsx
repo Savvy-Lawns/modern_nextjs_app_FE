@@ -7,6 +7,9 @@ import {
 } from "@tabler/icons-react";
 
 import { uniqueId } from "lodash";
+import Cookie from 'js-cookie';
+import Router from 'next/router';
+
 
 const Menuitems = [
   
@@ -22,14 +25,9 @@ const Menuitems = [
     id: uniqueId(),
     title: "Schedule",
     icon: IconCalendar,
-    href: "/utilities/typography",
+    href: "/schedule",
   },
-  {
-    id: uniqueId(),
-    title: "Profile",
-    icon: IconUserCircle,
-    href: "/utilities/shadow",
-  }, 
+  
   {
     id: uniqueId(),
     title: "Admin",
@@ -41,6 +39,7 @@ const Menuitems = [
     title: "Logout",
     icon: IconLogin,
     href: "/authentication/login",
+
   },
  
   

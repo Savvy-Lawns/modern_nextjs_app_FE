@@ -3,14 +3,14 @@ import { Card, CardContent, Typography, Stack, Box,  } from "@mui/material";
 import { baselightTheme } from "@/utils/theme/DefaultColors";
 
 type Props = {
-  title?: string;
+  title?: string | JSX.Element;
   subtitle?: string;
   action?: JSX.Element | any;
-  footer?: JSX.Element;
+  footer?: JSX.Element | any;
   cardheading?: string | JSX.Element;
   headtitle?: string | JSX.Element;
   headsubtitle?: string | JSX.Element;
-  children?: JSX.Element;
+  children?: JSX.Element | any;
   middlecontent?: string | JSX.Element;
 };
 

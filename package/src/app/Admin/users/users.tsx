@@ -1,57 +1,58 @@
 "use-client"
-import { min } from "lodash";
+// useFetchUsers.ts
+import { useState, useEffect } from 'react';
+import Cookie from 'js-cookie';
 
-export const active = {
-    selection: ''
+const useFetchUsers = () => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+      const token = Cookie.get('token');
+      if (!token) {
+        console.error('Token not found. User must be authenticated.');
+        
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch('http://10.0.0.198:3000/api/v1/users', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const { data } = await response.json();
+        const users = data.map(({ id, attributes }: { id: string, attributes: any }) => ({
+          id: id.toString(),
+          username: attributes.username,
+          email: attributes.email,
+          phone: attributes.phone_number,
+          acctType: attributes.role,
+        }));
+        setUsers(users);
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+        
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []); // Add dependencies if needed
+
+  return { users, loading, error };
 };
 
-const Users = [
-    {
-        "userId": "1",
-        "name": "Samantha Smith",
-        "phone": "970-555-1234",
-        "email": "SSmith@gmail.com",
-        "acctType": 2,
-        "mileage": "1500",
-        "hours": "35"
-    },
-    {
-        "userId": "2",
-
-        "name": "Raj Patel",
-        "phone": "970-555-5678",
-        "email": "RPatel@gmail.com",
-        "acctType": 1,
-        "mileage": "1200",
-        "hours": "45"
-    },
-    {
-        "userId": "3",
-        "name": "Luisa Gomez",
-        "phone": "970-555-9101",
-        "email": "LGomez@gmail.com",
-        "acctType": 2,
-        "mileage": "1100",
-        "hours": "50"
-    },
-    {
-        "userId": "4",
-        "name": "Xin Zhao",
-        "phone": "970-555-1213",
-        "email": "XZhao@gmail.com",
-        "acctType": 1,
-        "mileage": "1300",
-        "hours": "38"
-    },
-    {
-        "userId": "5",
-        "name": "Emily Hughes",
-        "phone": "970-555-1415",
-        "email": "EHughes@gmail.com",
-        "acctType": 2,
-        "mileage": "1400",
-        "hours": "42"
-    }
-];
-
-export { Users };
+export default useFetchUsers;

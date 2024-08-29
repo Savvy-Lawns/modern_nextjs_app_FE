@@ -19,6 +19,10 @@ const Header = ({toggleMobileSidebar}: {toggleMobileSidebar: (event: React.Mouse
   // const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   // const lgDown = useMediaQuery((theme) => theme.breakpoints.down('lg'));
 
+  interface MenuLogoProps {
+    // Other props
+    onClick: (event: React.MouseEvent<HTMLElement>) => void;
+  }
 
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
     boxShadow: 'none',
@@ -37,8 +41,7 @@ const Header = ({toggleMobileSidebar}: {toggleMobileSidebar: (event: React.Mouse
   return (
     <AppBarStyled position="sticky" color="default">
       <ToolbarStyled>
-        <MenuLogo onClick={toggleMobileSidebar} />
-        
+      <MenuLogo onClick={(event) => toggleMobileSidebar(event)} />        
 
 
         

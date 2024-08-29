@@ -53,20 +53,20 @@ const AuthForgot = ({ title, subtitle, subtext }: loginType) => (
       </Stack>
     </Stack>
     <Box>
-      <Button
-        color="primary"
-        variant="contained"
-        size="large"
-        fullWidth
-        component={Link}
-        href="/authentication/login"
-        type="submit"
-        onClick={ () => alert('Email sent')}
-        borderRadius="45px"
-      >
-        Submit
-      </Button>
-    </Box>
+  <Link href="/authentication/login" passHref>
+    <Button
+      color="primary"
+      variant="contained"
+      size="large"
+      fullWidth
+      type="submit"
+      onClick={() => alert('Email sent')}
+      sx={{ borderRadius: '45px' }} // Apply custom styles using sx prop
+    >
+      Submit
+    </Button>
+  </Link>
+  </Box>
     {subtitle}
   </>
 );

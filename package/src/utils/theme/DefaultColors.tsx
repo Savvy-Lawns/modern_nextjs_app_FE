@@ -16,12 +16,12 @@ const baselightTheme = createTheme({
     primary: {
       main: "#328525",
       light: "#9FC499",
-      dark: "#315D2A",
+      dark: "#2F5928",
     },
     secondary: {
       main: "#49A966",
       light: "#C2DABE",
-      dark: "##38814E",
+      dark: "#38814E",
     },
     success: {
       main: "#13DEB9",
@@ -36,9 +36,9 @@ const baselightTheme = createTheme({
       contrastText: "#ffffff",
     },
     error: {
-      main: "#FA896B",
-      light: "#FDEDE8",
-      dark: "#f3704d",
+      main: "#B63A34",
+      light: "#CB5049",
+      dark: "#842B26",
       contrastText: "#ffffff",
     },
     warning: {
@@ -64,7 +64,7 @@ const baselightTheme = createTheme({
       hoverOpacity: 0.02,
       hover: "#f6f9fc",
     },
-    divider: "#e5eaef",
+    divider: "transparent",
   },
   typography: {
     fontFamily: plus.style.fontFamily,

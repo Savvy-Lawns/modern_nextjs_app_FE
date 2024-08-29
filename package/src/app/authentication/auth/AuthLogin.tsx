@@ -1,4 +1,5 @@
-import React from "react";
+"use client"
+import React, { useState,useEffect } from "react";
 import {
   Box,
   Typography,
@@ -11,6 +12,10 @@ import {
 import Link from "next/link";
 
 import CustomTextField from "@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField";
+import { useRouter } from "next/navigation";
+import Cookie from 'js-cookie';
+
+
 
 interface loginType {
   title?: string;
@@ -18,81 +23,128 @@ interface loginType {
   subtext?: JSX.Element | JSX.Element[];
 }
 
-const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
-  <>
-    {title ? (
-      <Typography fontWeight="700" variant="h2" mb={1}>
-        {title}
-      </Typography>
-    ) : null}
+const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const router = useRouter();
+  const [loginSuccess, setLoginSuccess] = useState(false); // Step 1: New state for tracking login success
+  const [token, setToken] = useState(''); // Step 2: New state for storing the token
+  useEffect(() => {
+    Cookie.remove('token');
+  }, []);
 
-    {subtext}
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+  };
 
-    <Stack>
-      <Box>
-        <Typography
-          variant="subtitle1"
-          fontWeight={600}
-          component="label"
-          htmlFor="username"
-          mb="5px"
-        >
-          Username
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+  };
+
+  useEffect(() => {
+    let isMounted = true; 
+  
+    if (loginSuccess && isMounted) {
+      router.push('/');
+    }
+  
+    return () => {
+      isMounted = false; // Clean up by marking component as unmounted
+    };
+  }, [loginSuccess, router]);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault(); // Prevent default form submission behavior
+    try {
+      const response = await fetch('http://10.0.0.198:3000/api/v1/authentication/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      console.log({data});
+  
+      if (data && data.jwt) {
+        console.log(`Success`);
+        Cookie.set('token', data.jwt, { expires: 7, secure: false, sameSite: 'lax' });
+        setLoginSuccess(true);
+        // Store token in a cookie
+      } else {
+        console.log('failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
+
+  
+  const handleTouchStart = (event:React.FormEvent) => {
+    event.preventDefault();
+    handleSubmit(event);
+  };
+
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {title ? (
+        <Typography fontWeight="700" variant="h2" mb={1}>
+          {title}
         </Typography>
-        <CustomTextField variant="outlined" fullWidth />
-      </Box>
-      <Box mt="25px">
-        <Typography
-          variant="subtitle1"
-          fontWeight={600}
-          component="label"
-          htmlFor="password"
-          mb="5px"
+      ) : null}
+
+      {subtext}
+
+      <Stack>
+        <Box>
+          <Typography
+            variant="subtitle1"
+            fontWeight={600}
+            component="label"
+            htmlFor="username"
+            mb="5px"
+          >
+            Username
+          </Typography>
+          <CustomTextField variant="outlined" fullWidth value={email} onChange={handleEmailChange} />
+        </Box>
+        <Box mt="25px">
+          <Typography
+            variant="subtitle1"
+            fontWeight={600}
+            component="label"
+            htmlFor="password"
+            mb="5px"
+          >
+            Password
+          </Typography>
+          <CustomTextField type="password" variant="outlined" fullWidth value={password} onChange={handlePasswordChange} />
+        </Box>
+        <Stack
+          justifyContent="space-between"
+          direction="row"
+          alignItems="center"
+          my={2}
         >
-          Password
-        </Typography>
-        <CustomTextField type="password" variant="outlined" fullWidth />
-      </Box>
-      <Stack
-        justifyContent="space-between"
-        direction="row"
-        alignItems="center"
-        my={2}
-      >
-        <FormGroup>
-          <FormControlLabel
-            control={<Checkbox defaultChecked />}
-            label="Remeber this Device"
-          />
-        </FormGroup>
-        <Typography
-          component={Link}
-          href="/authentication/forgot"
-          fontWeight="500"
-          sx={{
-            textDecoration: "none",
-            color: "primary.main",
-          }}
-        >
-          Forgot Password ?
-        </Typography>
+          
+        </Stack>
       </Stack>
-    </Stack>
-    <Box>
-      <Button
-        color="primary"
-        variant="contained"
-        size="large"
-        fullWidth
-        component={Link}
-        href="/"
-        type="submit"
-      >
-        Sign In
-      </Button>
-    </Box>
-    {subtitle}
-  </>
-);
+      <Box>
+        <Button
+          color="primary"
+          variant="contained"
+          size="large"
+          fullWidth
+          type="submit"
+          onTouchStart={handleTouchStart}
+        >
+          Sign In
+        </Button>
+      </Box>
+      {subtitle}
+    </form>
+  );
+};
 
 export default AuthLogin;

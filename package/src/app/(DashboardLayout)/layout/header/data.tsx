@@ -90,18 +90,8 @@ const profile = [
 // apps dropdown
 
 const appsLink = [
-  {
-    href: '/apps/chats',
-    title: 'Chat Application',
-    subtext: 'Messages & Emails',
-    avatar: ddIcon1
-  },
-  {
-    href: '/apps/ecommerce/shop',
-    title: 'eCommerce App',
-    subtext: 'Messages & Emails',
-    avatar: ddIcon2
-  },
+ 
+  
   {
     href: '/',
     title: 'Invoice App',
@@ -138,15 +128,15 @@ const appsLink = [
 const pageLinks = [
   
   {
-    href: '/auth/login',
+    href: '/authentication/login',
     title: 'Authentication Design'
   },
   {
-    href: '/auth/register',
+    href: '/authentication/register',
     title: 'Register Now'
   },
   {
-    href: '/auth/forgot',
+    href: '/authentication/forgot',
     title: 'Forgot Password'
   },
   {
@@ -156,7 +146,7 @@ const pageLinks = [
   
   {
     href: '/user-profile',
-    title: 'User Application'
+    title: 'User Profile'
   },
 
   
@@ -165,77 +155,35 @@ const pageLinks = [
     title: 'Admin Navigation'
   },
   {
-    href: '/Admin/jobs',
-    title: 'Admin Jobs'
+    href: '/Admin/events',
+    title: 'Events'
   },
   {
     href: '/Admin/services',
-    title: 'Admin Services'
+    title: 'Services'
   },
-  {
-    href: '/Admin/materials',
-    title: 'Admin Materials'
-  },
+
   {
     href: '/Admin/customers',
-    title: 'Admin Customers'
+    title: 'Customers'
   },
   {
     href: '/Admin/users',
-    title: 'Admin Users'
+    title: 'Users'
   },
   {
     href: '/Admin/finance',
-    title: 'Admin Finance'
+    title: 'Finance'
+  },
+ 
+  {
+    href: '/Admin/quote',
+    title: 'Quote'
   },
   {
-    href: '/Admin/editUser',
-    title: 'Edit User'
-  },
-  {
-    href: '/Admin/addUser',
-    title: 'Add User'
-  },
-  {
-    href: '/Admin/addJob',
-    title: 'Add Job'
-  },
-  {
-    href: '/Admin/addService',
-    title: 'Add Service'
-  },
-  {
-    href: '/Admin/addMaterial',
-    title: 'Add Material'
-  },
-  {
-    href: '/Admin/addCustomer',
-    title: 'Add Customer'
-  },
-  {
-    href: '/Admin/addFinance',
-    title: 'Add Finance'
-  },
-  {
-    href: '/Admin/editJob',
-    title: 'Edit Job'
-  },
-  {
-    href: '/Admin/editService',
-    title: 'Edit Service'
-  },
-  {
-    href: '/Admin/editMaterial',
-    title: 'Edit Material'
-  },
-  {
-    href: '/Admin/editCustomer',
-    title: 'Edit Customer'
-  },
-  {
-    href: '/Admin/editFinance',
-    title: 'Edit Finance',
-  },
+    href: '/Admin/billing',
+    title: 'Billing'
+  }
 ]
 
 export { notifications, profile, pageLinks, appsLink };
