@@ -93,21 +93,21 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
         try {
             let response;
             if (rescheduleOption === 'single') {
-                response = await axios.patch(`http://127.0.0.1:3000/api/v1/event_services/${event_service_id}/reschedule_single_in_series`, changeSingleRequestData, {
+                response = await axios.patch(`http://10.0.0.198:3000/api/v1/event_services/${event_service_id}/reschedule_single_in_series`, changeSingleRequestData, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,
                     },
                 });
             } else if (rescheduleOption === 'series') {
-                response = await axios.patch(`http://127.0.0.1:3000/api/v1/event_services/${event_service_id}/reschedule_series`, changeRequestData, {
+                response = await axios.patch(`http://10.0.0.198:3000/api/v1/event_services/${event_service_id}/reschedule_series`, changeRequestData, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,
                     },
                 });
             } else if (rescheduleOption === 'one-time') {
-                response = await axios.patch(`http://127.0.0.1:3000/api/v1/customers/${customer_id}/events/${event_id}/event_services/${event_service_id}`, changeRequestData, {
+                response = await axios.patch(`http://10.0.0.198:3000/api/v1/customers/${customer_id}/events/${event_id}/event_services/${event_service_id}`, changeRequestData, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`,
@@ -128,7 +128,7 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
         
 
         try {
-            const response = await axios.delete(`http://127.0.0.1:3000/api/v1/customers/${customer_id}/events/${event_id}/event_services/${event_service_id}`, {
+            const response = await axios.delete(`http://10.0.0.198:3000/api/v1/customers/${customer_id}/events/${event_id}/event_services/${event_service_id}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,

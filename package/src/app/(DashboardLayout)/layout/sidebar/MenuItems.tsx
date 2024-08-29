@@ -27,12 +27,7 @@ const Menuitems = [
     icon: IconCalendar,
     href: "/schedule",
   },
-  {
-    id: uniqueId(),
-    title: "Profile",
-    icon: IconUserCircle,
-    href: "/profile",
-  }, 
+  
   {
     id: uniqueId(),
     title: "Admin",

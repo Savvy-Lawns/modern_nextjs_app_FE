@@ -71,7 +71,7 @@ const ShiftButtons: React.FC<ShiftButtonsProps> = ({ title,  token, listOfAddres
     const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
   
 
-    const apiUrl = `http://127.0.0.1:3000/api/v1/mileages`;
+    const apiUrl = `http://10.0.0.198:3000/api/v1/mileages`;
     const entity = 'mileage';
     try {
         // Ensure the data is nested under the 'service' key
@@ -143,7 +143,7 @@ const handleEndDaySubmit = async (event: React.FormEvent) => {
   const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
  
 
-  const apiUrl = `http://127.0.0.1:3000/api/v1/mileages/${mileage_id}`;
+  const apiUrl = `http://10.0.0.198:3000/api/v1/mileages/${mileage_id}`;
   const entity = 'mileage';
   try {
       // Ensure the data is nested under the 'service' key

@@ -85,7 +85,7 @@ function EditForm({ title, buttonType, entityId, entityType, token,  ...rest }: 
 
 
         try {
-            const response = await axios.patch(`http://127.0.0.1:3000/api/v1/${entityType}/${entityId}`, formJson, {
+            const response = await axios.patch(`http://10.0.0.198:3000/api/v1/${entityType}/${entityId}`, formJson, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,

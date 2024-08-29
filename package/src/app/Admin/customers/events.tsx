@@ -17,7 +17,7 @@ const useFetchEvents = (customerId: number | string) => {
     }
 
     try {
-      const response = await fetch(`http://127.0.0.1:3000/api/v1/customers/${customerId}/events`, {
+      const response = await fetch(`http://10.0.0.198:3000/api/v1/customers/${customerId}/events`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

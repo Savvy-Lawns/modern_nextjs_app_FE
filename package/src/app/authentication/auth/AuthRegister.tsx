@@ -30,7 +30,7 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
         };
     
         console.log(JSON.stringify(userData));
-        const apiUrl = 'http://127.0.0.1:3000/api/v1/users';
+        const apiUrl = 'http://10.0.0.198:3000/api/v1/users';
     
         if (!userData.user.username || !userData.user.email || !userData.user.password || !userData.user.password_confirmation || !userData.user.phone_number) {
             console.error('Please fill in all fields.');

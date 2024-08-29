@@ -9,7 +9,7 @@ import { baselightTheme } from '@/utils/theme/DefaultColors';
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
 import AddTransactions from './addTransaction';
 import useFetchUnpaidServices from '../billing/billing';
-import Invoice from '../billing/invoiceGen';
+
 import { Today } from '@mui/icons-material';
 
 const BillingAccordion = ({ token }: { token?: string }) => {
@@ -137,10 +137,17 @@ console.log('displayData billingpage 2:', displayData);
                 <div key={event.id}>
                   <div style={{...styles.sideBySide, width:'100%'}}>
                   <div style={{...styles.sideBySide, width:'60%', verticalAlign:'middle'}}>
-                  <Typography>Total: ${calculateTotal}</Typography>
-                  <Typography>Amount Paid: {event.amount_paid}</Typography>
+                  <Typography>Total: ${event.balance}</Typography>
+                  
                   </div><div>
-                  <AddTransactions token={token} event_id={event.id} amount={`$${calculateTotal}`} payment_type={''} event_service_ids={event_service_ids} title={`Submit Payment`} rest={undefined}  /></div></div>
+                  <AddTransactions 
+                  token={token} 
+                  event_id={event.id} 
+                  amount={`$${event.balance}`} 
+                  payment_type={''} 
+                  event_service_ids={[event.event_services.map((service:any) => {return service.id})]} 
+                  title={`Submit Payment`} rest={undefined} paidAt={''}  /></div></div>
+
                   {event.event_services.map((service: any) => (
                     <div key={service.id} style={{ ...styles.sideBySide, border: `1px solid ${baselightTheme.palette.primary.light}`, borderRadius:'15px' }}>
                       <div style={styles.servicesCompleted}>
@@ -150,13 +157,13 @@ console.log('displayData billingpage 2:', displayData);
                       <Typography>Duration: {service.duration}</Typography>
                         </div>
                         <div style={styles.servicesCost}>
-                      <Typography>Cost:<br /> {service.total_service_cost}</Typography>
+                      <Typography>Cost:<br /> ${service.total_service_cost}</Typography>
                       </div>
                     </div>
                   ))}
                 </div>
               ))}
-              <Invoice customer_name={customer.name} start_date={start_date} end_date={end_date} bill_date={String(Date.now())} amount={Number(calculateTotal)} customer_address={customer.address} customer_phone={customer.phone} customer_email={customer.email} listOfUnpaidServices={event_service_ids_list} />
+              {/* <Invoice customer={customer} start_date={start_date} end_date={end_date} bill_date={String(Date.now())} amount={Number(calculateTotal)} /> */}
             </AccordionDetails>
           </Accordion>
         ))}

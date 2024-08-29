@@ -203,9 +203,9 @@ console.log('events after:', events);
               </div>
         {Object.keys(groupedEvents).map((month: string | number) => (
           
-          <Accordion style={Styles.serviceAccordion} sx={{'&.Mui-expanded': { marginBottom: '5px', paddingTop:'0px', paddingBottom: '0px',height:'100%', width:'90%', }}} key={month}>
+          <Accordion style={Styles.serviceAccordion} sx={{'&.Mui-expanded': { marginBottom: '5px', paddingTop:'0px', paddingBottom: '0px',height:'auto', width:'90%', }}} key={month}>
             
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} style={Styles.serviceAccordion} sx={{'&.MuiAccordionSummary-content': {marginTop:'0px', marginBottom:'0px'},'&.MuiButtonBase-root':{minHeight:'12px'},'&.Mui-expanded': { paddingTop:'0px', paddingBottom: '0px', minHeight: '12px', width:'90%', marginTop:'-15px', 
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} style={Styles.serviceAccordion} sx={{'&.MuiAccordionSummary-content': {marginTop:'0px', marginBottom:'0px'},'&.MuiButtonBase-root':{minHeight:'auto'},'&.Mui-expanded': { paddingTop:'0px', paddingBottom: '0px', minHeight: 'auto', width:'90%', marginTop:'-15px', 
                         marginBottom:'-10px'}}}>
               <Typography variant={'h5'}>{getMonthByIndex(Number(month))}</Typography>
             </AccordionSummary>
@@ -221,7 +221,7 @@ console.log('events after:', events);
                       marginTop:'0px', 
                       marginBottom:'0px', },
                     '&.MuiButtonBase-root':{
-                      minHeight:'100%', 
+                      minHeight:'auto', 
                       marginTop:'0px', 
                       marginBottom:'0px'},
                       '&.Mui-expanded': { 
@@ -240,7 +240,7 @@ console.log('events after:', events);
                       console.log('service:', service),
                       console.log('service id:', service.service_id),
                   <Accordion key={index} sx={{'&.MuiAccordion-root': {backgroundColor:baselightTheme.palette.primary.dark}}}>
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />} style={Styles.serviceAccordionList} sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: '100%', width:'90%', }}}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />} style={Styles.serviceAccordionList} sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: 'auto', width:'90%', }}}>
                     <Typography variant={'h6'}>{getServiceName(service.service_id)}</Typography>
                     
                   </AccordionSummary>

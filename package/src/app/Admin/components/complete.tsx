@@ -119,7 +119,7 @@ function CompleteEventServices({ title, buttonType, token, ...rest }: Props) {
 
     
     try {
-      const response = await axios.patch(`http://127.0.0.1:3000/api/v1/bulk_actions/update_event_services_status`, {event_service_ids: selectedServices}, {
+      const response = await axios.patch(`http://10.0.0.198:3000/api/v1/bulk_actions/update_event_services_status`, {event_service_ids: selectedServices}, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -171,7 +171,7 @@ function CompleteEventServices({ title, buttonType, token, ...rest }: Props) {
     
   
 
-    const apiUrl = `http://127.0.0.1:3000/api/v1/customers/${activeCustomerId}/events/${activeEventFieldId}/event_services`;
+    const apiUrl = `http://10.0.0.198:3000/api/v1/customers/${activeCustomerId}/events/${activeEventFieldId}/event_services`;
 
     try {
       const response = await axios.post(apiUrl, requestData, {

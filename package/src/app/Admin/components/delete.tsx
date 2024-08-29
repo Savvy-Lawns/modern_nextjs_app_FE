@@ -33,7 +33,7 @@ const DeleteButton = ({ title, entityName,  entityType, entityId, token, ...rest
         
         const entity = entityType.slice(0, -1);
     
-        const apiUrl = `http://127.0.0.1:3000/api/v1/${entityType}/${entityId}`;
+        const apiUrl = `http://10.0.0.198:3000/api/v1/${entityType}/${entityId}`;
     
         try {
             // Ensure the data is nested under the 'service' key    

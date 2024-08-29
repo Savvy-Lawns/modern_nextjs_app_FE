@@ -24,7 +24,7 @@ const useFetchUnpaidServices = (start_date: string, end_date: string) => {
       }
   
       try {
-        const response = await fetch(`http://127.0.0.1:3000/api/v1/reports/customers_with_active_events?start_date=${start_date}&end_date=${end_date}`, {
+        const response = await fetch(`http://10.0.0.198:3000/api/v1/reports/customers_with_active_events?start_date=${start_date}&end_date=${end_date}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

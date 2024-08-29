@@ -56,7 +56,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent default form submission behavior
     try {
-      const response = await fetch('http://127.0.0.1:3000/api/v1/authentication/login', {
+      const response = await fetch('http://10.0.0.198:3000/api/v1/authentication/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,8 +68,9 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   
       if (data && data.jwt) {
         console.log(`Success`);
+        Cookie.set('token', data.jwt, { expires: 7, secure: false, sameSite: 'lax' });
         setLoginSuccess(true);
-        Cookie.set('token', data.jwt, { expires: 7, secure: true, sameSite: 'strict' }); // Store token in a cookie
+        // Store token in a cookie
       } else {
         console.log('failed');
       }
@@ -78,6 +79,11 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
     }
   };
 
+  
+  const handleTouchStart = (event:React.FormEvent) => {
+    event.preventDefault();
+    handleSubmit(event);
+  };
 
 
   return (
@@ -121,23 +127,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
           alignItems="center"
           my={2}
         >
-          <FormGroup>
-            <FormControlLabel
-              control={<Checkbox defaultChecked />}
-              label="Remember this Device"
-            />
-          </FormGroup>
-          <Typography
-            component={Link}
-            href="/authentication/forgot"
-            fontWeight="500"
-            sx={{
-              textDecoration: "none",
-              color: "primary.main",
-            }}
-          >
-            Forgot Password?
-          </Typography>
+          
         </Stack>
       </Stack>
       <Box>
@@ -147,7 +137,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
           size="large"
           fullWidth
           type="submit"
-          onClick={handleSubmit}
+          onTouchStart={handleTouchStart}
         >
           Sign In
         </Button>

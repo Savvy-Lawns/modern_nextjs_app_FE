@@ -23,7 +23,7 @@ interface Expense {
     notes: string;
     expense_type: string;
     created_at: Date; 
-  }
+}
 
 type Props = {
     expenseId?: number;
@@ -31,9 +31,9 @@ type Props = {
     cost?: number;
     user_id?: number;
     expense_type?: string;
-    notes?: string;
     title?: string;
     created_at?: Date;
+    notes?: string; // Add the 'notes' property to the Props interface
 };
 
   const SelectedExpense = () => {};
@@ -53,11 +53,11 @@ type Props = {
     const { expenses, loading, error } = useFetchExpenses();
     const { Expense, setExpense } = useExpenseContext();
 
-    const groupExpensesByDate = (expenses: Expense[]): Record<string, { expenses: Expense[]; total: number }> => {
-        return expenses.reduce((acc: Record<string, { expenses: Expense[]; total: number }>, expense: Expense) => {
+    const groupExpensesByDate = (expenses: any[]): Record<any, { expenses: Expense[]; total: number; notes: string; }> => {
+        return expenses.reduce((acc: Record<any, { expenses: Expense[]; total: number; notes: string; }>, expense: Expense) => {
             const date = new Date(expense.created_at).toDateString(); // Convert to a simple date string for grouping
             if (!acc[date]) {
-                acc[date] = { expenses: [], total: 0 };
+                acc[date] = { expenses: [], total: 0, notes: '' };
             }
             acc[date].expenses.push(expense);
             acc[date].total += expense.cost; // Add expense cost to total for the day
@@ -68,7 +68,7 @@ type Props = {
 
     useEffect(() => {
       setExpense(Expense);
-    }, [Expense]);
+    }, [Expense, setExpense]);
     
 
     const handleOpen = (expense: typeof Expense) => { // Ensure expense is of type Expense
@@ -77,7 +77,7 @@ type Props = {
     };
   const handleClose = () => setOpen(false);
 
-  const filteredExpenses = expenses.filter((expense) =>
+  const filteredExpenses = expenses.filter((expense:any) =>
     expense.notes.toLowerCase().includes(searchQuery.toLowerCase())
   );
 

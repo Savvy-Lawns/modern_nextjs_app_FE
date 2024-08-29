@@ -45,7 +45,7 @@ const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
         const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
         const entity = entityType
     
-        const apiUrl = `http://127.0.0.1:3000/api/v1/${entityType}`;
+        const apiUrl = `http://10.0.0.198:3000/api/v1/${entityType}`;
     
         try {
             // Ensure the data is nested under the 'service' key

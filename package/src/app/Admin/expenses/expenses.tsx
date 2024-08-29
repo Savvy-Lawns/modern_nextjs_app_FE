@@ -20,7 +20,7 @@ const useFetchExpenses = () => {
       }
 
       try {
-        const response = await fetch('http://127.0.0.1:3000/api/v1/expenses', {
+        const response = await fetch('http://10.0.0.198:3000/api/v1/expenses', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

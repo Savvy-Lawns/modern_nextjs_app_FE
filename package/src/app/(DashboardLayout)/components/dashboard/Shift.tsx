@@ -1,7 +1,6 @@
 "use-client";
 import React, { useState, useEffect, useRef } from 'react';
-import Link from "next/link";
-import { Select, MenuItem, Button, styled, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import {  Button, styled, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dynamic from "next/dynamic";
@@ -15,6 +14,7 @@ import useFetchShiftServices, { reorderShiftServices } from './shiftServices';
 import { text } from 'stream/consumers';
 import { getOptimizedAddresses } from './routeOptimization';
 import { IconRoute } from '@tabler/icons-react';
+import credentials from '../../../../../android/app/credentials.json'
 
 declare global {
   interface Window {
@@ -51,7 +51,7 @@ const NextRoute = () => {
   const [windowHeightMap, setWindowHeightMap] = useState<number>(window.innerHeight * 0.3);
   const [optimized, setOptimized] = useState<boolean>(false);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const googleToken = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ";
+  const googleToken = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
   console.log('mapRef:', mapRef);
   console.log('shiftServices TOP:', shiftServices);
   console.log('first address TOP:', shiftServices[0]);

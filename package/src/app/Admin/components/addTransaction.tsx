@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -20,6 +20,7 @@ type Props = {
     payment_type: string;
     event_service_ids: any[];
     rest: any;
+    paidAt: any;
     
 };
 
@@ -29,6 +30,15 @@ const AddTransactions = ({ title,  token, event_id, amount, payment_type, event_
     const handleClose = () => setOpen(false);
     const [paymentType, setPaymentType] = useState(payment_type);
     const [amountValue, setAmount] = useState(amount);
+    const [paidAt, setPaidAt] = useState('');
+    console.log('amount 1:', amount);
+    const today = new Date().toISOString();
+
+    useEffect(() => {
+        setAmount(amount);
+        setPaidAt(today);
+    }, [amount]);
+    console.log('event_service_ids:', event_service_ids);
     
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -44,18 +54,20 @@ const AddTransactions = ({ title,  token, event_id, amount, payment_type, event_
                 formDataObj.append(key, inputElement.value);
             }
         });
-        
+       
         // Convert formDataObj to JSON
         const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
         const removeDollarSign = String(amountValue).replace(/\$/g, "");
+        const numConvertAmount = Number(removeDollarSign);
         
         
-        const apiUrl = `http://127.0.0.1:3000/api/v1/events/${event_id}/transactions`;
+        const apiUrl = `http://10.0.0.198:3000/api/v1/events/${event_id}/transactions`;
     
         try {
             // Ensure the data is nested under the 'service' key
-            const requestData = { transaction: {amount: Number(removeDollarSign), payment_type: paymentType, paid_at: ''}, event_service_ids: event_service_ids };
+            const requestData = { transaction: {amount: numConvertAmount, payment_type: paymentType, paid_at: paidAt}, event_service_ids: event_service_ids };
             
+
     
             const response = await axios.post(apiUrl, requestData, {
                 headers: {
@@ -63,9 +75,7 @@ const AddTransactions = ({ title,  token, event_id, amount, payment_type, event_
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            console.log(' updated:', response.data.data);
-            alert(`${response.data.data.attributes.username} was updated successfully`);
-            window.location.href = `/Admin/billing`;
+            
     
             if (response.status === 200 || response.status === 201) {
                 alert(`Payment successfully posted!`);
