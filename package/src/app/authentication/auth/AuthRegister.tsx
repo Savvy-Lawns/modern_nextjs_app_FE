@@ -12,7 +12,7 @@ interface registerType {
 }
 
 const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
-    const router = useRouter()
+    
     const apiURL =  process.env.NEXT_PUBLIC_API_URL
 
     const handleSubmit = async (event: React.FormEvent) => {
@@ -60,7 +60,7 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
             const result = await response.json();
             console.log('User created:', result);
             alert(`User ${userData.user.username} was created successfully`);
-            
+            window.location.href = 'authentication/login';
             // Navigate to login page after successful registration
        
     
@@ -68,7 +68,7 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
             console.error('Error creating user:', error);
             // Handle errors, show error messages
         }
-        router.push('/authentication/login'); // Redirect to login page
+        
     };
  
     
