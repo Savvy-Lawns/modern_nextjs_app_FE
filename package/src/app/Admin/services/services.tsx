@@ -21,7 +21,7 @@ const useFetchServices = () => {
       }
 
       try {
-        const response = await fetch('${apiURL}services', {
+        const response = await fetch(`${apiURL}services`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

@@ -21,7 +21,7 @@ const useFetchExpenses = () => {
       }
 
       try {
-        const response = await fetch('${apiURL}expenses', {
+        const response = await fetch(`${apiURL}expenses`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

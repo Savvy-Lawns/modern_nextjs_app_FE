@@ -21,7 +21,7 @@ const useFetchUsers = () => {
       }
 
       try {
-        const response = await fetch('${apiURL}users', {
+        const response = await fetch(`${apiURL}users`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

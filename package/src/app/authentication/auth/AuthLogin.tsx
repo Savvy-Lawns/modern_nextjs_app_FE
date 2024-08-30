@@ -58,7 +58,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent default form submission behavior
     try {
-      const response = await fetch('${apiURL}authentication/login', {
+      const response = await fetch(`${apiURL}authentication/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

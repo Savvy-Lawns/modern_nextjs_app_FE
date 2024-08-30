@@ -31,7 +31,7 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
         };
     
         console.log(JSON.stringify(userData));
-        const apiUrl = '${apiURL}users';
+        
     
         if (!userData.user.username || !userData.user.email || !userData.user.password || !userData.user.password_confirmation || !userData.user.phone_number) {
             console.error('Please fill in all fields.');
@@ -44,7 +44,7 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
     
         try {
             // Make the API call
-            const response = await fetch(apiUrl, {
+            const response = await fetch(`${apiURL}users`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

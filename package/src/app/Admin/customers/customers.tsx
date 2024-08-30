@@ -21,7 +21,7 @@ const useFetchCustomers = () => {
       }
 
       try {
-        const response = await fetch('${apiURL}customers', {
+        const response = await fetch(`${apiURL}customers`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
