@@ -29,7 +29,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   const router = useRouter();
   const [loginSuccess, setLoginSuccess] = useState(false); // Step 1: New state for tracking login success
   const [token, setToken] = useState(''); // Step 2: New state for storing the token
-  const apiURL =  process.env.API_URL
+  const apiURL =  process.env.NEXT_PUBLIC_API_URL
 
   useEffect(() => {
     Cookie.remove('token');
@@ -58,7 +58,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent default form submission behavior
     try {
-      const response = await fetch(`${apiURL}authentication/login`, {
+      const response = await fetch(`${apiURL}/authentication/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

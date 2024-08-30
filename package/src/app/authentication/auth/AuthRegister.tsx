@@ -13,7 +13,7 @@ interface registerType {
 
 const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
     const router = useRouter()
-    const apiURL =  process.env.API_URL
+    const apiURL =  process.env.NEXT_PUBLIC_API_URL
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -44,7 +44,7 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
     
         try {
             // Make the API call
-            const response = await fetch(`${apiURL}users`, {
+            const response = await fetch(`${apiURL}/users`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

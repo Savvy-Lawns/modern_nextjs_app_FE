@@ -52,7 +52,7 @@ function EditForm({ title, buttonType, entityId, entityType, token,  ...rest }: 
     const {User, setUser} = useUserContext();
     const value = 'Refreshing...';
     const value2 = '';
-    const apiURL =  process.env.API_URL
+    const apiURL =  process.env.NEXT_PUBLIC_API_URL
 
 
     useDeepCompareEffect(() => {
@@ -87,7 +87,7 @@ function EditForm({ title, buttonType, entityId, entityType, token,  ...rest }: 
 
 
         try {
-            const response = await axios.patch(`${apiURL}${entityType}/${entityId}`, formJson, {
+            const response = await axios.patch(`${apiURL}/${entityType}/${entityId}`, formJson, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,

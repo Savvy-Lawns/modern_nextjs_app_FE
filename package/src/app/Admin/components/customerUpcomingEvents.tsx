@@ -148,7 +148,7 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
   const { services } = useFetchServices();
   const [serviceFormOpen, setServiceFormOpen] = useState(false);
   const [activeEvent, setActiveEvent] = useState<Event >();
-  const apiURL =  process.env.API_URL
+  const apiURL =  process.env.NEXT_PUBLIC_API_URL
 
 
 console.log('events before:', events);
@@ -263,7 +263,7 @@ console.log('events after:', events);
     
   
     try {
-      const response = await axios.post(`${apiURL}customers/${id}/events`, requestData, {
+      const response = await axios.post(`${apiURL}/customers/${id}/events`, requestData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -326,7 +326,7 @@ console.log('events after:', events);
    
 
     try {
-      const response = await axios.post(`${apiURL}customers/${id}/events/${activeEventFieldId}/event_services`, requestData, {
+      const response = await axios.post(`${apiURL}/customers/${id}/events/${activeEventFieldId}/event_services`, requestData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,

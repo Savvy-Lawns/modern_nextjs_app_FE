@@ -59,7 +59,7 @@ function CompleteEventServices({ title, buttonType, token, ...rest }: Props) {
   const today =  Date();
   const[endDate, setEndDate] = useState(today);
   const[startDate, setStartDate] = useState(today);
-  const apiURL =  process.env.API_URL
+  const apiURL =  process.env.NEXT_PUBLIC_API_URL
 
   useDeepCompareEffect(() => {
     const { event_service_ids, ...filteredRest } = rest;
@@ -120,7 +120,7 @@ function CompleteEventServices({ title, buttonType, token, ...rest }: Props) {
 
     
     try {
-      const response = await axios.patch(`${apiURL}bulk_actions/update_event_services_status`, {event_service_ids: selectedServices}, {
+      const response = await axios.patch(`${apiURL}/bulk_actions/update_event_services_status`, {event_service_ids: selectedServices}, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -172,7 +172,7 @@ function CompleteEventServices({ title, buttonType, token, ...rest }: Props) {
     
   
 
-    const apiUrl = `${apiURL}customers/${activeCustomerId}/events/${activeEventFieldId}/event_services`;
+    const apiUrl = `${apiURL}/customers/${activeCustomerId}/events/${activeEventFieldId}/event_services`;
 
     try {
       const response = await axios.post(apiUrl, requestData, {

@@ -5,7 +5,7 @@ const useFetchEvents = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const apiURL =  process.env.API_URL
+  const apiURL =  process.env.NEXT_PUBLIC_API_URL
 
   const fetchEvents = useCallback(async () => {
     setLoading(true);
@@ -18,7 +18,7 @@ const useFetchEvents = () => {
     }
 
     try {
-      const response = await fetch(`${apiURL}events`, {
+      const response = await fetch(`${apiURL}/events`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

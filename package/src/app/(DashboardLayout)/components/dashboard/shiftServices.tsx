@@ -7,7 +7,7 @@ const useFetchShiftServices = () => {
   const [shiftServices, setShiftServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const apiURL =  process.env.API_URL
+  const apiURL =  process.env.NEXT_PUBLIC_API_URL
 
   useEffect(() => {
     const fetchShiftServices = async () => {
@@ -29,7 +29,7 @@ const useFetchShiftServices = () => {
         if (storedOptimizedShiftServices && expirationTime && new Date(expirationTime) > now) {
           setShiftServices(JSON.parse(storedOptimizedShiftServices));
         } else {
-          const response = await fetch(`${apiURL}reports/event_services_for_today`, {
+          const response = await fetch(`${apiURL}/reports/event_services_for_today`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

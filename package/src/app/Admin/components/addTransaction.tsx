@@ -33,7 +33,7 @@ const AddTransactions = ({ title,  token, event_id, amount, payment_type, event_
     const [paidAt, setPaidAt] = useState('');
     console.log('amount 1:', amount);
     const today = new Date().toISOString();
-    const apiURL =  process.env.API_URL
+    const apiURL =  process.env.NEXT_PUBLIC_API_URL
 
     useEffect(() => {
         setAmount(amount);
@@ -70,7 +70,7 @@ const AddTransactions = ({ title,  token, event_id, amount, payment_type, event_
             
 
     
-            const response = await axios.post(`${apiURL}events/${event_id}/transactions`, requestData, {
+            const response = await axios.post(`${apiURL}/events/${event_id}/transactions`, requestData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,

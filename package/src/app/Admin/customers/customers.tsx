@@ -8,7 +8,7 @@ const useFetchCustomers = () => {
   const [customers, setCustomers] = useState<typeof Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const apiURL =  process.env.API_URL
+  const apiURL =  process.env.NEXT_PUBLIC_API_URL
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -21,7 +21,7 @@ const useFetchCustomers = () => {
       }
 
       try {
-        const response = await fetch(`${apiURL}customers`, {
+        const response = await fetch(`${apiURL}/customers`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
