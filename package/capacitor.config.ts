@@ -3,7 +3,7 @@ const serverURL =  process.env.CAP_SERVER_URL
 const config: CapacitorConfig = {
   appId: 'net.savvylawnserviceapp',
   appName: 'Savvy Lawn Services',
-  webDir: 'out',
+  webDir: 'public',
   bundledWebRuntime: false,
 
 	server: {
