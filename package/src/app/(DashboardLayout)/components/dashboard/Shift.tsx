@@ -14,7 +14,7 @@ import useFetchShiftServices, { reorderShiftServices } from './shiftServices';
 import { text } from 'stream/consumers';
 import { getOptimizedAddresses } from './routeOptimization';
 import { IconRoute } from '@tabler/icons-react';
-import credentials from '../../../../../android/app/credentials.json'
+//import credentials from '../../../../../android/app/credentials.json'
 
 declare global {
   interface Window {
