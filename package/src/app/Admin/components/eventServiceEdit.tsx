@@ -79,6 +79,7 @@ function EventServiceEditForm({ title, customer_id, event_id, service_id, start_
     const [events, loading, error] = Array.isArray(fetchResult) ? fetchResult : [[], false, null];
     const [activeEvent, setActiveEvent] = useState<Event | null>(null);
     const memoizedRest = useMemo(() => rest, [rest]);
+    const apiURL =  process.env.API_URL
 
     useEffect(() => {
         if (events) {
@@ -120,7 +121,7 @@ function EventServiceEditForm({ title, customer_id, event_id, service_id, start_
         });
         const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
         try {
-            const response = await axios.put(`http://10.0.0.198:3000/api/v1/customers/${customer_id}/events/${event_id}/event_services/${event_service_id}`, formJson, {
+            const response = await axios.put(`${apiURL}customers/${customer_id}/events/${event_id}/event_services/${event_service_id}`, formJson, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,

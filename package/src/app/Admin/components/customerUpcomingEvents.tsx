@@ -148,6 +148,7 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
   const { services } = useFetchServices();
   const [serviceFormOpen, setServiceFormOpen] = useState(false);
   const [activeEvent, setActiveEvent] = useState<Event >();
+  const apiURL =  process.env.API_URL
 
 
 console.log('events before:', events);
@@ -259,10 +260,10 @@ console.log('events after:', events);
       }
     };
   
-    const apiUrl = `http://10.0.0.198:3000/api/v1/customers/${id}/events`;
+    
   
     try {
-      const response = await axios.post(apiUrl, requestData, {
+      const response = await axios.post(`${apiURL}customers/${id}/events`, requestData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -322,10 +323,10 @@ console.log('events after:', events);
     
   
 
-    const apiUrl = `http://10.0.0.198:3000/api/v1/customers/${id}/events/${activeEventFieldId}/event_services`;
+   
 
     try {
-      const response = await axios.post(apiUrl, requestData, {
+      const response = await axios.post(`${apiURL}customers/${id}/events/${activeEventFieldId}/event_services`, requestData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,

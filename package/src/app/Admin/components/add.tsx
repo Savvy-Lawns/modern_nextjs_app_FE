@@ -25,6 +25,8 @@ const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
     const [open, setOpen] = useState(false);
     const handleClickOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const apiURL =  process.env.API_URL
+
     
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -45,7 +47,7 @@ const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
         const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
         const entity = entityType
     
-        const apiUrl = `http://10.0.0.198:3000/api/v1/${entityType}`;
+        const apiUrl = `${apiURL}${entityType}`;
     
         try {
             // Ensure the data is nested under the 'service' key

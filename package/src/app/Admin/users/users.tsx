@@ -7,6 +7,7 @@ const useFetchUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const apiURL =  process.env.API_URL
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -20,7 +21,7 @@ const useFetchUsers = () => {
       }
 
       try {
-        const response = await fetch('http://10.0.0.198:3000/api/v1/users', {
+        const response = await fetch('${apiURL}users', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

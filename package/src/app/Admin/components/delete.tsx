@@ -23,6 +23,7 @@ type Props = {
 
 const DeleteButton = ({ title, entityName,  entityType, entityId, token, ...rest }: Props) => {
     const [open, setOpen] = useState(false);
+    const apiURL =  process.env.API_URL
 
     const handleClickOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -33,11 +34,10 @@ const DeleteButton = ({ title, entityName,  entityType, entityId, token, ...rest
         
         const entity = entityType.slice(0, -1);
     
-        const apiUrl = `http://10.0.0.198:3000/api/v1/${entityType}/${entityId}`;
     
         try {
             // Ensure the data is nested under the 'service' key    
-            const response = await axios.delete(apiUrl,  {
+            const response = await axios.delete(`${apiURL}${entityType}/${entityId}`,  {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },

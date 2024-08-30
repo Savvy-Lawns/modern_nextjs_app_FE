@@ -8,6 +8,7 @@ const useFetchExpenses = () => {
   const [expenses, setExpenses] = useState<typeof Expense[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const apiURL =  process.env.API_URL
 
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -20,7 +21,7 @@ const useFetchExpenses = () => {
       }
 
       try {
-        const response = await fetch('http://10.0.0.198:3000/api/v1/expenses', {
+        const response = await fetch('${apiURL}expenses', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

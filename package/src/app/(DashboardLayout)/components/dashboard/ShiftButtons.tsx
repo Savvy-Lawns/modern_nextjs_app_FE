@@ -31,7 +31,7 @@ const ShiftButtons: React.FC<ShiftButtonsProps> = ({ title,  token, listOfAddres
   const [startMileage, setStartMileage] = useState<number | string>('');
   const [endMileage, setEndMileage] = useState<number | string>('');
   const [todaysAddresses, setTodaysAddresses] = useState<any[]>([]);
-
+  const apiURL =  process.env.API_URL
   useEffect(() => {
     setTodaysAddresses(listOfAddresses);
   }, [listOfAddresses]);
@@ -71,7 +71,7 @@ const ShiftButtons: React.FC<ShiftButtonsProps> = ({ title,  token, listOfAddres
     const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
   
 
-    const apiUrl = `http://10.0.0.198:3000/api/v1/mileages`;
+    const apiUrl = `${apiURL}mileages`;
     const entity = 'mileage';
     try {
         // Ensure the data is nested under the 'service' key
@@ -143,7 +143,7 @@ const handleEndDaySubmit = async (event: React.FormEvent) => {
   const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
  
 
-  const apiUrl = `http://10.0.0.198:3000/api/v1/mileages/${mileage_id}`;
+  const apiUrl = `${apiURL}mileages/${mileage_id}`;
   const entity = 'mileage';
   try {
       // Ensure the data is nested under the 'service' key

@@ -13,6 +13,7 @@ interface registerType {
 
 const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
     const router = useRouter()
+    const apiURL =  process.env.API_URL
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -30,7 +31,7 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
         };
     
         console.log(JSON.stringify(userData));
-        const apiUrl = 'http://10.0.0.198:3000/api/v1/users';
+        const apiUrl = '${apiURL}users';
     
         if (!userData.user.username || !userData.user.email || !userData.user.password || !userData.user.password_confirmation || !userData.user.phone_number) {
             console.error('Please fill in all fields.');

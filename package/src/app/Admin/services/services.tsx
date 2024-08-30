@@ -8,6 +8,7 @@ const useFetchServices = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const apiURL =  process.env.API_URL
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -20,7 +21,7 @@ const useFetchServices = () => {
       }
 
       try {
-        const response = await fetch('http://10.0.0.198:3000/api/v1/services', {
+        const response = await fetch('${apiURL}services', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
