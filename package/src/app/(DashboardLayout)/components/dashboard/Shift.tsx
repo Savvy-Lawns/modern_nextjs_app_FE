@@ -65,38 +65,30 @@ const NextRoute = () => {
   useEffect(() => {
     const initializeData = async () => {
         try {
-          // const settingservices = async function  () {
-          //   setTimeout( async () => {
-          //     await setServices(shiftServices);
-          //   }, 2000);
-          // };
-          // settingservices();   
-         
-            
-          //   console.log('setting services:', shiftServices);
-
             // Check if services exist
             if (shiftServices && shiftServices.length > 0) {
-              const settingFirstService = async function () {
-                setTimeout( async () => {
-                   setFirstService(shiftServices[0].customer_address);
+                // Set the first service after a delay
+                setTimeout(() => {
+                    setFirstService(shiftServices[0].customer_address);
                 }, 2000);
-              };
-            settingFirstService();
-         
-              console.log('right before addresses:', shiftServices);
-              await setAddressList(shiftServices.map((customer: any) => {
-                  console.log('customer:', customer);
-                  console.log('customer.customer_address:', customer.customer_address);
-                  return customer.customer_address;
-              }));
-           } else {
+
+                // Log and set the address list
+                const addresses = shiftServices.map((customer: any) => {
+                    console.log('customer:', customer);
+                    console.log('customer.customer_address:', customer.customer_address);
+                    return customer.customer_address;
+                });
+                await setAddressList(addresses);
+
+                console.log('right before addresses:', shiftServices);
+            } else {
+                // Handle case where services are not defined or empty
                 localStorage.setItem('optimizedShiftServices', JSON.stringify([]));
                 localStorage.setItem('optimizedShiftServicesExpiration', JSON.stringify(''));
                 await HandleFetch();
                 console.log('services is not defined or empty', services);
-            }}
-         catch (error) {
+            }
+        } catch (error) {
             console.error('Error setting initial data:', error);
         }
     };
