@@ -148,8 +148,8 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
   const { services } = useFetchServices();
   const [serviceFormOpen, setServiceFormOpen] = useState(false);
   const [activeEvent, setActiveEvent] = useState<Event >();
-    // const apiURL =  process.env.NEXT_PUBLIC_API_URL
-const apiURL =  'http://127.0.0.1:3000/api/v1'
+    const apiURL =  process.env.NEXT_PUBLIC_API_URL
+//const apiURL =  'http://127.0.0.1:3000/api/v1'
 
 
 console.log('events before:', events);

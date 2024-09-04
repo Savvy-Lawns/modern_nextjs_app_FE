@@ -29,8 +29,8 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
   const router = useRouter();
   const [loginSuccess, setLoginSuccess] = useState(false); // Step 1: New state for tracking login success
   const [token, setToken] = useState(''); // Step 2: New state for storing the token
-    // const apiURL =  process.env.NEXT_PUBLIC_API_URL
-const apiURL =  'http://127.0.0.1:3000/api/v1'
+    const apiURL =  process.env.NEXT_PUBLIC_API_URL
+//const apiURL =  'http://127.0.0.1:3000/api/v1'
 
   useEffect(() => {
     Cookie.remove('token');

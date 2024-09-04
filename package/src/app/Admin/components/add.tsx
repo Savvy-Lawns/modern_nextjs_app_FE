@@ -25,8 +25,8 @@ const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
     const [open, setOpen] = useState(false);
     const handleClickOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-      // const apiURL =  process.env.NEXT_PUBLIC_API_URL
-const apiURL =  'http://127.0.0.1:3000/api/v1'
+      const apiURL =  process.env.NEXT_PUBLIC_API_URL
+//const apiURL =  'http://127.0.0.1:3000/api/v1'
 
     
     const handleSubmit = async (event: React.FormEvent) => {

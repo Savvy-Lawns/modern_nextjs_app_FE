@@ -8,8 +8,8 @@ const useFetchCustomers = () => {
   const [customers, setCustomers] = useState<typeof Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-    // const apiURL =  process.env.NEXT_PUBLIC_API_URL
-const apiURL =  'http://127.0.0.1:3000/api/v1'
+    const apiURL =  process.env.NEXT_PUBLIC_API_URL
+//const apiURL =  'http://127.0.0.1:3000/api/v1'
 
   useEffect(() => {
     const fetchCustomers = async () => {
