@@ -1,5 +1,5 @@
 import type { CapacitorConfig } from '@capacitor/cli';
-const serverURL =  process.env.NEXT_PUBLIC_CAP_SERVER_URL
+const serverURL =  'https://seal-app-xfxk3.ondigitalocean.app';
 const config: CapacitorConfig = {
   appId: 'net.savvylawnserviceapp',
   appName: 'Savvy Lawn Services',

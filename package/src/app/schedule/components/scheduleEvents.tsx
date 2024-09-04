@@ -213,7 +213,7 @@ console.log('events after:', events);
             <AccordionDetails sx={{'&.MuiAccordionDetails-root': {padding: '8px 2px 8px',} }}>
               {Object.keys(groupedEvents[month as number]).map((day: string | number) => (
                 console.log('day:', day),
-                <Accordion style={Styles.serviceDayAccordion} key={day}  sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: '100%', width:'90%'}, '&.MuiAccordion-root': {marginBottom:'6px'}}}>
+                <Accordion style={Styles.serviceDayAccordion} key={day}  sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: 'auto', width:'90%'}, '&.MuiAccordion-root': {marginBottom:'6px'}}}>
 
                   <AccordionSummary expandIcon={<ExpandMoreIcon />} 
                   sx={{

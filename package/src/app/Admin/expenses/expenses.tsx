@@ -8,7 +8,8 @@ const useFetchExpenses = () => {
   const [expenses, setExpenses] = useState<typeof Expense[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const apiURL =  process.env.NEXT_PUBLIC_API_URL
+    // const apiURL =  process.env.NEXT_PUBLIC_API_URL
+const apiURL =  'http://127.0.0.1:3000/api/v1'
 
   useEffect(() => {
     const fetchExpenses = async () => {

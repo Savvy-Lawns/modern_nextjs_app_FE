@@ -59,7 +59,8 @@ function CompleteEventServices({ title, buttonType, token, ...rest }: Props) {
   const today =  Date();
   const[endDate, setEndDate] = useState(today);
   const[startDate, setStartDate] = useState(today);
-  const apiURL =  process.env.NEXT_PUBLIC_API_URL
+    // const apiURL =  process.env.NEXT_PUBLIC_API_URL
+const apiURL =  'http://127.0.0.1:3000/api/v1'
 
   useDeepCompareEffect(() => {
     const { event_service_ids, ...filteredRest } = rest;
