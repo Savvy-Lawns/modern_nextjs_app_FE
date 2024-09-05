@@ -143,10 +143,17 @@ const handleOptimize = async () => {
           geocoder.geocode({ address }, (results, status) => {
             if (status === 'OK' && results && results[0]) {
               map.setCenter(results[0].geometry.location);
-              new google.maps.Marker({
+              const marker:any = new google.maps.Marker({
+
                 map: map,
                 position: results[0].geometry.location
               });
+
+              marker.addListener('click', () => {
+                const destination = `${marker.position.lat()},${marker.position.lng()}`;
+                window.open(`https://www.google.com/maps/dir/?api=1&destination=${destination}`, '_blank');
+              });
+
             } else {
               alert('Geocode was not successful for the following reason: ' + status);
             }
@@ -200,7 +207,8 @@ const handleOptimize = async () => {
 
   return (
     <DashboardCard title={<div style={{display:'flex', justifyContent:'center'}}>Today&apos;s Shift<Button variant="outlined" color="primary" onClick={handleOptimize} style={{paddingTop:'5px', position: "absolute", right: 35}} ><IconRoute /></Button></div>}>
-      {Array.isArray(services) && services.length > 0 ? (
+      {Array.isArray(shiftServices) && shiftServices.length > 0 ? (
+        console.log('services map success:', shiftServices),
         <div style={styles.scrollContainer}>
           <LinkStyled>
             <div ref={mapRef} style={{ ...mapContainerStyle, height: `${windowHeightMap}px` }}></div>
@@ -209,6 +217,7 @@ const handleOptimize = async () => {
           <TodaysServices onSetFirstService={handleSetFirstService} />
         </div>
       ) : (
+        console.log('services map failure:', shiftServices),
         <div>
           <Typography variant='h3'>There is no Events for today</Typography>
         </div>
