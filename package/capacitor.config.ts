@@ -7,7 +7,7 @@ const config: CapacitorConfig = {
   bundledWebRuntime: false,
 
 	server: {
-		url: `${serverURL}:3001`,
+		url: `${serverURL}`,
 		cleartext: true
 	}
 };
