@@ -13,7 +13,13 @@ import withAuth  from '@/utils/withAuth';
 import { Typography } from '@mui/material';
 
 interface AddServicesProps {
-    onSelectedServicesChange?: (services: Array<{ duration: any; service: Service | null; propertyMetric: number; recurrence: string }> ) => void;
+    onSelectedServicesChange?: (services: Array<{ 
+      duration: any; 
+      service: Service | null; 
+      propertyMetric: number; 
+      recurrence: string;
+      price: number | string; 
+    }> ) => void;
   }
 
   const AddServices: React.FC<AddServicesProps> = ({ onSelectedServicesChange }) => {
@@ -21,7 +27,7 @@ interface AddServicesProps {
     const [propertyMetric, setPropertyMetric] = useState('');
     const [recurrence, setRecurrence] = useState('');
     const [selectedServices, setSelectedServices] = useState<Array<{
-        duration: any; service: Service | null, propertyMetric: number, recurrence: string 
+        duration: number | string; service: Service | null, propertyMetric: number, recurrence: string, price: number | string;
 }>>([]);
     const [metricAndRecurrenceDialogOpen, setMetricAndRecurrenceDialogOpen] = useState(false);
     const [tempService, setTempService] = useState<Service | null>(null);
@@ -69,7 +75,7 @@ interface AddServicesProps {
           // setSelectedServices([]);
           setSelectedServices(prevServices => [
             ...prevServices, 
-            { service: tempService, propertyMetric: Number(propertyMetric), recurrence, duration }
+            { service: tempService, propertyMetric: Number(propertyMetric), recurrence, price: tempService.price, duration}
           ]);
           setTempService(null); // Clear temporary service
           setPropertyMetric(""); // Clear property metric
@@ -103,11 +109,20 @@ interface AddServicesProps {
                  <Typography variant={'h5'}>X</Typography>
                 </button></Typography></div>
                 <div style={Styles.serviceList}>
-                    <div style={Styles.serviceListItem}><Typography variant={'subtitle1'}>Total Service Cost:</Typography> <Typography variant={'body2'}>${item.service ? `${calculateServiceCost(item.service, item.propertyMetric)}` : 'Service not available'}</Typography></div>
-                    <div style={Styles.serviceListItem}><Typography variant={'subtitle1'}>Metric:</Typography> <Typography variant={'body2'}>{item.service ? `${item.propertyMetric} ${item.service.measurement_unit}` : `Service not available - Metric: ${item.propertyMetric}, `}</Typography></div>
-                    <div style={Styles.serviceListItem}><Typography variant={'subtitle1'}>Duration:</Typography> <Typography variant={'body2'}>{item.service ? `${item.duration} Minutes` : `Service not available - Duration: ${item.duration}, `}</Typography></div>
+                    <div style={Styles.serviceListItem}><Typography variant={'subtitle1'}>Total Service Cost:</Typography> <Typography variant={'body2'}>${item.service ? `${Number(calculateServiceCost(item.service, item.propertyMetric)).toFixed(2)}` : 'Service not available'}</Typography>
+                    </div>
+                    <div style={Styles.serviceListItem}><Typography variant={'subtitle1'}>Metric:</Typography> <Typography variant={'body2'}>{item.service ? `${item.propertyMetric} ${item.service.measurement_unit}` : `Service not available - Metric: ${item.propertyMetric}, `}</Typography>
+                    </div>
+                    <div style={Styles.serviceListItem}><Typography variant={'subtitle1'}>Price per Metric: </Typography>
+                    <Typography variant={'body2'}>{item.price ? `
+                    $${Number(item.price).toFixed(2)}` : 'Recurrence not available'}</Typography>
+                    </div>
+                    <div style={Styles.serviceListItem}><Typography variant={'subtitle1'}>Duration:</Typography> <Typography variant={'body2'}>{item.service ? `${item.duration} Minutes` : `Service not available - Duration: ${item.duration}, `}</Typography>
+                    </div>
                     <div style={Styles.serviceListItem}><Typography variant={'subtitle1'}>Recurrence: </Typography>
-                    <Typography variant={'body2'}>{item.recurrence ? `${item.recurrence}` : 'Recurrence not available'}</Typography></div>
+                    <Typography variant={'body2'}>{item.recurrence ? `${item.recurrence}` : 'Recurrence not available'}</Typography>
+                    </div>
+                    
                 </div>
               </div>
             );
@@ -127,7 +142,7 @@ return (
               noOptionsText={'No services found'}
             />
           
-            <Typography variant={'h6'}>Total Cost: ${calculateTotalCost()}</Typography>
+            <Typography variant={'h6'}>Total Cost: ${Number(calculateTotalCost()).toFixed(2)}</Typography>
 
             {renderSelectedServices()}
             <Dialog open={metricAndRecurrenceDialogOpen} onClose={handleMetricAndRecurrenceDialogClose}>
