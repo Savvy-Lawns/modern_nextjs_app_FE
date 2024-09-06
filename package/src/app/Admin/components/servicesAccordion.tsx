@@ -104,7 +104,7 @@ type Props = {
             </div>
             <div>
             <Typography variant='body1'>Price:</Typography>
-            <Typography variant='body2'>$ {service.price}</Typography>
+            <Typography variant='body2'>$ {Number(service.price).toFixed(2)}</Typography>
             </div>
             <div>
             <Typography variant='body1'>Notes:</Typography>

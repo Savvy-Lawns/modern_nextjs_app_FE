@@ -1,3 +1,6 @@
+  
+  import { useState, useEffect } from 'react';
+  import { Button } from '@mui/material';
 interface Location {
     latitude: number;
     longitude: number;
@@ -7,9 +10,7 @@ interface Location {
     listOfAddresses: string[];
     mapsKey: string;
   }
-  
-  import { useState, useEffect } from 'react';
-  import { Button } from '@mui/material';
+
   
   const getCurrentLocation = (): Promise<Location> => {
     return new Promise((resolve, reject) => {
@@ -108,11 +109,45 @@ interface Location {
   };
   
   export default RouteOptimizer;
+
+  const validateAddresses = async (addresses: string[], mapsKey: string): Promise<string[]> => {
+    const geocoder = new google.maps.Geocoder();
+    const validatedAddresses: string[] = [];
+  
+    for (const address of addresses) {
+      const result = await new Promise((resolve, reject) => {
+        console.log('address forloop validate:', address);
+        geocoder.geocode({ address }, (results, status) => {
+          if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
+            resolve(results[0].formatted_address);
+            console.log('results:', results[0].formatted_address);
+          } else {
+            console.log('Geocode was not successful for ', address);
+            reject(`Geocode was not successful for the following reason: ${status} for address: ${address}`);
+          }
+        });
+      }).catch(error => {
+        console.error(error);
+        return null;
+      });
+  
+      if (result) {
+        validatedAddresses.push(result as string);
+      }
+    }
+  
+    return validatedAddresses;
+  };
   
   export const getOptimizedAddresses = async (addresses: string[], mapsKey: string): Promise<string[]> => {
     const currentLocation = await getCurrentLocation();
     const directionsService = new google.maps.DirectionsService();
     console.log('addresses:', addresses);
+
+    const validatedAddresses = await validateAddresses(addresses, mapsKey);
+  if (validatedAddresses.length === 0) {
+    throw new Error('No valid addresses found');
+  }
   
     const waypoints = addresses.map((address:any ) => ({
       location: address,

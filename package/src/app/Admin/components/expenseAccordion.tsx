@@ -59,8 +59,9 @@ type Props = {
             if (!acc[date]) {
                 acc[date] = { expenses: [], total: 0, notes: '' };
             }
+            
             acc[date].expenses.push(expense);
-            acc[date].total += expense.cost; // Add expense cost to total for the day
+            acc[date].total += Number(expense.cost); // Add expense cost to total for the day
             return acc;
         }, {});
     };
@@ -108,7 +109,7 @@ type Props = {
 
                     <Typography variant="h6" style={{ margin: '0 0', paddingLeft: '5px' }}>
                         {date}
-                        <Typography variant="body2" style={{ display: 'block' }}>
+                        <Typography variant="body2" style={{ display: 'block', margin:"5px 0px 0px 8px" }}>
                             Total: $ {Number(total).toFixed(2)}
                         </Typography>
                     </Typography>
@@ -146,7 +147,6 @@ type Props = {
           name={expense.name}
           cost={expense.cost}
           notes={expense.notes}
-          id={expense.id}
           buttonType={1}
           entityId={String(expense.id)}
           entityType='expenses'

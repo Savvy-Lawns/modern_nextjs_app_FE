@@ -53,8 +53,8 @@ function EditForm({ title, buttonType, entityId, entityType, token,  ...rest }: 
     const value = 'Refreshing...';
     const value2 = '';
       //const apiURL =  process.env.NEXT_PUBLIC_API_URL
-const apiURL =  'http://127.0.0.1:3000/api/v1'
-
+    const apiURL =  'http://127.0.0.1:3000/api/v1'
+    const entity = entityType?.slice(0, -1);
 
     useDeepCompareEffect(() => {
         return setFormData({ ...rest });
@@ -96,7 +96,7 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
             });
             
             console.log(entityType, ' updated:', response.data.data);
-            alert(`${response.data.data.attributes.username} was updated successfully`);
+            alert(`${entity} was updated successfully`);
             window.location.href = `/Admin/${entityType}`;
             
             

@@ -137,13 +137,13 @@ console.log('displayData billingpage 2:', displayData);
                 <div key={event.id}>
                   <div style={{...styles.sideBySide, width:'100%'}}>
                   <div style={{...styles.sideBySide, width:'60%', verticalAlign:'middle'}}>
-                  <Typography>Total: ${event.balance}</Typography>
+                  <Typography>Total: ${Number(event.balance).toFixed(2)}</Typography>
                   
                   </div><div>
                   <AddTransactions 
                   token={token} 
                   event_id={event.id} 
-                  amount={`$${event.balance}`} 
+                  amount={`$${Number(event.balance).toFixed(2)}`} 
                   payment_type={''} 
                   event_service_ids={[event.event_services.map((service:any) => {return service.id})]} 
                   title={`Submit Payment`} rest={undefined} paidAt={''}  /></div></div>
@@ -157,7 +157,7 @@ console.log('displayData billingpage 2:', displayData);
                       <Typography>Duration: {service.duration}</Typography>
                         </div>
                         <div style={styles.servicesCost}>
-                      <Typography>Cost:<br /> ${service.total_service_cost}</Typography>
+                      <Typography>Cost:<br /> ${Number(service.total_service_cost).toFixed(2)}</Typography>
                       </div>
                     </div>
                   ))}

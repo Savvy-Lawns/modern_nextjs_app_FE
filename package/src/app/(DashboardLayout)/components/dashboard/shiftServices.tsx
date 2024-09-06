@@ -29,8 +29,10 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
         console.log('expirationTime:', expirationTime);
         
         if (storedOptimizedShiftServices && expirationTime && new Date(expirationTime) > now) {
+          console.log('Using cached shift services');
           setShiftServices(JSON.parse(storedOptimizedShiftServices));
         } else {
+          console.log('Fetching shift services');
           const response = await fetch(`${apiURL}/reports/event_services_for_today`, {
             method: 'GET',
             headers: {
