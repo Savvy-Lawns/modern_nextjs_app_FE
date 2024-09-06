@@ -69,7 +69,7 @@ interface Event {
 
 function groupEventsByMonthAndDay(events: Event[], customerId: string) {
   const filteredEvents = events.filter(event => event.customer_id === customerId);
-  console.log('filteredEvents:', filteredEvents);
+ // console.log('filteredEvents:', filteredEvents);
 
   // Group events by month and day
   const filteredSortedEvents = filteredEvents.sort((a: any, b: any) => {
@@ -77,7 +77,7 @@ function groupEventsByMonthAndDay(events: Event[], customerId: string) {
     const bDate = parseISO(b.event_services_attributes.start_date);
     return aDate.getTime() - bDate.getTime();
   });
-  console.log('filteredSortedEvents: ', filteredSortedEvents);
+ // console.log('filteredSortedEvents: ', filteredSortedEvents);
 
   const groupedEvents: { [month: number]: { [day: number]: Event[] } } = {};
 
@@ -89,15 +89,15 @@ function groupEventsByMonthAndDay(events: Event[], customerId: string) {
       }
 
       serviceList.forEach(service => {
-        console.log('Service:', service);
+       // console.log('Service:', service);
         const startDate = parseISO(service.start_date);
         const month = startDate.getMonth() + 1; // getMonth() returns 0-11, so add 1
         const day = startDate.getDate();
         const dayOfWeek = format(startDate, 'EEEE');
         event.dayOfWeek = dayOfWeek; // Add dayOfWeek to the event object
-        console.log('Month:', month);
-        console.log('day: ', day);
-        console.log('start_date: ', startDate);
+       // console.log('Month:', month);
+       // console.log('day: ', day);
+       // console.log('start_date: ', startDate);
 
         // Filter event_services_attributes to only include services with the same start_date and unique id
         const filteredServices = serviceList.filter(s => s.start_date === service.start_date && s.id === service.id);
@@ -110,7 +110,7 @@ function groupEventsByMonthAndDay(events: Event[], customerId: string) {
           groupedEvents[month][day] = [];
         }
         groupedEvents[month][day].push(eventCopy); // Push the event object with filtered services
-        console.log('groupedEvents: ', groupedEvents[month][day]);
+       // console.log('groupedEvents: ', groupedEvents[month][day]);
       });
     });
   }
@@ -130,7 +130,7 @@ function groupEventsByMonthAndDay(events: Event[], customerId: string) {
         });
     });
 
-  console.log('sorted group events: ', sortedGroupedEvents);
+ // console.log('sorted group events: ', sortedGroupedEvents);
   return sortedGroupedEvents;
 }
  
@@ -152,20 +152,20 @@ const ViewCustomerEvents: FC<Props> = ({ title, name, address, phoneNumber, id, 
 const apiURL =  'http://127.0.0.1:3000/api/v1'
 
 
-console.log('events before:', events);
+//// console.log('events before:', events);
 
 useEffect(() => {
   if (open) {
     const active = events.find(event => event.customer_id === id);
     setActiveEvent(active || undefined);
-    console.log('active:', active);
+   // console.log('active:', active);
   }
 
   return () => {
     setActiveEvent(undefined); // Clean up when the dialog closes
   };
 }, [open, events]);
-console.log('events after:', events);
+//// console.log('events after:', events);
 
   const servicesMap = services.reduce((acc: { [key: number]: string }, service: Service) => {
     acc[service.id] = service.name;
@@ -180,8 +180,8 @@ console.log('events after:', events);
   // const activeEventFieldId = activeEvent.event_id
   const activeEventFieldId = activeEvent ? activeEvent.event_id : null;
   
-  console.log('activeEventFeidlId', activeEventFieldId)
-  console.log('events bulk:', events);
+ // console.log('activeEventFeidlId', activeEventFieldId)
+ // console.log('events bulk:', events);
  
 
   const handleClickOpen = () => {
@@ -189,7 +189,7 @@ console.log('events after:', events);
   };
 
   useEffect(() => {
-    console.log('Selected Services:', SelectedServices);
+   // console.log('Selected Services:', SelectedServices);
   }, [SelectedServices]);
 
  const groupedEvents = groupEventsByMonthAndDay(events, id.toString());
@@ -201,27 +201,27 @@ console.log('events after:', events);
   setActiveEvent(undefined); // Reset the active event when the dialog closes
 };
 
-  const handleFormOpen = () => { setFormOpen(true), console.log(`id: ${id}`) };
+  const handleFormOpen = () => { setFormOpen(true) };
 
   const handleFormClose = () => {
-    console.log("Form closed");
+   // console.log("Form closed");
     setFormOpen(false);
     
   };
   const handleServiceFormOpen = () => {
     setServiceFormOpen(true);
-    console.log(`id: ${id}`);
+   // console.log(`id: ${id}`);
   };
 
   const handleServiceFormClose = () => {
-    console.log("Service form closed");
+   // console.log("Service form closed");
     setServiceFormOpen(false);
   };
 
   const handleAddServiceToActiveEvent = () => {
     if (activeEvent) {
       setFormOpen(true);
-      console.log(`Adding service to event id: ${activeEventFieldId}`);
+     // console.log(`Adding service to event id: ${activeEventFieldId}`);
     }
   };
 
@@ -273,8 +273,8 @@ console.log('events after:', events);
   
       if (response.status === 200 || response.status === 201) {
         alert(`Customer event ${activeEvent ? 'service added' : 'created'} successfully`);
-        console.log("Event submitted");
-        console.log("requestData: ", requestData);
+       // console.log("Event submitted");
+       // console.log("requestData: ", requestData);
         handleFormClose();
         setSelectedServices([]);
         window.location.href = `/Admin/customers`;
@@ -288,7 +288,7 @@ console.log('events after:', events);
 
   const handleServiceFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log('activeEventFieldId:', activeEventFieldId);
+   // console.log('activeEventFieldId:', activeEventFieldId);
 
     const formDataObj = new FormData();
     Object.keys(rest).forEach(key => {
@@ -320,7 +320,7 @@ console.log('events after:', events);
       }))
     };
 
-    console.log('requestData before send:', requestData);
+   // console.log('requestData before send:', requestData);
     
   
 
@@ -336,8 +336,8 @@ console.log('events after:', events);
 
       if (response.status === 200 || response.status === 201) {
         alert(`Event service added successfully`);
-        console.log("Service submitted");
-        console.log("requestData: ", requestData);
+       // console.log("Service submitted");
+       // console.log("requestData: ", requestData);
         handleServiceFormClose();
         setSelectedServices([]);
         window.location.href = `/Admin/customers`;
@@ -371,12 +371,12 @@ console.log('events after:', events);
   const getMonthByIndex = (monthIndex: number) => getMonthName[monthIndex - 1];
 
   const getServiceName = (serviceId: number| string | undefined) => {
-    console.log('grouped Events',groupedEvents);
+   // console.log('grouped Events',groupedEvents);
 
-    console.log('services:', services);
-    console.log('serviceId:', serviceId);
+   // console.log('services:', services);
+   // console.log('serviceId:', serviceId);
     for (const service of services) {
-      console.log('services id:', service.id);
+     // console.log('services id:', service.id);
       if (service.id === serviceId) {
         return service.name;
       }
@@ -410,7 +410,7 @@ console.log('events after:', events);
 
             <AccordionDetails sx={{'&.MuiAccordionDetails-root': {padding: '8px 2px 8px',} }}>
               {Object.keys(groupedEvents[month as number]).map((day: string | number) => (
-                console.log('day:', day),
+               // console.log('day:', day),
                 <Accordion style={Styles.serviceDayAccordion} key={day}  sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: 'auto', width:'90%'}, '&.MuiAccordion-root': {marginBottom:'6px'}}}>
 
                   <AccordionSummary expandIcon={<ExpandMoreIcon />} 
@@ -433,10 +433,10 @@ console.log('events after:', events);
                   <AccordionDetails sx={{'&.MuiAccordionDetails-root': {padding: '8px 8px 8px', } }}>
                     
                   {groupedEvents[month as number][day as number].map((event: any, index: any) => (
-                    console.log('event:', event),
+                   // console.log('event:', event),
                     event.event_services_attributes.map((service: any) => (
-                      console.log('service:', service),
-                      console.log('service id:', service.service_id),
+                     // console.log('service:', service),
+                     // console.log('service id:', service.service_id),
                   <Accordion key={index} sx={{'&.MuiAccordion-root': {backgroundColor:baselightTheme.palette.primary.dark}}}>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />} style={Styles.serviceAccordionList} sx={{'&.Mui-expanded': {marginTop: '0px', marginBottom: '0px', paddingTop:'0px', paddingBottom: '0px', minHeight: 'auto', width:'90%', }}}>
                     <Typography variant={'h6'}>{getServiceName(service.service_id)}</Typography>

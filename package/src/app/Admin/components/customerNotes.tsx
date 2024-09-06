@@ -31,7 +31,7 @@ export default function ViewNotes({ notes }: Props) {
     };
 
     // Debugging: Log the type of displayData before calling reduce
-    console.log('Type of displayData:', typeof displayData, Array.isArray(displayData) ? 'Array' : 'Not Array');
+   // console.log('Type of displayData:', typeof displayData, Array.isArray(displayData) ? 'Array' : 'Not Array');
 
     
     

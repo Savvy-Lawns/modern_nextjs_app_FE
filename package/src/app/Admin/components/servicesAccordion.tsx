@@ -150,7 +150,7 @@ type Props = {
 }
 
 export default ServiceAccordion;
-console.log(Object.keys(ServiceAccordion))
+// console.log(Object.keys(ServiceAccordion))
 export const activeSelection = SelectedService
 
 const styles: {

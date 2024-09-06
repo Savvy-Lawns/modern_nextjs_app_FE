@@ -116,13 +116,13 @@ interface Location {
   
     for (const address of addresses) {
       const result = await new Promise((resolve, reject) => {
-        console.log('address forloop validate:', address);
+       // console.log('address forloop validate:', address);
         geocoder.geocode({ address }, (results, status) => {
           if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
             resolve(results[0].formatted_address);
-            console.log('results:', results[0].formatted_address);
+           // console.log('results:', results[0].formatted_address);
           } else {
-            console.log('Geocode was not successful for ', address);
+           // console.log('Geocode was not successful for ', address);
             reject(`Geocode was not successful for the following reason: ${status} for address: ${address}`);
           }
         });
@@ -142,7 +142,7 @@ interface Location {
   export const getOptimizedAddresses = async (addresses: string[], mapsKey: string): Promise<string[]> => {
     const currentLocation = await getCurrentLocation();
     const directionsService = new google.maps.DirectionsService();
-    console.log('addresses:', addresses);
+   // console.log('addresses:', addresses);
 
     const validatedAddresses = await validateAddresses(addresses, mapsKey);
   if (validatedAddresses.length === 0) {

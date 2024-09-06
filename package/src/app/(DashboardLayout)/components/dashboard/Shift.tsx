@@ -14,6 +14,7 @@ import useFetchShiftServices, { reorderShiftServices } from './shiftServices';
 import { text } from 'stream/consumers';
 import { getOptimizedAddresses } from './routeOptimization';
 import { IconRoute } from '@tabler/icons-react';
+import { set } from 'lodash';
 
 
 declare global {
@@ -54,23 +55,24 @@ const NextRoute = () => {
   const [firstService, setFirstService] = useState<string |
    any>(shiftServices[0]?.customer_address || null);
   const googleToken = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
-  console.log('mapRef:', mapRef);
-  console.log('shiftServices TOP:', shiftServices);
-  console.log('first address TOP:', shiftServices[0]);
+ // console.log('mapRef:', mapRef);
+ // console.log('shiftServices TOP:', shiftServices);
+ // console.log('first address TOP:', shiftServices[0]);
 
   
 
   const runOptimization = async () => {
     
     try {
-      console.log('Starting optimization...');
+     // console.log('Starting optimization...');
     const optimizedAddresses = await getOptimizedAddresses(addressList, googleToken);
-    console.log('Optimized Addresses:', optimizedAddresses);
+   // console.log('Optimized Addresses:', optimizedAddresses);
     const reorderedServices = await reorderShiftServices(shiftServices, optimizedAddresses, setOptimized);
-    console.log('Reordered Services:', reorderedServices);
+   // console.log('Reordered Services:', reorderedServices);
     setServices(reorderedServices);
     setOptimized(true);
-    console.log('Optimization complete.');
+    localStorage.setItem('optimized', 'true');
+   // console.log('Optimization complete.');
     } catch (error) {
       console.error('Error optimizing route:', error);
     }
@@ -90,7 +92,7 @@ const NextRoute = () => {
     const initializeData = async () => {
       try {
         // Check if services exist
-        console.log('shiftServices initializing data:', shiftServices);
+       // console.log('shiftServices initializing data:', shiftServices);
         if (shiftServices && shiftServices.length > 0) {
           // Set the first service after a delay
           setTimeout(() => {
@@ -99,17 +101,19 @@ const NextRoute = () => {
 
           // Log and set the address list
           const addresses = shiftServices.map((customer: any) => {
-            console.log('customer:', customer);
-            console.log('customer.customer_address:', customer.customer_address);
+           // console.log('customer:', customer);
+           // console.log('customer.customer_address:', customer.customer_address);
             return customer.customer_address;
           });
           await setAddressList(addresses);
-
-          console.log('right before addresses:', shiftServices);
+          if (localStorage.getItem('optimized') === 'true') {
+            setOptimized(true);
+          } else setOptimized(false);
+         // console.log('right before addresses:', shiftServices);
         } else {
           // Handle case where services are not defined or empty
           
-          console.log('services is not defined or empty', shiftServices);
+         // console.log('services is not defined or empty', shiftServices);
         }
       } catch (error) {
         console.error('Error setting initial data:', error);
@@ -119,7 +123,7 @@ const NextRoute = () => {
     initializeData();
   }, [shiftServices]);
 
-console.log('first  address UseEffect:', firstService);
+// console.log('first  address UseEffect:', firstService);
 
 
 
@@ -147,9 +151,9 @@ console.log('first  address UseEffect:', firstService);
         let map: google.maps.Map;
 
         const codeAddress = (address: string) => {
-          console.log('code address:', address);
+         // console.log('code address:', address);
           geocoder.geocode({ address }, (results, status) => {
-            console.log('code address:', address);
+           // console.log('code address:', address);
             if (status === 'OK' && results && results[0]) {
               map.setCenter(results[0].geometry.location);
               const marker:any = new google.maps.Marker({
@@ -164,7 +168,7 @@ console.log('first  address UseEffect:', firstService);
               });
 
             } else {
-              console.log(`Geocode was not successful for ${address}`);
+             // console.log(`Geocode was not successful for ${address}`);
               alert('Geocode was not successful for the following reason: ' + status);
             }
           });
@@ -179,9 +183,9 @@ console.log('first  address UseEffect:', firstService);
             clickableIcons: true,
           };
           map = new google.maps.Map(mapRef.current as HTMLElement, mapOptions);
-          console.log('firstService before code address:', firstService);
+         // console.log('firstService before code address:', firstService);
           if (firstService !== null|| firstService !== undefined) {
-            console.log('firstService if statement:', firstService);
+           // console.log('firstService if statement:', firstService);
             codeAddress(firstService);
           } else {
             console.error('firstService is not defined');
@@ -219,7 +223,7 @@ console.log('first  address UseEffect:', firstService);
   return (
     <DashboardCard title={<div style={{display:'flex', justifyContent:'center'}}>Today&apos;s Shift<Button variant="outlined" color="primary" onClick={handleOptimize} style={{paddingTop:'5px', position: "absolute", right: 35}} ><IconRoute /></Button></div>}>
       {Array.isArray(shiftServices) && shiftServices.length > 0 ? (
-        console.log('services map success:', shiftServices),
+       // console.log('services map success:', shiftServices),
         <div style={styles.scrollContainer}>
           <LinkStyled>
             <div ref={mapRef} style={{ ...mapContainerStyle, height: `${windowHeightMap}px` }}></div>
@@ -228,7 +232,7 @@ console.log('first  address UseEffect:', firstService);
           <TodaysServices onSetFirstService={handleSetFirstService} />
         </div>
       ) : (
-        console.log('services map failure:', shiftServices),
+       // console.log('services map failure:', shiftServices),
         <div>
           <Typography variant='h3'>There is no Events for today</Typography>
         </div>

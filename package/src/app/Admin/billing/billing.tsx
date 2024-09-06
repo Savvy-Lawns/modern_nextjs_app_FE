@@ -39,7 +39,7 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
         }
   
         const  data  = await response.json();
-        console.log('data (fetchPage):', data);
+       // console.log('data (fetchPage):', data);
         
         setUnpaidServices(data);
         
@@ -53,7 +53,7 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
   
     fetchUnpaidServices();
   }, [start_date, end_date]);
-  console.log('unpaidServices (fetchPage):', unpaidServices);
+ // console.log('unpaidServices (fetchPage):', unpaidServices);
   return { unpaidServices, loading, error };
 };
 

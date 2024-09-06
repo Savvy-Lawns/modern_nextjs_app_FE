@@ -80,13 +80,13 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
   };
   
   const handleCheckboxChange = (event_service_id: number | string, event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('event_service_id:', event_service_id);
-    console.log('event:', event);
+   // console.log('event_service_id:', event_service_id);
+   // console.log('event:', event);
     if (!event.target.checked) {
         setSelectedServices(selectedServices.filter(serviceId => serviceId !== event_service_id));
-        console.log('selectedServices1:', selectedServices);
+       // console.log('selectedServices1:', selectedServices);
     } else {
-        console.log('selectedServices2:', selectedServices);
+       // console.log('selectedServices2:', selectedServices);
     setSelectedServices(
         
         [...selectedServices, event_service_id]
@@ -101,7 +101,7 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
   };
 
   const handleServiceFormClose = () => {
-    console.log("Service form closed");
+   // console.log("Service form closed");
     setServiceFormOpen(false);
   };
 
@@ -127,7 +127,7 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
           'Authorization': `Bearer ${token}`,
         },
       });
-      console.log('Completed:', selectedServices);
+     // console.log('Completed:', selectedServices);
       alert(`Event service(s) was updated successfully`);
 
       window.location.href = `/`;
@@ -169,7 +169,7 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
       }))
     };
 
-    console.log('requestData before send:', requestData);
+   // console.log('requestData before send:', requestData);
     
   
 
@@ -185,8 +185,8 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
 
       if (response.status === 200 || response.status === 201) {
         alert(`Event service added successfully`);
-        console.log("Service submitted");
-        console.log("requestData: ", requestData);
+       // console.log("Service submitted");
+       // console.log("requestData: ", requestData);
         handleServiceFormClose();
         setSelectedServices([]);
         

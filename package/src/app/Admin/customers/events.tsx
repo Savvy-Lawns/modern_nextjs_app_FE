@@ -33,7 +33,7 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
       }
 
       const responseData = await response.json();
-      console.log('Response Data:', responseData); // Log the entire response to understand its structure
+     // console.log('Response Data:', responseData); // Log the entire response to understand its structure
 
       if (!responseData.data) {
         throw new Error('Data is undefined');

@@ -168,7 +168,7 @@ type Props = {
 }
 
 export default ExpenseAccordion;
-console.log(Object.keys(ExpenseAccordion))
+// console.log(Object.keys(ExpenseAccordion))
 export const activeSelection = SelectedExpense
 
 const styles: {

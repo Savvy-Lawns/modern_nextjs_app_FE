@@ -31,7 +31,7 @@ const AddTransactions = ({ title,  token, event_id, amount, payment_type, event_
     const [paymentType, setPaymentType] = useState(payment_type);
     const [amountValue, setAmount] = useState(amount);
     const [paidAt, setPaidAt] = useState('');
-    console.log('amount 1:', amount);
+   // console.log('amount 1:', amount);
     const today = new Date().toISOString();
       //const apiURL =  process.env.NEXT_PUBLIC_API_URL
 const apiURL =  'http://127.0.0.1:3000/api/v1'
@@ -40,14 +40,14 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
         setAmount(amount);
         setPaidAt(today);
     }, [amount]);
-    console.log('event_service_ids:', event_service_ids);
+   // console.log('event_service_ids:', event_service_ids);
     
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-        console.log('event', event)
+       // console.log('event', event)
         // Initialize a new FormData object
         const formDataObj = new FormData();
-        console.log('rest:', rest);
+       // console.log('rest:', rest);
         // Dynamically construct the data object based on the form fields
         Object.keys(rest).forEach(key => {
             const inputElement = document.getElementById(key) as HTMLInputElement;

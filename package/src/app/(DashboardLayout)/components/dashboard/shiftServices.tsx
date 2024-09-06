@@ -25,14 +25,17 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
         const now = new Date();
         const storedOptimizedShiftServices = localStorage.getItem('optimizedShiftServices');
         const expirationTime = localStorage.getItem('optimizedShiftServicesExpiration');
-        console.log('storedOptimizedShiftServices:', storedOptimizedShiftServices);
-        console.log('expirationTime:', expirationTime);
+       // console.log('storedOptimizedShiftServices:', storedOptimizedShiftServices);
+       // console.log('expirationTime:', expirationTime);
         
         if (storedOptimizedShiftServices && expirationTime && new Date(expirationTime) > now) {
-          console.log('Using cached shift services');
+         // console.log('Using cached shift services');
           setShiftServices(JSON.parse(storedOptimizedShiftServices));
         } else {
-          console.log('Fetching shift services');
+         // console.log('Fetching shift services');
+         localStorage.removeItem('optimizedShiftServices');
+         localStorage.removeItem('optimizedShiftServicesExpiration');
+         localStorage.setItem('optimized', 'false');
           const response = await fetch(`${apiURL}/reports/event_services_for_today`, {
             method: 'GET',
             headers: {
@@ -46,7 +49,7 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
           }
 
           const data = await response.json();
-          console.log('data (fetchPage):', data);
+         // console.log('data (fetchPage):', data);
           setShiftServices(data);
 
           // Set expiration time to midnight
@@ -77,18 +80,18 @@ interface Customer {
 
 
   const reorderShiftServices = (shiftServices: any, optimizedAddresses: any, setOptimized: (value: boolean) => void) => {
-    console.log('Input shiftServices:', shiftServices);
-    console.log('Input optimizedAddresses:', optimizedAddresses);
+   // console.log('Input shiftServices:', shiftServices);
+   // console.log('Input optimizedAddresses:', optimizedAddresses);
   
     const filteredShiftServices = shiftServices.filter((customer: any) => customer !== undefined && customer.customer_address !== undefined);
-    console.log('Filtered shiftServices:', filteredShiftServices);
+   // console.log('Filtered shiftServices:', filteredShiftServices);
   
     // Create a map to find the index of each address in optimizedAddresses
     const addressIndexMap = new Map<string, number>();
     optimizedAddresses.forEach((address:any, index:any) => {
       addressIndexMap.set(address, index);
     });
-    console.log('addressIndexMap:', addressIndexMap);
+   // console.log('addressIndexMap:', addressIndexMap);
   
     // Sort the shiftServices based on the index of their addresses in optimizedAddresses
     const reorderedShiftServices = filteredShiftServices.sort((a:any, b:any) => {
@@ -96,7 +99,7 @@ interface Customer {
       const indexB = addressIndexMap.get(b.customer_address) ?? -1;
       return indexA - indexB;
     });
-    console.log('Reordered shiftServices:', reorderedShiftServices);
+   // console.log('Reordered shiftServices:', reorderedShiftServices);
   
     // Check if the reordered list is the same as the current list
     const isSameList = JSON.stringify(reorderedShiftServices) === JSON.stringify(shiftServices);
@@ -105,7 +108,7 @@ interface Customer {
       // Add any new services to the bottom of the list
       const newServices = shiftServices.filter((service: any) => !addressIndexMap.has(service.customer_address));
       const finalShiftServices = [...reorderedShiftServices, ...newServices];
-      console.log('Final shiftServices with new services added:', finalShiftServices);
+     // console.log('Final shiftServices with new services added:', finalShiftServices);
   
       // Set optimized to false if there are new services
       if (newServices.length > 0) {

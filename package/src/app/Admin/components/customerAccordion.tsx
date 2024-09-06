@@ -79,8 +79,8 @@ type Props = {
   };
  
 
-  console.log(customers);
-  console.log(`Customers: ${Customer}`);
+ // console.log(customers);
+ // console.log(`Customers: ${Customer}`);
 
   const filteredCustomers = (customers as unknown as {
     id: Key | string | number;

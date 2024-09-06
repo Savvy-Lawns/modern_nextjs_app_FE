@@ -46,7 +46,7 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
     
             if (response.status === 200 || response.status === 201 || response.status === 204) {
                 alert(`${entityName} Deleted successfully`);
-                console.log(`${entityName} Deleted successfully`);
+               // console.log(`${entityName} Deleted successfully`);
                 handleClose();
                 window.location.href = `/Admin/${entityType}`;
             } else {

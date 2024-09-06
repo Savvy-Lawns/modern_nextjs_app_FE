@@ -67,15 +67,15 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
-      console.log({data});
+     // console.log({data});
   
       if (data && data.jwt) {
-        console.log(`Success`);
+       // console.log(`Success`);
         Cookie.set('token', data.jwt, { expires: 7, secure: false, sameSite: 'lax' });
         setLoginSuccess(true);
         // Store token in a cookie
       } else {
-        console.log('failed');
+       // console.log('failed');
       }
     } catch (error) {
       console.error('Login error:', error);

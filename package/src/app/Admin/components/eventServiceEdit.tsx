@@ -128,7 +128,7 @@ const apiURL =  'http://127.0.0.1:3000/api/v1'
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            console.log('Scheduled Service has been updated:', response.data.data);
+           // console.log('Scheduled Service has been updated:', response.data.data);
             alert(`Scheduled Service was updated successfully`);
             if (redirect === 1) {
             window.location.href = `/Admin/customers`;

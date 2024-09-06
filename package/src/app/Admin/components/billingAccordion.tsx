@@ -23,8 +23,8 @@ const BillingAccordion = ({ token }: { token?: string }) => {
 
  
 
-  console.log('unpaidServices billingpage TOP:', unpaidServices);
-  console.log('displayData billingpage TOP:', displayData);
+ // console.log('unpaidServices billingpage TOP:', unpaidServices);
+ // console.log('displayData billingpage TOP:', displayData);
   useEffect(() => {
     const currentMonth = new Date().toLocaleString('default', { month: '2-digit' });
     const lastDayCurrentMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toLocaleString('default', { day: '2-digit' });
@@ -42,8 +42,8 @@ const BillingAccordion = ({ token }: { token?: string }) => {
     
   }, [unpaidServices]);
 
-console.log('unpaidServices billingpage 2:', unpaidServices);
-console.log('displayData billingpage 2:', displayData);
+// console.log('unpaidServices billingpage 2:', unpaidServices);
+// console.log('displayData billingpage 2:', displayData);
   const handleStartDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setStartDate(event.target.value);
   };
@@ -52,10 +52,10 @@ console.log('displayData billingpage 2:', displayData);
     setEndDate(event.target.value);
   };
 
-  console.log('unpaidServices (billingpage):', unpaidServices);
-  console.log('displayData (billingpage):', displayData);
-  console.log('start_date:', start_date);
-  console.log('end_date:', end_date);
+ // console.log('unpaidServices (billingpage):', unpaidServices);
+ // console.log('displayData (billingpage):', displayData);
+ // console.log('start_date:', start_date);
+ // console.log('end_date:', end_date);
 
   const event_service_ids_list: Array<any> = [];
   const event_service_ids = displayData.map((customer: any) => {
@@ -63,7 +63,7 @@ console.log('displayData billingpage 2:', displayData);
       event.event_services.map((service: any) => 
       { event_service_ids_list.push(service.id) });
     });
-    console.log('event_service_ids_list:', event_service_ids_list);
+   // console.log('event_service_ids_list:', event_service_ids_list);
     return event_service_ids_list;
   
   });
