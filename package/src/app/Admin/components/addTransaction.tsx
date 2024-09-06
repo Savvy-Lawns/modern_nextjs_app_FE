@@ -33,8 +33,8 @@ const AddTransactions = ({ title,  token, event_id, amount, payment_type, event_
     const [paidAt, setPaidAt] = useState('');
     console.log('amount 1:', amount);
     const today = new Date().toISOString();
-      const apiURL =  process.env.NEXT_PUBLIC_API_URL
-//const apiURL =  'http://127.0.0.1:3000/api/v1'
+      // const apiURL =  process.env.NEXT_PUBLIC_API_URL
+const apiURL =  'http://127.0.0.1:3000/api/v1'
 
     useEffect(() => {
         setAmount(amount);

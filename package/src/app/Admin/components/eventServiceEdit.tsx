@@ -79,8 +79,8 @@ function EventServiceEditForm({ title, customer_id, event_id, service_id, start_
     const [events, loading, error] = Array.isArray(fetchResult) ? fetchResult : [[], false, null];
     const [activeEvent, setActiveEvent] = useState<Event | null>(null);
     const memoizedRest = useMemo(() => rest, [rest]);
-      const apiURL =  process.env.NEXT_PUBLIC_API_URL
-//const apiURL =  'http://127.0.0.1:3000/api/v1'
+      // const apiURL =  process.env.NEXT_PUBLIC_API_URL
+const apiURL =  'http://127.0.0.1:3000/api/v1'
 
     useEffect(() => {
         if (events) {
