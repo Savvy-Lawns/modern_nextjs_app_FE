@@ -5,8 +5,8 @@ const useFetchEvents = (customerId: number | string) => {
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-    // const apiURL =  process.env.NEXT_PUBLIC_API_URL
-const apiURL =  'http://127.0.0.1:3000/api/v1'
+    const apiURL =  process.env.NEXT_PUBLIC_API_URL
+// const apiURL =  'http://127.0.0.1:3000/api/v1'
 
   const fetchEvents = useCallback(async () => {
     setLoading(true);

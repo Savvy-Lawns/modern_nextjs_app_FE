@@ -52,8 +52,8 @@ function EditForm({ title, buttonType, entityId, entityType, token,  ...rest }: 
     const {User, setUser} = useUserContext();
     const value = 'Refreshing...';
     const value2 = '';
-      // const apiURL =  process.env.NEXT_PUBLIC_API_URL
-const apiURL =  'http://127.0.0.1:3000/api/v1'
+      const apiURL =  process.env.NEXT_PUBLIC_API_URL
+// const apiURL =  'http://127.0.0.1:3000/api/v1'
 
 
     useDeepCompareEffect(() => {
