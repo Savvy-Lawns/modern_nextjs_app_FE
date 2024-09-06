@@ -33,7 +33,7 @@ const useFetchEvents = () => {
       }
 
       const responseData = await response.json();
-      console.log('Response Data:', responseData); // Log the entire response to understand its structure
+     // console.log('Response Data:', responseData); // Log the entire response to understand its structure
 
       if (!responseData.data) {
         throw new Error('Data is undefined');

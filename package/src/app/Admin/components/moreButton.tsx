@@ -91,7 +91,7 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
             new_start_date: startDate,
         
         };
-        console.log('rescheduleOption:', rescheduleOption);
+       // console.log('rescheduleOption:', rescheduleOption);
         try {
             let response;
             if (rescheduleOption === 'single') {
@@ -117,7 +117,7 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
                 });
             }
 
-            console.log('Service has been rescheduled:', changeRequestData);
+           // console.log('Service has been rescheduled:', changeRequestData);
             alert(`Scheduled Service was rescheduled successfully`);
             window.location.href = `/Admin/customers`;
         } catch (error) {
@@ -137,7 +137,7 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
                 },
             });
             
-            console.log('Scheduled Service has been deleted:', response.data.data);
+           // console.log('Scheduled Service has been deleted:', response.data.data);
             alert(`Scheduled Service was deleted successfully`);
             window.location.href = `/Admin/customers`;
             

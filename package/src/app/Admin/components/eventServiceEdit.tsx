@@ -128,7 +128,7 @@ function EventServiceEditForm({ title, customer_id, event_id, service_id, start_
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            console.log('Scheduled Service has been updated:', response.data.data);
+           // console.log('Scheduled Service has been updated:', response.data.data);
             alert(`Scheduled Service was updated successfully`);
             if (redirect === 1) {
             window.location.href = `/Admin/customers`;

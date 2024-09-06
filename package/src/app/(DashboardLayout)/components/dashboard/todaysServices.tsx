@@ -16,7 +16,7 @@ const TodaysServices = ({ onSetFirstService }: { onSetFirstService: any }) => {
   const [completedEventServices, setCompletedEventServices] = useState<any[]>([]);
   const [addressList, setAddressList] = useState<any[]>([]);
   
-  console.log('ShiftServices:', shiftServices);
+ // console.log('ShiftServices:', shiftServices);
 
   useEffect(() => {
     const sortCompletedServices = () => {
@@ -67,11 +67,11 @@ const TodaysServices = ({ onSetFirstService }: { onSetFirstService: any }) => {
     const time = hours === 0 ? `${remainingMinutes} minutes` : `${hours} hours ${remainingMinutes} minutes`;
     return time;
   };
-console.log('services2 useeffect: ', services);
+// console.log('services2 useeffect: ', services);
   const handleSetFirstService = (services: any) => {
     setFirstService(services[0].customer_address);
   };
-console.log('firstService:', firstService); 
+// console.log('firstService:', firstService); 
 
   const listEventServiceId: any = [];
   const handleListEventServiceId = (event_service_id: number) => {
@@ -88,7 +88,7 @@ console.log('firstService:', firstService);
       customer.event_services.map((service: any) => 
       { event_service_ids_list.push(service.event_service_id) });
   
-    console.log('event_service_ids_list:', event_service_ids_list);
+   // console.log('event_service_ids_list:', event_service_ids_list);
     return event_service_ids_list;
   
   });

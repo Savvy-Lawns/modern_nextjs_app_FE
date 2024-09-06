@@ -95,8 +95,8 @@ function EditForm({ title, buttonType, entityId, entityType, token,  ...rest }: 
                 },
             });
             
-            console.log(entityType, ' updated:', response.data.data);
-            alert(`${response.data.data.attributes.username} was updated successfully`);
+           // console.log(entityType, ' updated:', response.data.data);
+            alert(`${entity} was updated successfully`);
             window.location.href = `/Admin/${entityType}`;
             
             

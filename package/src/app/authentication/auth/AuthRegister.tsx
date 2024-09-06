@@ -31,7 +31,7 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
             }
         };
     
-        console.log(JSON.stringify(userData));
+       // console.log(JSON.stringify(userData));
         
     
         if (!userData.user.username || !userData.user.email || !userData.user.password || !userData.user.password_confirmation || !userData.user.phone_number) {
@@ -59,7 +59,7 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
     
             // Handle the response
             const result = await response.json();
-            console.log('User created:', result);
+           // console.log('User created:', result);
             alert(`User ${userData.user.username} was created successfully`);
             window.location.href = 'authentication/login';
             // Navigate to login page after successful registration

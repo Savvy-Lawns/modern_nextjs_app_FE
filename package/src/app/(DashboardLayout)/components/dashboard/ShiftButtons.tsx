@@ -87,7 +87,7 @@ const ShiftButtons: React.FC<ShiftButtonsProps> = ({ title,  token, listOfAddres
 
         if (response.status === 200 || response.status === 201) {
             alert(`Mileage posted successfully`);
-            console.log('response', response.data.data.id);
+           // console.log('response', response.data.data.id);
             localStorage.setItem('mileage_id', response.data.data.id);
             setMileageId(response.data.data.id)
             setStartDay(true);
@@ -132,13 +132,13 @@ const handleEndDaySubmit = async (event: React.FormEvent) => {
      
       
       
-      console.log('inputElement:', inputElement);
+     // console.log('inputElement:', inputElement);
       if (inputElement) {
           // Append data to formDataObj instead of creating a simple object
           formDataObj.append('end_mileage', inputElement);
       }
   });
-  console.log('formDataObj: ', formDataObj);
+ // console.log('formDataObj: ', formDataObj);
 
   // Convert formDataObj to JSON
   const formJson = Object.fromEntries(Array.from(formDataObj.entries()));
