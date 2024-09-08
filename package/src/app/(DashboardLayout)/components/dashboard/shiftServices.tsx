@@ -22,13 +22,13 @@ const useFetchShiftServices = () => {
       }
 
       try {
-        const now = new Date();
+        const now = Date.now();
         const storedOptimizedShiftServices = localStorage.getItem('optimizedShiftServices');
-        const expirationTime = localStorage.getItem('optimizedShiftServicesExpiration');
+        const expirationTime:any = localStorage.getItem('optimizedShiftServicesExpiration');
        // console.log('storedOptimizedShiftServices:', storedOptimizedShiftServices);
        // console.log('expirationTime:', expirationTime);
         
-        if (storedOptimizedShiftServices && expirationTime && new Date(expirationTime) > now) {
+        if (storedOptimizedShiftServices && expirationTime && expirationTime > now) {
          // console.log('Using cached shift services');
           setShiftServices(JSON.parse(storedOptimizedShiftServices));
         } else {
