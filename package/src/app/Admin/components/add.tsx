@@ -68,9 +68,11 @@ const AddForm = ({ title, buttonType, entityType, token, ...rest }: Props) => {
                 window.location.href = `/Admin/${entityType}`;
                 
             } else {
+                alert(`Failed to create ${entityType}. Status code: ${response.status}`)
                 throw new Error(`Failed to create ${entityType}. Status code: ${response.status}`);
             }
         } catch (error) {
+            alert(`Failed to create ${entityType}. Status code: ${error}`);
             console.error(`Error creating ${entityType}:`, error);
         }
     };

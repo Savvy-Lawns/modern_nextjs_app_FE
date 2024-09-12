@@ -133,9 +133,11 @@ function EventServiceEditForm({ title, customer_id, event_id, service_id, start_
             if (redirect === 1) {
             window.location.href = `/Admin/customers`;
             } else {
-                handleClose();
+                alert(`Scheduled `)
+                
             }
         } catch (error) {
+            alert(error);
             // Handle error...
         }
     };

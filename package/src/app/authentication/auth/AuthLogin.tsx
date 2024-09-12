@@ -75,10 +75,12 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => {
         setLoginSuccess(true);
         // Store token in a cookie
       } else {
-       // console.log('failed');
+        console.log('failed');
+        alert('Login failed');
       }
     } catch (error) {
       console.error('Login error:', error);
+      alert(error)
     }
   };
 

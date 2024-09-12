@@ -121,6 +121,7 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
             alert(`Scheduled Service was rescheduled successfully`);
             window.location.href = `/Admin/customers`;
         } catch (error) {
+            alert(`Failed to reschedule service. Status code: ${error}`);
             // Handle error...
         }
     };
@@ -148,6 +149,7 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
             
         } catch (error) {
             // Handle error...
+            alert(`Failed to delete service. Status code: ${error}`);
         }
     };
 

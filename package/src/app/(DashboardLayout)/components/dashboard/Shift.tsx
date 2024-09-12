@@ -108,7 +108,10 @@ const NextRoute = () => {
           await setAddressList(addresses);
           if (localStorage.getItem('optimized') === 'true') {
             setOptimized(true);
-          } else setOptimized(false);
+          } else {
+            setOptimized(false);
+            
+          }
          // console.log('right before addresses:', shiftServices);
         } else {
           // Handle case where services are not defined or empty

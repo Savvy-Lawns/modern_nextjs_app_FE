@@ -86,7 +86,8 @@ const AddTransactions = ({ title,  token, event_id, amount, payment_type, event_
                 window.location.href = `/Admin/billing`;
                 
             } else {
-                throw new Error(`Failed to make payment. Status code: ${response.status}`);
+                
+                alert(`Failed to make payment. Status code: ${response.status}`)
             }
         } catch (error) {
             console.error(`Error making payment:`, error);

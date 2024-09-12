@@ -45,6 +45,7 @@ const useFetchShiftServices = () => {
           });
 
           if (!response.ok) {
+            alert('Network response was not ok');
             throw new Error('Network response was not ok');
           }
 
@@ -61,6 +62,7 @@ const useFetchShiftServices = () => {
       } catch (error: any) {
         console.error('Failed to fetch shift services:', error);
         setError(error);
+        alert(error)
       } finally {
         setLoading(false);
       }

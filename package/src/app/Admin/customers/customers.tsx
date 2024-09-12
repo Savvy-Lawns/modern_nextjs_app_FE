@@ -47,6 +47,7 @@ const useFetchCustomers = () => {
         setCustomers(customers);
       } catch (error) {
         console.error('Failed to fetch users:', error);
+        alert(`Failed to fetch users: ${error}`);
         
       } finally {
         setLoading(false);

@@ -9,6 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import withAuth from '@/utils/withAuth';
 import { Typography } from '@mui/material';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
+import { Height } from '@mui/icons-material';
 
 type Props = {
     entityId: number | string;
@@ -50,6 +51,7 @@ const DeleteButton = ({ title, entityName,  entityType, entityId, token, ...rest
                 handleClose();
                 window.location.href = `/Admin/${entityType}`;
             } else {
+                alert(`Failed to delete ${entityType}. Status code: ${response.status}`);
                 throw new Error(`Failed to delete ${entityType}. Status code: ${response.status}`);
             }
         } catch (error) {
@@ -81,14 +83,19 @@ export default withAuth(DeleteButton);
 const Styles = {
     deleteButton: {
        
-        
+        marginTop: '10px',
+      
+      
+      borderRadius: '15px',
         backgroundColor: baselightTheme.palette.error.main,
         color: '#fff',
-        paddingBottom: '8px',
+        paddingBottom: '5px',
+        height: 'auto',
         
         
         textBorder: '1 solid rbga(0,0,0,0.45)',
-        borderRadius: '15px',
+        paddingTop:'2px',
+        
         '&:hover': {
             backgroundColor: baselightTheme.palette.error.dark,
     },

@@ -94,10 +94,12 @@ interface Location {
         localStorage.setItem('optimizedRoute', JSON.stringify(orderedAddresses));
           } else {
             console.error('Error optimizing route status:', status);
+            alert(`Error optimizing route status: ${status}`);
           }
         });
       } catch (error) {
         console.error('Error optimizing route error:', error);
+        alert(`Error optimizing route status: ${status}`);
       }
     };
   

@@ -191,6 +191,7 @@ function CompleteEventServices({ title, buttonType, token, ...rest }: Props) {
         setSelectedServices([]);
         
       } else {
+        alert(`Failed to add event service. Status code: ${response.status}`)
         throw new Error(`Failed to add event service. Status code: ${response.status}`);
       }
     } catch (error) {

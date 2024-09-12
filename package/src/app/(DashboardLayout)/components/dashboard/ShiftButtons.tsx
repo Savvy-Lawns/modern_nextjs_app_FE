@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useUserContext } from '@/app/Admin/components/userContext';
 import RouteOptimizer from './routeOptimization';
 
@@ -95,10 +95,12 @@ const ShiftButtons: React.FC<ShiftButtonsProps> = ({ title,  token, listOfAddres
         
             
         } else {
-            throw new Error(`Failed to post starting miles. Status code: ${response.status}`);
+            
+            alert(`Failed to post starting miles. Status code: ${response.status}`)
         }
     } catch (error) {
         console.error(`Error creating starting miles:`, error);
+        alert(error)
     }
 };
 
@@ -166,7 +168,9 @@ const handleEndDaySubmit = async (event: React.FormEvent) => {
       
           
       } else {
-          throw new Error(`Failed to post starting miles. Status code: ${response.status}`);
+        alert(`Failed to post starting miles. Status code: ${response.status}`);
+        throw new Error(`Failed to post starting miles. Status code: ${response.status}`);
+          
       }
   } catch (error) {
       console.error(`Error creating starting miles:`, error);

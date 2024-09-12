@@ -67,6 +67,7 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => {
     
         } catch (error) {
             console.error('Error creating user:', error);
+            alert('Failed to create user. Please try again.');
             // Handle errors, show error messages
         }
         

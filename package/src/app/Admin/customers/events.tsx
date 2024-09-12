@@ -37,6 +37,7 @@ const useFetchEvents = (customerId: number | string) => {
 
       if (!responseData.data) {
         throw new Error('Data is undefined');
+        alert('Data is undefined');
       }
 
       const events = responseData.data.map((event: any) => {
@@ -79,6 +80,7 @@ const useFetchEvents = (customerId: number | string) => {
     } catch (err) {
       const error = err as Error;
       console.error('Failed to fetch events:', error);
+      alert(`Failed to fetch events: ${error.message}`);
       setError(error.message);
     } finally {
       setLoading(false);

@@ -105,6 +105,7 @@ function EditForm({ title, buttonType, entityId, entityType, token,  ...rest }: 
             
             
         } catch (error) {
+            alert(`Failed to update ${entity}. Status code: ${error}`);
             // Handle error...
         }
     };

@@ -29,6 +29,7 @@ const useFetchEvents = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
+        alert(`Failed to fetch events: ${errorData.exception || 'Network response was not ok'}`);
         throw new Error(errorData.exception || 'Network response was not ok');
       }
 

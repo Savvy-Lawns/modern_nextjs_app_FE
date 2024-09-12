@@ -46,6 +46,7 @@ const useFetchUnpaidServices = (start_date: string, end_date: string) => {
       } catch (error: any) {
         console.error('Failed to fetch unpaid services:', error);
         setError(error);
+        alert(error)
       } finally {
         setLoading(false);
       }

@@ -279,6 +279,7 @@ useEffect(() => {
         setSelectedServices([]);
         window.location.href = `/Admin/customers`;
       } else {
+        alert(`Failed to ${activeEvent ? 'add service to' : 'create'} customer event. Status code: ${response.status}`);
         throw new Error(`Failed to ${activeEvent ? 'add service to' : 'create'} customer event. Status code: ${response.status}`);
       }
     } catch (error) {
@@ -342,6 +343,7 @@ useEffect(() => {
         setSelectedServices([]);
         window.location.href = `/Admin/customers`;
       } else {
+        alert(`Failed to add event service. Status code: ${response.status}`);
         throw new Error(`Failed to add event service. Status code: ${response.status}`);
       }
     } catch (error) {
