@@ -1,40 +1,124 @@
-import * as React from 'react';
+import React, {use, useEffect, useState} from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
-import { Typography } from '@mui/material';
+import { TextField, Typography } from '@mui/material';
 import { BorderBottom } from '@mui/icons-material';
+import withAuth from '@/utils/withAuth';
+import axios from 'axios';
+import useFetchNotes from '../customers/notes';
+
+interface Note {
+    created_at: string;
+    note: string;
+  }
 
 type Props = {
     notes: {
         created_at: string;
         note: string;
     }[];
+    customer_id: number | string;
+    token: string | undefined;
+    
 };
 
-export default function ViewNotes({ notes }: Props) {
+
+function ViewNotes({ customer_id, token }: Props) {
+    const apiURL =  process.env.NEXT_PUBLIC_API_URL
     const [open, setOpen] = React.useState(false);
-    // Ensure displayData is initialized with an array
+    const { notes, loading, error } = useFetchNotes(customer_id, token); 
+    const [note, setNote] = React.useState('');
+    const [formOpen, setFormOpen] = React.useState(false);
+    
+    console.log('notes: ', notes)
+
     const [displayData, setDisplayData] = React.useState<Array<{ created_at: string; note: string; }>>(Array.isArray(notes) ? notes : []);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-        // Ensure setDisplayData is always called with an array
-        setDisplayData(Array.isArray(notes) ? notes : []);
-    };
+   
+    useEffect(() => {
+        if (notes){
+        setDisplayData(notes);
+        } 
+    }, [notes]);
 
+    const handleClickOpen =  () => {
+            
+               
+            
+            
+                setOpen(true);
+               
+            
+       
+            
+           
+            
+        };
+       
     const handleClose = () => {
         setOpen(false);
     };
 
+    const handleFormOpen = () => {
+        setFormOpen(true);
+    };
+
+    const handleFormClose = () => {
+        setFormOpen(false);
+    };
+
+    
+
+    
+
     // Debugging: Log the type of displayData before calling reduce
    // console.log('Type of displayData:', typeof displayData, Array.isArray(displayData) ? 'Array' : 'Not Array');
 
+   const handleAddNote = async () => {
+        const todaysDate = new Date().toISOString();
+        const newNote = {
+            created_at: todaysDate,
+            note,
+        };
+        if (!note) {
+            alert('Please enter a note');
+    };
+        try {
+            const response = await axios.post(`${apiURL}/customers/${customer_id}/customer_notes`, newNote, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            });
+            if (response.status === 200 || response.status === 201) {
+                alert('Note added successfully');
+                setDisplayData([...displayData, newNote]);
+                setNote('');
+                handleFormClose();
+                
+            } else {
+                alert('Failed to add note');
+            }
+        } catch (error) {
+            console.error('Error adding note:', error);
+        }
+
+    };
+    function formatDate(date: string) {
+        const dateStr = date;
+        const dateConv = new Date(dateStr);
+        const month = String(dateConv.getMonth() + 1).padStart(2, '0');
+        const day = String(dateConv.getDate()).padStart(2, '0');
+        const year = dateConv.getFullYear();
+        return `${month}-${day}-${year}`;
+    }
     
-    
+
+    console.log(formatDate('2024-09-12T22:02:49.689Z')); // Output: 09-12-2024
+    console.log('displayData:', displayData);
 
     
     return (
@@ -56,24 +140,53 @@ export default function ViewNotes({ notes }: Props) {
                     <Typography variant='body1'>Date</Typography>
                     <Typography variant='body1'>Notes</Typography>
                       </div>
-                      <div >
-                            {displayData.map((item, index) => (
+                      
+                            {displayData.map((item:any, index) => (
                                 <div style={Styles.notesData} key={index}>
-                                    <Typography style={{width:"40%"}} variant='body2'>{item.created_at}</Typography>
+                                    <Typography style={{width:"40%"}} variant='body2'>{formatDate(item.created_at)}</Typography>
                                     <Typography style={{width:"60%"}}variant='body2'>{item.note}</Typography>
                                 </div>
                             ))}
                        
 
-                    </div>
+                    
                 </DialogContent>
                 <DialogActions>
+                    <Button onClick={handleFormOpen}>Add Note</Button>
+
                     <Button onClick={handleClose}>Close</Button>
                 </DialogActions>
             </Dialog>
+
+            <Dialog style={Styles.overlayWindow} open={formOpen} onClose={handleFormClose} >
+                <form onSubmit={handleAddNote}>
+                <DialogTitle style={{ display: 'flex', justifyContent: 'center' }}>Add a Note</DialogTitle>
+                <DialogContent>
+                    
+                      <div >
+                            
+                        <TextField
+                            margin="dense"
+                            id="note"
+                            label="Note"
+                            type="text"
+                            fullWidth
+                            variant="outlined"
+                            value={note}
+                            onChange={(e) => setNote(e.target.value)}
+                        />
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleAddNote}>Add Note</Button>
+
+                    <Button onClick={handleFormClose}>Close</Button>
+                </DialogActions>
+                </form>
+            </Dialog>
         </React.Fragment>
     );
-}
+} export default withAuth(ViewNotes);
 
 const Styles = {
     overlayWindow: {
@@ -86,7 +199,7 @@ const Styles = {
         display: 'flex',
         height: '100%',
         maxHeight: '1000px',
-        overflow: 'scroll',
+        marginBottom: '10px',
         justifyContent: 'space-around',
 
     },
@@ -97,11 +210,11 @@ const Styles = {
     notesData: {
         minWidth: '200px',
         width: '100%',
-        display: 'flex',
-        height: '100%',
+       display: 'flex',
+        height: 'auto',
         maxHeight: '1000px',
-        overflow: 'scroll',
-        justifyContent: 'space-around',
+        TextAlign: 'center',
+        justifyContent: 'space-between',
         borderBottom: "1px solid black",
         marginBottom: "10px",
     }

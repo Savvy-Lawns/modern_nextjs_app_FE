@@ -114,7 +114,7 @@ type Props = {
    
 
   
-
+console.log('filtered customers: ', filteredCustomers);
   return (
     <div >
       <CustomTextField
@@ -158,7 +158,8 @@ type Props = {
             </div>
             
           <div style={styles.buttonRow}>
-            <ViewNotes notes={customer.notes} />
+           
+            <ViewNotes  customer_id={customer.id} token={token} />
             <ViewCustomerEvents
               title={`Upcoming Events for ${customer.name}`}
               name={customer.name}
