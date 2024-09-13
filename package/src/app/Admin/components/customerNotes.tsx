@@ -17,10 +17,7 @@ interface Note {
   }
 
 type Props = {
-    notes: {
-        created_at: string;
-        note: string;
-    }[];
+    
     customer_id: number | string;
     token: string | undefined;
     
