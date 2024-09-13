@@ -30,6 +30,7 @@ function ViewNotes({ customer_id, token }: Props) {
     const { notes, loading, error } = useFetchNotes(customer_id, token); 
     const [note, setNote] = React.useState('');
     const [formOpen, setFormOpen] = React.useState(false);
+    const notesDeletion: any = []
     
     console.log('notes: ', notes)
 
@@ -43,17 +44,7 @@ function ViewNotes({ customer_id, token }: Props) {
     }, [notes]);
 
     const handleClickOpen =  () => {
-            
-               
-            
-            
                 setOpen(true);
-               
-            
-       
-            
-           
-            
         };
        
     const handleClose = () => {
@@ -112,6 +103,59 @@ function ViewNotes({ customer_id, token }: Props) {
         const year = dateConv.getFullYear();
         return `${month}-${day}-${year}`;
     }
+    const checkboxChange = (event: React.ChangeEvent<HTMLInputElement>, notes_id:number | string) => {
+        if (event.target.checked) {
+            notesDeletion.push(notes_id);
+        } else {
+            const index = notesDeletion.indexOf(notes_id);
+            notesDeletion.splice(index, 1);
+        }
+    };
+    const handleNoteDeletionRemoval: any = (noteId: number | string) => {
+        const index = notesDeletion.indexOf(noteId);
+        notesDeletion.splice(index, 1);
+    };
+
+    const handleDeleteNote = async () => {
+        const successDeletedNoteIds: any = [];
+        if (notesDeletion.length === 0) {
+            alert('Please select notes to delete');
+            return;
+        }else {
+        notesDeletion.forEach(async (noteId:string | number) => {
+            try {
+                const response = await axios.delete(`${apiURL}/customers/${customer_id}/customer_notes/${String(noteId)}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+
+        });
+        console.log('notesDeletion before:', notesDeletion);
+
+        if (response.status === 200 || response.status === 204) {
+            handleNoteDeletionRemoval(noteId);
+            console.log('notesDeletion after:', notesDeletion);
+            successDeletedNoteIds.push(noteId);
+            console.log('successDeletedNoteIds :', successDeletedNoteIds);
+            const newDisplayData = displayData.filter((item: any) => item.id !== noteId);
+
+        if (successDeletedNoteIds.length > 0) {
+                alert(`${successDeletedNoteIds} have been deleted successfully`);
+                window.location.href = `/Admin/customers`
+         } else {
+            console.log('notesDeletion:', notesDeletion);
+            alert(`${notesDeletion} failed to delete`);
+        };
+        }
+    } catch (error) {
+        console.error('Error deleting note:', error);
+    }
+    });
+    
+}
+    
+    };
+
     
 
     console.log(formatDate('2024-09-12T22:02:49.689Z')); // Output: 09-12-2024
@@ -140,6 +184,7 @@ function ViewNotes({ customer_id, token }: Props) {
                       
                             {displayData.map((item:any, index) => (
                                 <div style={Styles.notesData} key={index}>
+                                    <input type="checkbox" onChange={(e) => checkboxChange(e, item.id)} />
                                     <Typography style={{width:"40%"}} variant='body2'>{formatDate(item.created_at)}</Typography>
                                     <Typography style={{width:"60%"}}variant='body2'>{item.note}</Typography>
                                 </div>
@@ -149,6 +194,7 @@ function ViewNotes({ customer_id, token }: Props) {
                     
                 </DialogContent>
                 <DialogActions>
+                    <Button onClick={handleDeleteNote} sx={{color:baselightTheme.palette.error.main, }}>Delete</Button>
                     <Button onClick={handleFormOpen}>Add Note</Button>
 
                     <Button onClick={handleClose}>Close</Button>
