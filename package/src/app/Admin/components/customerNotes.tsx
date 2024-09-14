@@ -134,9 +134,9 @@ function ViewNotes({ customer_id, token }: Props) {
 
         if (response.status === 200 || response.status === 204) {
             handleNoteDeletionRemoval(noteId);
-            console.log('notesDeletion after:', notesDeletion);
+          //  console.log('notesDeletion after:', notesDeletion);
             successDeletedNoteIds.push(noteId);
-            console.log('successDeletedNoteIds :', successDeletedNoteIds);
+           // console.log('successDeletedNoteIds :', successDeletedNoteIds);
             const newDisplayData = displayData.filter((item: any) => item.id !== noteId);
 
         if (successDeletedNoteIds.length > 0) {

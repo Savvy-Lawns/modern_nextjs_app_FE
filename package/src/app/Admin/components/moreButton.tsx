@@ -73,7 +73,7 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
     const handleRescheduleClose = () => setOpenReschedule(false);
     const handleDeleteOpen = () => setDeleteOpen(true);
     const handleDeleteClose = () => setDeleteOpen(false);
-    const handleDeleteOpenConfirm = () => {setDeleteOpenConfirm(true); console.log(deleteType)}
+    const handleDeleteOpenConfirm = () => setDeleteOpenConfirm(true);
     const handleDeleteOpenConfirmClose = () => setDeleteOpenConfirm(false); 
     const handleDeleteSeriesOpenConfirm = () => setDeleteSeriesOpenConfirm(true);
     const handleDeleteSeriesOpenConfirmClose = () => setDeleteOpenConfirm(false);
@@ -189,11 +189,9 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
     };
 
     const checkDeleteType = (e: React.ChangeEvent<HTMLInputElement> | string) => {
-        console.log('delete type on change before: ', deleteType);
-        console.log('e before:', e);   
+         
         setDeleteType(String(e));
-        console.log('e after:', e);
-        console.log('delete type on change after: ', deleteType);
+        
     };
 
 
