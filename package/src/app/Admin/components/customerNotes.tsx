@@ -32,7 +32,7 @@ function ViewNotes({ customer_id, token }: Props) {
     const [formOpen, setFormOpen] = React.useState(false);
     const notesDeletion: any = []
     
-    console.log('notes: ', notes)
+    // console.log('notes: ', notes)
 
     const [displayData, setDisplayData] = React.useState<Array<{ created_at: string; note: string; }>>(Array.isArray(notes) ? notes : []);
 
@@ -158,8 +158,8 @@ function ViewNotes({ customer_id, token }: Props) {
 
     
 
-    console.log(formatDate('2024-09-12T22:02:49.689Z')); // Output: 09-12-2024
-    console.log('displayData:', displayData);
+    // console.log(formatDate('2024-09-12T22:02:49.689Z')); // Output: 09-12-2024
+    // console.log('displayData:', displayData);
 
     
     return (
