@@ -16,6 +16,7 @@ import { Accordion, AccordionSummary, Typography, AccordionDetails, FormControl,
 import DotsIcon from '@mui/icons-material/ExpandMore';
 import zIndex from '@mui/material/styles/zIndex';
 import { Style } from '@mui/icons-material';
+import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
 
 
 type Props = Partial<{
@@ -43,6 +44,7 @@ function useDeepCompareEffect(callback: () => void, dependencies: {}[] | undefin
     useEffect(callback, [currentDependenciesRef.current]);
 }
 
+
 function MoreButton({ title,  customer_id, event_id, event_service_id, start_date, end_date, token, recurrence_series_id, ...rest }: Props) {
     const [openConfirmation, setOpenConfirmation] = React.useState(false);
     const [openReschedule, setOpenReschedule] = React.useState(false);
@@ -50,6 +52,10 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
     const [endDate, setEndDate] = React.useState<Date | null>(end_date ? new Date(end_date) : null);
     const [formData, setFormData] = useState<{ [key: string]: string | number }>({});
     const [rescheduleOption, setRescheduleOption] = useState<string>('single');
+    const [deleteOpen, setDeleteOpen] = React.useState(false);
+    const [deleteOpenConfirm, setDeleteOpenConfirm] = React.useState(false);
+    const [deleteSeriesOpenConfirm, setDeleteSeriesOpenConfirm] = React.useState(false);
+    const [deleteType, setDeleteType] = React.useState('');
       const apiURL =  process.env.NEXT_PUBLIC_API_URL
 // const apiURL =  'http://127.0.0.1:3000/api/v1'
 
@@ -65,6 +71,13 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
     const handleConfirmationClose = () => setOpenConfirmation(false);
     const handleRescheduleOpen = () => setOpenReschedule(true);
     const handleRescheduleClose = () => setOpenReschedule(false);
+    const handleDeleteOpen = () => setDeleteOpen(true);
+    const handleDeleteClose = () => setDeleteOpen(false);
+    const handleDeleteOpenConfirm = () => {setDeleteOpenConfirm(true); console.log(deleteType)}
+    const handleDeleteOpenConfirmClose = () => setDeleteOpenConfirm(false); 
+    const handleDeleteSeriesOpenConfirm = () => setDeleteSeriesOpenConfirm(true);
+    const handleDeleteSeriesOpenConfirmClose = () => setDeleteOpenConfirm(false);
+
 
     const handleRescheduleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -151,6 +164,36 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
             // Handle error...
             alert(`Failed to delete service. Status code: ${error}`);
         }
+    };
+
+    const handleDeleteServiceSeries = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        
+
+        try {
+            const response = await axios.delete(`${apiURL}/customers/${customer_id}/events/${event_id}/event_services/${event_service_id}/delete_series`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            
+           // console.log('Scheduled Service has been deleted:', response.data.data);
+            alert(`Scheduled Service Series was deleted successfully`);
+            window.location.href = `/Admin/customers`;
+            
+        } catch (error) {
+            // Handle error...
+            alert(`Failed to delete service. Status code: ${error}`);
+        }
+    };
+
+    const checkDeleteType = (e: React.ChangeEvent<HTMLInputElement> | string) => {
+        console.log('delete type on change before: ', deleteType);
+        console.log('e before:', e);   
+        setDeleteType(String(e));
+        console.log('e after:', e);
+        console.log('delete type on change after: ', deleteType);
     };
 
 
@@ -269,12 +312,70 @@ function MoreButton({ title,  customer_id, event_id, event_service_id, start_dat
                     </DialogActions>
                 </form>
                 </Dialog>
-            <form onSubmit={handleEventServiceDelete}>
-              <Button type="submit" color={'error'} variant='contained'><Typography variant={'body2'}>Delete</Typography></Button>
-            </form>
+            
+              <Button type="submit" color={'error'} variant='contained' onClick={handleDeleteOpen}><Typography variant={'body2'}>Delete</Typography></Button>
+            
             </AccordionDetails>
             </Accordion>
+
+            <Dialog open={deleteOpen} onClose={handleDeleteClose}>
                 
+                  <form onSubmit={(e) => {
+                    e.preventDefault();
+                    deleteType === 'single_service' ? handleDeleteOpenConfirm() : handleDeleteSeriesOpenConfirm();
+                    }}>  
+                <DialogContent>
+                    
+                     <Typography variant='h4'>Do you want to delete this singular service or this whole series of services?</Typography>
+                     <TextField
+                    label="deletion_type"
+                    select
+                    fullWidth
+                    variant="outlined"
+                    
+                    onChange={(e) => checkDeleteType(e.target.value)}
+                    SelectProps={{
+                    native: true,
+                    }}
+                >
+                  
+                    <option value='single_service'>This Service</option>
+                    <option value='service_series'>Whole Service Series</option>
+                    
+                </TextField>
+                </DialogContent>
+                 <DialogActions>
+                     <Button onClick={handleDeleteClose}>Cancel</Button>
+                     <Button type='submit'>Delete</Button>
+                 </DialogActions>
+             </form>
+         </Dialog>
+                
+            <Dialog open={deleteOpenConfirm} onClose={handleDeleteOpenConfirmClose}>
+                
+                    <form onSubmit={handleEventServiceDelete}>
+                <DialogContent>
+                     <Typography variant='h4'>Are you sure you want to delete this service?</Typography>
+                </DialogContent>
+                 <DialogActions>
+                     <Button onClick={handleDeleteOpenConfirmClose}>Cancel</Button>
+                     <Button style={{ color: baselightTheme.palette.error.main }} type='submit'>Delete</Button>
+                 </DialogActions>
+             </form >
+         </Dialog>
+         <Dialog open={deleteSeriesOpenConfirm} onClose={handleDeleteSeriesOpenConfirmClose}>
+                <form onSubmit={handleDeleteServiceSeries}>
+                    
+                <DialogContent>
+                     <Typography variant='h4'>Are you sure you want to delete this service series?</Typography>
+                </DialogContent>
+                 <DialogActions>
+                     <Button onClick={handleDeleteSeriesOpenConfirmClose}>Cancel</Button>
+                     <Button style={{color: baselightTheme.palette.error.main}} type='submit'>Delete</Button>
+                 </DialogActions>
+                 </form>
+         </Dialog>
+
         </React.Fragment>
     );
 }
