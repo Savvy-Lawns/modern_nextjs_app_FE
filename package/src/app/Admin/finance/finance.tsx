@@ -33,7 +33,7 @@ const useFetchFinanceReport = () => {
         });
 
         if (response.status === 200 || response.status === 201) {
-            alert(`Report saved successfully`);
+            
             setReports(response.data);
             
             
@@ -47,7 +47,7 @@ const useFetchFinanceReport = () => {
        
         setReports(response.data);
       } catch (error) {
-        console.error('Failed to fetch users:', error);
+        console.error('Failed to fetch reports:', error);
         alert(`Failed to fetch reports: ${error}`);
         
       } finally {

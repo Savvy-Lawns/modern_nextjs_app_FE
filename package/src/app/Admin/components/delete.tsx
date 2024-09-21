@@ -49,7 +49,9 @@ const DeleteButton = ({ title, entityName,  entityType, entityId, token, ...rest
                 alert(`${entityName} Deleted successfully`);
                // console.log(`${entityName} Deleted successfully`);
                 handleClose();
+                if (entityType !== 'summaries') {   
                 window.location.href = `/Admin/${entityType}`;
+                } else window.location.href = `/Admin/finance`;
             } else {
                 alert(`Failed to delete ${entityType}. Status code: ${response.status}`);
                 throw new Error(`Failed to delete ${entityType}. Status code: ${response.status}`);

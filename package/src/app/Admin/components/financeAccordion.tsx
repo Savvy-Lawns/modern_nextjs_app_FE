@@ -17,6 +17,7 @@ import { useExpenseContext } from './expenseContext';
 import useFetchFinanceReport from '../finance/finance';
 import Cookie from 'js-cookie';
 import axios from 'axios';
+import Delete from './delete';
 
 interface Expense {
     id: number;
@@ -28,6 +29,7 @@ interface Expense {
     created_at: Date; 
 };
 interface Report {
+    id: number | string;
     name: string;
     start_date: Date;
     end_date: Date;
@@ -116,7 +118,7 @@ type Props = {
   });
 
   if (response.status === 200 || response.status === 201) {
-    alert(`Report saved successfully`);
+    alert(`Report generated successfully`);
     setNewGeneratedReport(response.data);
     handleOpenReport();
     
@@ -161,6 +163,7 @@ const handleSaveReport = async (event: React.FormEvent<HTMLFormElement>) => {
 
 if (response.status === 200 || response.status === 201) {
   alert(`Report saved successfully`);
+  setNewGeneratedReport(undefined);
 } else {
   alert(`Failed to generate reports: ${error}`);
   throw new Error('Network response was not ok');
@@ -199,10 +202,11 @@ function CalculateTotalProfit(revenue: string, expenses: string) {
         <Typography style={styles.accordionDate}>{report.name}</Typography>
       </AccordionSummary>
       <AccordionDetails style={styles.AccordionDetailsStyle}>
-        <Typography>Total Revenue: {report.total_revenue}</Typography>
-        <Typography>Total Expenses: {report.total_expenses}</Typography>
-        <Typography>Total Profit: {CalculateTotalProfit(report.total_revenue, report.total_expenses)}</Typography>
+        <Typography>Total Revenue: $ {Number(report.total_revenue).toFixed(2)}</Typography>
+        <Typography>Total Expenses: $ {Number(report.total_expenses).toFixed(2)}</Typography>
+        <Typography>Total Profit: $ {Number(CalculateTotalProfit(report.total_revenue, report.total_expenses)).toFixed(2)}</Typography>
         <Typography>Total Miles: {report.total_miles}</Typography>
+        <Delete entityId={report.id} entityName={report.name} entityType={'summaries'} token={Cookie.get('token')}  />
       </AccordionDetails>
     </Accordion>
   ))) : (
@@ -350,6 +354,8 @@ accordionDateSummary: {
     color: baselightTheme.palette.primary.contrastText,
     borderBottom: '1px solid rgba(0,0,0,0.75)',
     marginBottom: '10px',
+    borderTopLeftRadius: '5px',
+    borderTopRightRadius: '5px',
     
     
    
