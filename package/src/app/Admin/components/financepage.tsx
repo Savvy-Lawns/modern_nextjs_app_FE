@@ -44,16 +44,7 @@ const FinancePage = () => {
       
         <div>
             
-            <div >
             <FinanceAccordion   />
-            
-            
-            
-          
-         
-         
-         
-            </div>
             </div>
     
   );

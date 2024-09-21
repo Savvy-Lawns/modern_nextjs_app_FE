@@ -7,13 +7,16 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import { BorderBottom, Padding } from '@mui/icons-material';
-import { Button, colors } from '@mui/material';
+import { Button, colors, Dialog, DialogActions, DialogContent } from '@mui/material';
 import { text } from 'stream/consumers';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
 import EditForm from './edit';
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
 import useFetchExpenses from '../expenses/expenses';
 import { useExpenseContext } from './expenseContext';
+import useFetchFinanceReport from '../finance/finance';
+import Cookie from 'js-cookie';
+import axios from 'axios';
 
 interface Expense {
     id: number;
@@ -23,7 +26,16 @@ interface Expense {
     notes: string;
     expense_type: string;
     created_at: Date; 
-}
+};
+interface Report {
+    name: string;
+    start_date: Date;
+    end_date: Date;
+    total_revenue: string;
+    total_expenses: string;
+    total_miles: string;
+    total_hours_worked: string;
+};
 
 type Props = {
     expenseId?: number;
@@ -36,7 +48,7 @@ type Props = {
     notes?: string; // Add the 'notes' property to the Props interface
 };
 
-  const SelectedExpense = () => {};
+  
   const FinanceAccordion = ({
     expenseId,
     name,
@@ -52,63 +64,226 @@ type Props = {
     const [searchQuery, setSearchQuery] = useState('');
     const { expenses, loading, error } = useFetchExpenses();
     const { Expense, setExpense } = useExpenseContext();
+    const { reports} = useFetchFinanceReport();
+    const [report, setReport] = useState();
+    const [allReports, setAllReports] = useState(reports);
+    const [start_date, setStartDate] = useState('');
+    const [end_date, setEndDate] = useState('');
+    const [openReport, setOpenReport] = useState(false);
+    const [newGeneratedReport, setNewGeneratedReport] = useState<Report | undefined >();
+    const apiURL =  process.env.NEXT_PUBLIC_API_URL
 
-    const groupExpensesByDate = (expenses: any[]): Record<any, { expenses: Expense[]; total: number; notes: string; }> => {
-        return expenses.reduce((acc: Record<any, { expenses: Expense[]; total: number; notes: string; }>, expense: Expense) => {
-            const date = new Date(expense.created_at).toDateString(); // Convert to a simple date string for grouping
-            if (!acc[date]) {
-                acc[date] = { expenses: [], total: 0, notes: '' };
-            }
-            acc[date].expenses.push(expense);
-            acc[date].total += expense.cost; // Add expense cost to total for the day
-            return acc;
-        }, {});
-    };
+
 
 
     useEffect(() => {
       setExpense(Expense);
+      if (reports) {
+      setAllReports(reports);
+    }
     }, [Expense, setExpense]);
     
 
-    const handleOpen = (expense: typeof Expense) => { // Ensure expense is of type Expense
-      setExpense(expense);
+    const handleOpen = () => { 
       setOpen(true);
     };
   const handleClose = () => setOpen(false);
+  const handleOpenReport = () => { 
+    setOpenReport(true);
+  };
+  const handleCloseReport = () => {setOpenReport(false); handleCloseReport(); handleClose();}
 
-  const filteredExpenses = expenses.filter((expense:any) =>
-    expense.notes.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleGenerateReport = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-  const groupedExpenses = groupExpensesByDate(filteredExpenses);
-  const sortedDates = Object.entries(groupedExpenses).sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime());
+    const data: any = {start_date: start_date, end_date: end_date};
+    if (!data) return;
+    const token = Cookie.get('token');
+    if (!token) {
+      alert('Token not found. User must be authenticated.');
+      window.location.href = '/authentication/login';
+      return;
+    }
+
+    try {
+      const dates = {start_date: start_date, end_date: end_date};
+      const response:any = await axios.post(`${apiURL}/summaries/generate`, dates, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+    }    
+  });
+
+  if (response.status === 200 || response.status === 201) {
+    alert(`Report saved successfully`);
+    setNewGeneratedReport(response.data);
+    handleOpenReport();
+    
+
+    
+    
+} else {
+    alert(`Failed to save the report. Status code: ${response.status}`)
+    throw new Error(`Failed to save the report. Status code: ${response.status}`);
+}
+
+  const data = response.data;
+  
+  setReport(data);
+} catch (error) {
+  console.error('Failed to fetch users:', error);
+  alert(`Failed to generate reports: ${error}`);
+}  finally {
+  handleOpenReport();
+}
+}
+
+const handleSaveReport = async (event: React.FormEvent<HTMLFormElement>) => {
+  
+  if (!newGeneratedReport) return;
+
+  const token = Cookie.get('token');
+  if (!token) {
+    alert('Token not found. User must be authenticated.');
+    window.location.href = '/authentication/login';
+    return;
+  }
+
+  try {
+    const response = await axios.post(`${apiURL}/summaries`,report,  {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+  }    
+});
+
+if (response.status === 200 || response.status === 201) {
+  alert(`Report saved successfully`);
+} else {
+  alert(`Failed to generate reports: ${error}`);
+  throw new Error('Network response was not ok');
+}
+
+const data = response.data;
+
+setReport(data);
+} catch (error) {
+console.error('Failed to fetch users:', error);
+alert(`Failed to generate reports: ${error}`);
+}  finally {
+handleOpenReport();
+}};
+
+function CalculateTotalProfit(revenue: string, expenses: string) {
+  const totalRevenue = parseFloat(revenue);
+  const totalExpenses = parseFloat(expenses);
+
+  return totalRevenue - totalExpenses;
+};
+ 
   
   
   return (
-    <div>
-      <CustomTextField
-        type="search"
-        variant="outlined"
-        fullWidth
-        label="Search"
-        mb='10'
-        style={{ marginBottom: '20px' }}
-        onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setSearchQuery(e.target.value)} // Update search query on input change
-      />
+    <React.Fragment>
+      <div style={styles.ReportList}>
+  {reports ? (reports.map((report: Report) => (
+    <Accordion style={styles.accordionStyle}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        aria-controls="panel1a-content"
+        id="panel1a-header"
+        style={styles.accordionDateSummary}
+      >
+        <Typography style={styles.accordionDate}>{report.name}</Typography>
+      </AccordionSummary>
+      <AccordionDetails style={styles.AccordionDetailsStyle}>
+        <Typography>Total Revenue: {report.total_revenue}</Typography>
+        <Typography>Total Expenses: {report.total_expenses}</Typography>
+        <Typography>Total Profit: {CalculateTotalProfit(report.total_revenue, report.total_expenses)}</Typography>
+        <Typography>Total Miles: {report.total_miles}</Typography>
+      </AccordionDetails>
+    </Accordion>
+  ))) : (
+    <Typography style={{marginBottom:'15px'}}>No reports found, please try to refresh.</Typography>
+  )}
 
- 
 
-    
+  <Button
+    variant="contained"
+    color="primary"
+    onClick={handleOpen} 
+    >Generate a Report</Button>
+
 </div>
+<Dialog open={open} onClose={handleClose}>
+  <form onSubmit={handleGenerateReport}>
+  <DialogContent>
+    <Typography variant="h5">Generate a report</Typography>
+    <CustomTextField
+      type="date"
+      variant="outlined"
+      fullWidth
+      label="Start Date"
+      mb="10"
+      style={{ marginBottom: '20px' }}
+      onChange={(e: any) => setStartDate(e.target.value)} />
+    <CustomTextField 
+      type="date"
+      variant="outlined"
+      fullWidth
+      label="End Date"
+      mb="10"
+      style={{ marginBottom: '20px' }}
+      onChange={(e: any) => setEndDate(e.target.value)} />
+  </DialogContent>
+  <DialogActions>
+    <Button type="submit" >Submit</Button>
+    <Button onClick={handleClose}>Cancel</Button>
+  </DialogActions>
+  </form>
+  </Dialog>
+
+  
+    {newGeneratedReport ? (
+      <Dialog open={openReport} onClose={handleCloseReport}>
+    <form onSubmit={handleSaveReport}>
+      <DialogContent>
+        <Typography variant="h5">{newGeneratedReport.name}</Typography> 
+        <Typography variant="h6">Total Revenue: {newGeneratedReport.total_revenue}</Typography>
+        <Typography variant="h6">Total Expenses: {newGeneratedReport.total_expenses}</Typography>
+        <Typography variant="h6">Total Profit: {CalculateTotalProfit(newGeneratedReport.total_revenue, newGeneratedReport.total_expenses)}</Typography>
+        <Typography variant="h6">Total Miles: {newGeneratedReport.total_miles}</Typography>
+        <Typography variant="h6">Total Hours Worked: {newGeneratedReport.total_hours_worked}</Typography>
+  </DialogContent>
+  <DialogActions>
+    <Button type="submit" >Submit</Button>
+    <Button onClick={handleCloseReport}>Cancel</Button>
+  </DialogActions>
+  </form> 
+  </Dialog>) : (
+    <Dialog open={openReport} onClose={handleCloseReport}>
+    <DialogContent>
+    <Typography variant="h5">Sorry!</Typography>
+    <Typography variant="h6">Failed to generate a report</Typography>
+  </DialogContent>
+  <DialogActions>
+    <Button type="submit" >Retry?</Button>
+    <Button onClick={handleCloseReport}>Cancel</Button>
+  </DialogActions>
+  </Dialog>
+  )
+  }
+  
          
-       
+</React.Fragment>
   );
 }
 
 export default FinanceAccordion;
 
-export const activeSelection = SelectedExpense
+
 
 const styles: {
   AccordionDetailsStyle: React.CSSProperties;
@@ -119,7 +294,7 @@ const styles: {
   accordionDateSummary: React.CSSProperties;
   accordionDate: React.CSSProperties;
   accordionStyle: React.CSSProperties;
-  
+  ReportList: React.CSSProperties;
 } = {
     accordionStyle: {
         backgroundColor: 'transparent',
@@ -173,17 +348,26 @@ expenseStyle:{
 accordionDateSummary: {
     backgroundColor: baselightTheme.palette.primary.main,
     color: baselightTheme.palette.primary.contrastText,
+    borderBottom: '1px solid rgba(0,0,0,0.75)',
+    marginBottom: '10px',
     
     
-    borderBottom: "3px solid rgba(0,0,0,0.75)",
+   
     
 },
 accordionDate: {
     backgroundColor: baselightTheme.palette.primary.main,
-    borderBottom: "3px solid rgba(0,0,0,0.75)",
-    borderBottomLeftRadius: '15px',
-    borderBottomRightRadius: '15px',
-    marginBottom: '5px',
+   
+    
 },
+ReportList: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    
+},
+
 
 };
