@@ -9,6 +9,7 @@ import { baselightTheme } from '@/utils/theme/DefaultColors';
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
 import AddTransactions from './addTransaction';
 import useFetchUnpaidServices from '../billing/billing';
+import InvoiceButton from './invoice';
 
 import { Today } from '@mui/icons-material';
 
@@ -161,9 +162,10 @@ const BillingAccordion = ({ token }: { token?: string }) => {
                       </div>
                     </div>
                   ))}
+<InvoiceButton customer_name={customer.name} start_date={start_date} end_date={end_date} amount={Number(event.balance).toFixed(2)} event_services={event.event_services} customer_address={customer.address} customer_email={customer.email} /> 
                 </div>
               ))}
-              {/* <Invoice customer={customer} start_date={start_date} end_date={end_date} bill_date={String(Date.now())} amount={Number(calculateTotal)} /> */}
+             
             </AccordionDetails>
           </Accordion>
         ))}
