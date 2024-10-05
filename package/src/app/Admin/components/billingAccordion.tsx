@@ -25,7 +25,7 @@ const BillingAccordion = ({ token }: { token?: string }) => {
  
 
  // console.log('unpaidServices billingpage TOP:', unpaidServices);
- // console.log('displayData billingpage TOP:', displayData);
+  console.log('displayData billingpage TOP:', displayData);
   useEffect(() => {
     const currentMonth = new Date().toLocaleString('default', { month: '2-digit' });
     const lastDayCurrentMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toLocaleString('default', { day: '2-digit' });
@@ -142,6 +142,7 @@ const BillingAccordion = ({ token }: { token?: string }) => {
                   
                   </div><div>
                   <AddTransactions 
+                  customer_id={customer.id}
                   token={token} 
                   event_id={event.id} 
                   amount={`$${Number(event.balance).toFixed(2)}`} 
@@ -162,7 +163,7 @@ const BillingAccordion = ({ token }: { token?: string }) => {
                       </div>
                     </div>
                   ))}
-<InvoiceButton customer_name={customer.name} start_date={start_date} end_date={end_date} amount={Number(event.balance).toFixed(2)} event_services={event.event_services} customer_address={customer.address} customer_email={customer.email} /> 
+<InvoiceButton customer_name={customer.name} start_date={start_date} end_date={end_date} amount={Number(event.balance).toFixed(2)} event_services={event.event_services} customer_address={customer.address} customer_email={customer.email} customer_id={customer.id} customer_last_billed={customer.bill_date} /> 
                 </div>
               ))}
              

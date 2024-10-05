@@ -21,10 +21,11 @@ type Props = {
     event_service_ids: any[];
     rest: any;
     paidAt: any;
+    customer_id: number | string;
     
 };
 
-const AddTransactions = ({ title,  token, event_id, amount, payment_type, event_service_ids, ...rest }: Props) => {
+const AddTransactions = ({ title,  token, event_id, amount, payment_type, event_service_ids, customer_id, ...rest }: Props) => {
     const [open, setOpen] = useState(false);
     const handleClickOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -81,7 +82,7 @@ const AddTransactions = ({ title,  token, event_id, amount, payment_type, event_
     
             if (response.status === 200 || response.status === 201) {
                 alert(`Payment successfully posted!`);
-            
+                await updateBillDate();
                 handleClose();
                 window.location.href = `/Admin/billing`;
                 
@@ -92,6 +93,26 @@ const AddTransactions = ({ title,  token, event_id, amount, payment_type, event_
         } catch (error) {
             console.error(`Error making payment:`, error);
         }
+    };
+
+    const updateBillDate = async () => {
+        const formData = {
+            bill_date: '',
+        }
+        
+        try {
+            const response = await axios.patch(`${apiURL}/customers/${customer_id}`, formData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+        
+        
+        } catch (error) {
+            console.error('Failed to bill customer:', error);
+            
+      };
     };
 
     return (
