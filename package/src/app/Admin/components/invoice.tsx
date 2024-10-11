@@ -6,6 +6,8 @@ import { title } from 'process';
 import { max } from 'lodash';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import dynamic from 'next/dynamic';
+
 
 type Props = {
     customer_last_billed: string;
@@ -53,7 +55,7 @@ const InvoiceButton: React.FC<Props> = ({ customer_name, customer_address, custo
   };
 
   const logoURL = "/images/logos/SavvyLawnsLogo.png";
-  const zelleURL = "/images/logos/SavvyLawnsZelle.png";
+  const zelleURL = "/images/logos/SavvyLawnsZelle.PNG";
 
   const getCurrentDate = () => {
     const today = new Date();
@@ -66,22 +68,25 @@ const InvoiceButton: React.FC<Props> = ({ customer_name, customer_address, custo
 
 
   const generatePDF = async () => {
-    if (invoiceRef.current) {
-      const element = invoiceRef.current;
-      const opt = {
-        margin: 1,
-        filename: 'invoice.pdf',
-        image: { type: 'png', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-      };
-      handleStartLoading();
-      const pdf = await html2pdf().from(element).set(opt).outputPdf('blob');
-      handleEndLoading();
-      console.log('pdf:', pdf);
-      return pdf;
-    }
-  };
+    if (typeof window !== 'undefined') {
+      const html2pdf = (await import('html2pdf.js')).default;
+  
+      if (invoiceRef.current) {
+        const element = invoiceRef.current;
+        const opt = {
+          margin: 1,
+          filename: 'invoice.pdf',
+          image: { type: 'png', quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        handleStartLoading();
+        const pdf = await html2pdf().from(element).set(opt).outputPdf('blob');
+        handleEndLoading();
+        console.log('pdf:', pdf);
+        return pdf;
+      }
+    }};
 
   
   
@@ -263,7 +268,7 @@ const InvoiceButton: React.FC<Props> = ({ customer_name, customer_address, custo
                         <div style={{ backgroundColor: '#328525', width: '200px', textAlign: 'center', padding: '10px', color: '#fff', margin: '15px 0px', borderRadius: '15px' }}>
                           <div style={{ fontWeight: 'bold', marginBottom:'5px' }}>You can pay by Zelle here!</div>
                           <div>
-                          <img src={zelleURL} width="175px" alt="Savvy Lawns Logo" /></div>
+                          <img src={zelleURL} width="175px" alt="zelle qr" /></div>
                         </div>
                         
                       </td>
@@ -278,7 +283,10 @@ const InvoiceButton: React.FC<Props> = ({ customer_name, customer_address, custo
       </div>
       
     </div>
+    <div>
     <button onClick={handleOpen} >Send Invoice</button> {customer_last_billed ? customer_last_billed : 'Never Billed'}
+                             </div>
+                        
       <style jsx>{`
         button {
           background-color: ${baselightTheme.palette.primary.light};
